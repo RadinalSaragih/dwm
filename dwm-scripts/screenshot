@@ -1,0 +1,2 @@
+#! /bin/sh
+maim -f png -m 1 ~/Screenshot/screenshot-$(date '+%d-%m-%Y@%H-%M-%S').png && notify-send -u low -t 3000 'Maim' 'Fullscreen taken and saved'
