@@ -1,8 +1,8 @@
 # dwm - dynamic window manager
-This is my build of the Suckless's Dynamic Window Manager
+This is my bloated build of the Suckless's Dynamic Window Manager
 dwm is an extremely fast, small, and dynamic window manager for X.
 
-- patches applied:
+patches applied:
 + actualfullscreen -> Actually toggles fullscreen
 + attachaside -> Make new clients get attached and focused in the stacking area instead of always becoming the new master.
 + autoresize -> Windows that are not visible when requesting a resize/move will be able to resized/moved.
