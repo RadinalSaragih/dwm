@@ -1,8 +1,5 @@
-/* See LICENSE file for copyright and license details. */
-
 /* appearance */
 static const unsigned int borderpx = 1; /* border pixel of windows */
-static const unsigned int gappx = 2; /* gaps between windows */
 static const unsigned int snap = 10; /* snap pixel */
 static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
 static const unsigned int systrayspacing = 2; /* systray spacing */
@@ -14,37 +11,42 @@ static const char *fonts[] = { "monospace:size=11" };
 static const char dmenufont[] = "monospace:size=11";
 
 /* colors */
-static const char col_grey[] = "#242424";
+static const char col_grey[] = "#262626";
 static const char col_black[] = "#181818";
 static const char col_white[] = "#949494";
 static const char col_orange[] = "#eb7d00";
+static const char col_dark_orange[] = "#ac5c00";
 static const char *colors[][3] = {
   /*                   fg            bg      border */
   [SchemeNorm]     = { col_orange, col_grey, col_grey },
   [SchemeSel]      = { col_black, col_orange, col_lightGrey },
 };
 
-/* define default terminal */
-#define TERM  "alacritty"
+/* defining some programs */
+#define TERM "st", "-g", "115x40"
+#define FM "/usr/bin/ranger"
+#define SHELL "/usr/bin/zsh"
+#define CAL "/usr/bin/calcurse"
+#define MPLAYER "/usr/bin/cmus"
 
 /* scratchpads */
 typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = { TERM, "--class", "spterm", NULL };
-const char *spcmd2[] = { TERM, "--class", "spfm", "-e", "/usr/bin/ranger", NULL };
-const char *spcmd3[] = { TERM, "--class", "spcal", "-e", "/usr/bin/calcurse", NULL };
-const char *spcmd4[] = { "thunderbird", NULL };
-const char *spcmd5[] = { TERM, "--class", "spmplayer", "-e", "/usr/bin/cmus", NULL };
+const char *spcmd1[] = { TERM, "-n", "sp-1", "-e", SHELL, NULL };
+const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
+const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", CAL, NULL };
+const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
+const char *spcmd5[] = { "thunderbird", NULL };
 
 static Sp scratchpads[] = {
-  /* name        cmd  */
-  {"spterm",    spcmd1},
-  {"spfm",      spcmd2},
-  {"spcal",     spcmd3},
-  {"spmail",    spcmd4},
-  {"spmplayer", spcmd5},
+  /* name      cmd  */
+  {"sp-1",    spcmd1},
+  {"sp-2",    spcmd2},
+  {"sp-3",    spcmd3},
+  {"sp-4",    spcmd4},
+  {"sp-5",    spcmd5},
 };
 
 /* tagging */
@@ -55,12 +57,12 @@ static const Rule rules[] = {
    * WM_NAME(STRING) = title
    */
   /* class           instance      title   tags mask  iscentered isfloating monitor */
-  {  NULL,           "spterm",    NULL,   SPTAG(0),       1,          1,      -1 },
-  {  NULL,           "spfm",      NULL,   SPTAG(1),       1,          1,      -1 },
-  {  NULL,           "spcal",     NULL,   SPTAG(2),       1,          1,      -1 },
-  { "Thunderbird",   "Mail",      NULL,   SPTAG(3),       1,          1,      -1 },
-  {  NULL,           "spmplayer", NULL,   SPTAG(4),       0,          1,      -1 },
-
+  { "firefox",      "Navigator",   NULL,    1 << 2,         0,         0,      -1 },
+  {  NULL,           "sp-1",       NULL,    SPTAG(0),       1,         1,      -1 },
+  {  NULL,           "sp-2",       NULL,    SPTAG(1),       1,         1,      -1 },
+  {  NULL,           "sp-3",       NULL,    SPTAG(2),       1,         1,      -1 },
+  {  NULL,           "sp-4",       NULL,    SPTAG(3),       1,         1,      -1 },
+  { "Thunderbird",   "Mail",       NULL,    SPTAG(4),       1,         1,      -1 },
 };
 
 /* layout(s) */
@@ -75,11 +77,12 @@ static const Layout layouts[] = {
   { "===",      bstackhoriz }, 
   { "|M|",      monocle },
 };
-//{ "><>",      NULL }, // add this to use floating mode
+// To use floating mode add the following lines to the layouts and keybindings section.
+//{ "><>",      NULL },
+//{ MODKEY|ShiftMask,             XK_s,      setlayout,      {.v = &layouts[4]} },
 
 /* key definitions */
 #define MODKEY Mod4Mask
-#define MODALT Mod4Mask|Mod1Mask
 #define TAGKEYS(KEY,TAG) \
   { MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
   { MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -94,27 +97,27 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont, "-nb", col_grey,
-                                  "-nf", col_white, "-sb", col_orange, "-sf", col_black, "-p", "Choose a Program: ", NULL };
-static const char *termcmd[] = { TERM, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont,
+                                  "-nb", col_grey, "-nf", col_white, "-sb", col_orange,
+                                  "-sf", col_black, "-p", "Choose a Program: ", NULL };
+
+static const char *termcmd[] = { "st", "-e", SHELL, NULL };
+static const char *editor[] = { "emacs", NULL };
 
 /* keybindings */
 static Key keys[] = {
-	/* modifier                     key        function        argument */
+  /* modifier                     key        function        argument */
   { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
   { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+  { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editor } },
 
   { MODKEY,                       XK_b,      togglebar,      {0} },
 
   { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
   { MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 
-  { MODKEY|ControlMask,           XK_bracketright,    incnmaster,     {.i = +1 } },
-  { MODKEY|ControlMask,           XK_bracketleft,     incnmaster,     {.i = -1 } },
-
-	{ MODALT,                       XK_h,      setgaps,        {.i = -1 } },
-	{ MODALT,                       XK_l,      setgaps,        {.i = +1 } },
-	{ MODALT,                       XK_equal,  setgaps,        {.i = 0  } },
+  { MODKEY|ControlMask,           XK_bracketright, incnmaster, {.i = +1 } },
+  { MODKEY|ControlMask,           XK_bracketleft, incnmaster, {.i = -1 } },
 
   { MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
   { MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
@@ -186,19 +189,18 @@ static Key keys[] = {
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
 
-  { MODALT,                       XK_Escape, quit,           {0} }, // quit WM
-  { MODALT,                       XK_r,      quit,           {1} }, // reload WM
+  { MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
+  { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 
   { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/bin/dwm-scripts/screenshotMenu") },
-  //{ 0,                            XK_Print,  spawn,          SHCMD("/usr/local/bin/dwm-scripts/screenshot") },
   { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/cmus-raiseAudio")},
   { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/cmus-lowerAudio")},
   { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/lowerBrightness") },
   { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/raiseBrightness") },
 
-/* media keys */
-  { 0, XF86XK_Mail,               togglescratch, {.ui = 3 } },
-  { 0, XF86XK_Tools,              togglescratch, {.ui = 4 } },
+  /* media keys */
+  { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
+  { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
   { 0, XF86XK_Explorer,           spawn, SHCMD("pcmanfm") },
   { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/bin/dwm-scripts/browser-menu") },
   { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/bin/dwm-scripts/vpn-menu") },
@@ -209,8 +211,6 @@ static Key keys[] = {
   { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-muteAudio") },
   { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-raiseAudio") },
   { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-lowerAudio") },
-  //{ 0, XF86XK_MonBrightnessUp,    spawn, SHCMD("/usr/local/bin/dwm-scripts/raiseBrightness") },
-  //{ 0, XF86XK_MonBrightnessDown,  spawn, SHCMD("/usr/local/bin/dwm-scripts/lowerBrightness") },
 };
 
 /* button definitions */

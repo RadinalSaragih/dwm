@@ -3,7 +3,7 @@ This is my bloated build of the Suckless's Dynamic Window Manager
 dwm is an extremely fast, small, and dynamic window manager for X.
 
 
- I have configured this build to add a .desktop file at installation
+I have configured this build to add a .desktop file at installation
 and i have also made it to add a script folder at the /usr/local/bin directory,
 scripts that are needed for some keybinding.
 

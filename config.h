@@ -22,7 +22,7 @@ static const char *colors[][3] = {
   [SchemeSel]      = { col_black, col_orange, col_dark_orange },
 };
 
-/* programs */
+/* defining some programs */
 #define TERM "st", "-g", "115x40"
 #define FM "/usr/bin/ranger"
 #define SHELL "/usr/bin/zsh"
