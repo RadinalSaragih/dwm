@@ -13,13 +13,12 @@ static const char dmenufont[] = "Hack Regular:size=11:antialias=true:autohint=tr
 /* colors */
 static const char col_grey[] = "#262626";
 static const char col_black[] = "#181818";
-static const char col_white[] = "#949494";
+static const char col_white[] = "#ebdbb2";
 static const char col_orange[] = "#eb7d00";
-static const char col_dark_orange[] = "#ac5c00";
 static const char *colors[][3] = {
   /*                   fg            bg      border */
   [SchemeNorm]     = { col_orange, col_grey, col_black },
-  [SchemeSel]      = { col_black, col_orange, col_dark_orange },
+  [SchemeSel]      = { col_grey, col_orange, col_white },
 };
 
 /* defining some programs */
@@ -111,7 +110,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont,
                                   "-nb", col_grey, "-nf", col_white, "-sb", col_orange,
-                                  "-sf", col_black, "-p", "Choose a Program: ", NULL };
+                                  "-sf", col_grey, "-p", "Choose a Program: ", NULL };
 
 static const char *termcmd[] = { "st", "-e", SHELL, NULL };
 static const char *editor[] = { "emacs", NULL };
