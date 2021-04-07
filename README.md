@@ -9,7 +9,6 @@ I also made it to add a script folder at the /usr/local/bin directory, scripts t
 patches applied:
 + actualfullscreen -> Actually toggles fullscreen
 + attachaside -> Make new clients get attached and focused in the stacking area instead of always becoming the new master.
-+ autoresize -> Windows that are not visible when requesting a resize/move will be able to resized/moved.
 + bottomstack -> Adds the bstack (bottom stack) and bstackhoriz (horizontal bottom stack) layout.
 + center -> Adds iscentered rule to automatically center clients.
 + focusadjacenttag -> Provides the ability to focus the tag on the immediate left or right of the currently focused tag. It also allows to send the focused window either on the left or the right tag.
