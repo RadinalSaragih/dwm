@@ -56,17 +56,17 @@ static const Rule rules[] = {
    * WM_NAME(STRING) = title
    */
   /* class           instance      title    tags mask   iscentered isfloating monitor */
-  { "VirtualBox Manager", NULL,    NULL,    1 << 1,         0,         0,      -1 },
-  { NULL,           "freetube",    NULL,    1 << 1,         0,         0,      -1 },
-  { "firefox",      "Navigator",   NULL,    1 << 2,         0,         0,      -1 },
-  { "Chromium",      NULL,         NULL,    1 << 2,         0,         0,      -1 },
-  { NULL,            "libreoffice",NULL,    1 << 3,         0,         0,      -1 },
-  { "kdenlive",      NULL,         NULL,    1 << 3,         0,         0,      -1 },
-  { "Gimp", NULL, "GNU Image Manipulation Program", 1 << 3, 0,         0,      -1 },
-  { "Zoom",          NULL,         NULL,    1 << 4,         1,         1,      -1 },
-  { "Steam",         NULL,         NULL,    1 << 4,         0,         0,      -1 },
-  { NULL,            NULL,         "0 A.D.",1 << 4,         0,         0,      -1 },
-  { "Steam",         NULL,         NULL,    1 << 4,         0,         0,      -1 },
+  { "VirtualBox Manager", NULL,    NULL,    1 << 3,         0,         0,      -1 },
+  { NULL,           "freetube",    NULL,    1 << 3,         0,         0,      -1 },
+  { "firefox",      "Navigator",   NULL,    1 << 4,         0,         0,      -1 },
+  { "Chromium",      NULL,         NULL,    1 << 4,         0,         0,      -1 },
+  { NULL,            "libreoffice",NULL,    1 << 5,         0,         0,      -1 },
+  { "kdenlive",      NULL,         NULL,    1 << 5,         0,         0,      -1 },
+  { "Gimp", NULL, "GNU Image Manipulation Program", 1 << 5, 0,         0,      -1 },
+  { "Zoom",          NULL,         NULL,    1 << 6,         1,         1,      -1 },
+  { NULL,            NULL,         "0 A.D.",1 << 6,         0,         0,      -1 },
+  { "Steam",         NULL,         NULL,    1 << 6,         0,         0,      -1 },
+  { NULL,   NULL,     "Picture in picture", 0,              1,         1,      -1 },
   { "password",      NULL,         NULL,    0,              1,         1,      -1 },
   { "Pavucontrol",   NULL,         NULL,    0,              1,         1,      -1 },
   { "Pcmanfm",       NULL,         NULL,    0,              1,         1,      -1 },
@@ -88,7 +88,7 @@ static const Layout layouts[] = {
   { "===",      bstackhoriz }, 
   { "|M|",      monocle },
 };
-// To use floating mode add the following lines to the layouts and keybindings section.
+/* To use floating mode add the following lines to the layouts and keybindings section. */
 //{ "><>",      NULL },
 //{ MODKEY|ShiftMask,             XK_s,      setlayout,      {.v = &layouts[4]} },
 
