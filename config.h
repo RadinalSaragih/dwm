@@ -57,8 +57,8 @@ static const Rule rules[] = {
    */
   /* class           instance      title    tags mask   iscentered isfloating monitor */
   { "VirtualBox Manager", NULL,    NULL,    1 << 1,         0,         0,      -1 },
+  { NULL,           "freetube",    NULL,    1 << 1,         0,         0,      -1 },
   { "firefox",      "Navigator",   NULL,    1 << 2,         0,         0,      -1 },
-  { NULL,           "freetube",    NULL,    1 << 2,         0,         0,      -1 },
   { "Chromium",      NULL,         NULL,    1 << 2,         0,         0,      -1 },
   { NULL,            "libreoffice",NULL,    1 << 3,         0,         0,      -1 },
   { "kdenlive",      NULL,         NULL,    1 << 3,         0,         0,      -1 },
