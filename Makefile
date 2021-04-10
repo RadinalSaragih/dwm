@@ -27,8 +27,8 @@ dwm: ${OBJ}
 
 clean:
 	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
-	rm -f -R ${PREFIX}/bin/dwm-scripts
 	rm -f /usr/share/xsessions/dwm.desktop
+	rm -f -R ${SHARE}
 
 dist: clean
 	mkdir -p dwm-${VERSION}
@@ -45,13 +45,14 @@ install: all
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	cp -r dwm-scripts ${PREFIX}/bin
+	mkdir -p ${SHARE}
+	cp -r dwm-scripts ${SHARE}
 	cp -r dwm.desktop /usr/share/xsessions 
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
 		${DESTDIR}${MANPREFIX}/man1/dwm.1\
 		/usr/share/xsessions/dwm.desktop\
-		${PREFIX}/bin/dwm-scripts
+		${SHARE}/dwm-scripts
 
 .PHONY: all options clean dist install uninstall

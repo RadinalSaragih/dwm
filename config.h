@@ -175,8 +175,8 @@ static Key keys[] = {
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
   { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 
-  { MODKEY,                       XK_bracketleft,     viewtoleft,     {0} },
-  { MODKEY,                       XK_bracketright,    viewtoright,    {0} },
+  { MODKEY,                       XK_bracketleft, viewtoleft, {0} },
+  { MODKEY,                       XK_bracketright, viewtoright, {0} },
 
   { MODKEY|ShiftMask,             XK_h,      tagtoleft,      {0} },
   { MODKEY|ShiftMask,             XK_l,      tagtoright,     {0} },
@@ -203,25 +203,25 @@ static Key keys[] = {
   { MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 
-  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/bin/dwm-scripts/screenshotMenu") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/cmus-raiseAudio")},
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/cmus-lowerAudio")},
-  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/lowerBrightness") },
-  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/raiseBrightness") },
+  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/screenshotMenu") },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-raiseAudio")},
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-lowerAudio")},
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/lowerBrightness") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/raiseBrightness") },
 
   /* media keys */
   { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
   { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
   { 0, XF86XK_Explorer,           spawn, SHCMD("pcmanfm") },
-  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/bin/dwm-scripts/browser-menu") },
-  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/bin/dwm-scripts/vpn-menu") },
-  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-play") },
-  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-next") },
-  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-prev") },
-  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-stop") },
-  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-muteAudio") },
-  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-raiseAudio") },
-  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-lowerAudio") },
+  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/browser-menu") },
+  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/vpn-menu") },
+  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-play") },
+  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-next") },
+  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-prev") },
+  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-stop") },
+  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-muteAudio") },
+  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-raiseAudio") },
+  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-lowerAudio") },
 };
 
 /* button definitions */
