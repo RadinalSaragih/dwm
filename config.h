@@ -173,8 +173,8 @@ static Key keys[] = {
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
   { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 
-  { MODKEY,                       XK_bracketleft, viewtoleft, {0} },
-  { MODKEY,                       XK_bracketright, viewtoright, {0} },
+  { MODKEY|ShiftMask,             XK_j,      viewtoleft,     {0} },
+  { MODKEY|ShiftMask,             XK_k,      viewtoright,    {0} },
 
   { MODKEY|ShiftMask,             XK_h,      tagtoleft,      {0} },
   { MODKEY|ShiftMask,             XK_l,      tagtoright,     {0} },
