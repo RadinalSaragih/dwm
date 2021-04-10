@@ -21,3 +21,7 @@ patches applied:
 + scratchpads -> Enables multiple scratchpads, each with one asigned window.
 + sticky -> Makes a client "sticky", and is visible to all tags
 + systray -> Adds a systray.
+
+- For an Arch or Arch-based distro a simple make install would be sufficient. But for debian-based distro, there would be a few library that need to be installed. 
+
+>> sudo apt install libx-dev libxft-dev libxinerama-dev

@@ -113,14 +113,12 @@ static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmen
                                   "-sf", col_white, "-p", "Choose a Program: ", NULL };
 
 static const char *termcmd[] = { "st", "-e", SHELL, NULL };
-static const char *editor[] = { "emacs", NULL };
 
 /* keybindings */
 static Key keys[] = {
   /* modifier                     key        function        argument */
   { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
   { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-  { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editor } },
 
   { MODKEY,                       XK_b,      togglebar,      {0} },
 
