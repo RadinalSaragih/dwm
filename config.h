@@ -33,10 +33,10 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = { TERM, "-n", "sp-1", "-e", SHELL, NULL };
-const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
-const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", CAL, NULL };
-const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
+const char *spcmd1[] = { TERM, "-n", "sp-1", SHELL, NULL };
+const char *spcmd2[] = { TERM, "-n", "sp-2", FM, NULL };
+const char *spcmd3[] = { TERM, "-n", "sp-3", CAL, NULL };
+const char *spcmd4[] = { TERM, "-n", "sp-4", MPLAYER, NULL };
 const char *spcmd5[] = { "thunderbird", NULL };
 
 static Sp scratchpads[] = {
@@ -112,7 +112,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmen
                                   "-nb", col_grey, "-nf", col_white, "-sb", col_green,
                                   "-sf", col_white, "-p", "Choose a Program: ", NULL };
 
-static const char *termcmd[] = { "st", "-e", SHELL, NULL };
+static const char *termcmd[] = { "st", SHELL, NULL };
 
 /* keybindings */
 static Key keys[] = {
@@ -173,8 +173,8 @@ static Key keys[] = {
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
   { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 
-  { MODKEY|ShiftMask,             XK_j,      viewtoleft,     {0} },
-  { MODKEY|ShiftMask,             XK_k,      viewtoright,    {0} },
+  { MODKEY|ControlMask,           XK_h,      viewtoleft,     {0} },
+  { MODKEY|ControlMask,           XK_l,      viewtoright,    {0} },
 
   { MODKEY|ShiftMask,             XK_h,      tagtoleft,      {0} },
   { MODKEY|ShiftMask,             XK_l,      tagtoright,     {0} },
@@ -198,8 +198,9 @@ static Key keys[] = {
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
 
-  { MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
+  //{ MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
+  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/powermenu") }, // launch a powermenu
 
   { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/screenshotMenu") },
   { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-raiseAudio")},
