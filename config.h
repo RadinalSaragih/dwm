@@ -198,29 +198,30 @@ static Key keys[] = {
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
 
-  //{ MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
+  { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
-  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/powermenu") }, // launch a powermenu
 
-  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/screenshotMenu") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-raiseAudio")},
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-lowerAudio")},
-  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/lowerBrightness") },
-  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/raiseBrightness") },
+  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
+  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/share/scripts/cmus-raiseAudio")},
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/share/scripts/cmus-lowerAudio")},
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/share/scripts/lowerBrightness") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/share/scripts/raiseBrightness") },
+  { MODKEY,                       XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
 
   /* media keys */
   { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
   { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
   { 0, XF86XK_Explorer,           spawn, SHCMD("pcmanfm") },
-  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/browser-menu") },
-  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/vpn-menu") },
-  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-play") },
-  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-next") },
-  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-prev") },
-  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-stop") },
-  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-muteAudio") },
-  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-raiseAudio") },
-  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-lowerAudio") },
+  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/share/scripts/browser-menu") },
+  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/share/scripts/vpn-menu") },
+  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/share/scripts/cmus-play") },
+  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/share/scripts/cmus-next") },
+  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/share/scripts/cmus-prev") },
+  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/share/scripts/cmus-stop") },
+  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/bin/pulseaudio-ctl mute && pkill -RTMIN+10 dwmblocks") },
+  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/bin/pulseaudio-ctl up && pkill -RTMIN+10 dwmblocks") },
+  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/bin/pulseaudio-ctl down && pkill -RTMIN+10 dwmblocks") },
 };
 
 /* button definitions */

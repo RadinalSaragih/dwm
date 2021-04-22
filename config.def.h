@@ -13,13 +13,12 @@ static const char dmenufont[] = "monospace:size=11";
 /* colors */
 static const char col_grey[] = "#262626";
 static const char col_black[] = "#181818";
-static const char col_white[] = "#949494";
-static const char col_orange[] = "#eb7d00";
-static const char col_dark_orange[] = "#ac5c00";
+static const char col_white[] = "#ebdbb2";
+static const char col_green[] = "#4b6e50";
 static const char *colors[][3] = {
   /*                   fg            bg      border */
-  [SchemeNorm]     = { col_orange, col_grey, col_grey },
-  [SchemeSel]      = { col_black, col_orange, col_lightGrey },
+  [SchemeNorm]     = { col_white, col_grey, col_black },
+  [SchemeSel]      = { col_white, col_green, col_white },
 };
 
 /* defining some programs */
@@ -34,10 +33,10 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = { TERM, "-n", "sp-1", "-e", SHELL, NULL };
-const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
-const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", CAL, NULL };
-const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
+const char *spcmd1[] = { TERM, "-n", "sp-1", SHELL, NULL };
+const char *spcmd2[] = { TERM, "-n", "sp-2", FM, NULL };
+const char *spcmd3[] = { TERM, "-n", "sp-3", CAL, NULL };
+const char *spcmd4[] = { TERM, "-n", "sp-4", MPLAYER, NULL };
 const char *spcmd5[] = { "thunderbird", NULL };
 
 static Sp scratchpads[] = {
@@ -98,18 +97,16 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont,
-                                  "-nb", col_grey, "-nf", col_white, "-sb", col_orange,
-                                  "-sf", col_black, "-p", "Choose a Program: ", NULL };
+                                  "-nb", col_grey, "-nf", col_white, "-sb", col_green,
+                                  "-sf", col_white, "-p", "Choose a Program: ", NULL };
 
-static const char *termcmd[] = { "st", "-e", SHELL, NULL };
-static const char *editor[] = { "emacs", NULL };
+static const char *termcmd[] = { "st", SHELL, NULL };
 
 /* keybindings */
 static Key keys[] = {
   /* modifier                     key        function        argument */
   { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
   { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-  { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editor } },
 
   { MODKEY,                       XK_b,      togglebar,      {0} },
 
@@ -164,8 +161,8 @@ static Key keys[] = {
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
   { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 
-  { MODKEY,                       XK_bracketleft,     viewtoleft,     {0} },
-  { MODKEY,                       XK_bracketright,    viewtoright,    {0} },
+  { MODKEY|ControlMask,           XK_h,      viewtoleft,     {0} },
+  { MODKEY|ControlMask,           XK_l,      viewtoright,    {0} },
 
   { MODKEY|ShiftMask,             XK_h,      tagtoleft,      {0} },
   { MODKEY|ShiftMask,             XK_l,      tagtoright,     {0} },
@@ -189,28 +186,29 @@ static Key keys[] = {
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
 
-  { MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
+  //{ MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
+  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/powermenu") }, // launch a powermenu
 
-  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/bin/dwm-scripts/screenshotMenu") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/cmus-raiseAudio")},
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/cmus-lowerAudio")},
-  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/lowerBrightness") },
-  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/bin/dwm-scripts/raiseBrightness") },
+  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/screenshotMenu") },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-raiseAudio")},
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-lowerAudio")},
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/lowerBrightness") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/raiseBrightness") },
 
   /* media keys */
   { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
   { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
   { 0, XF86XK_Explorer,           spawn, SHCMD("pcmanfm") },
-  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/bin/dwm-scripts/browser-menu") },
-  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/bin/dwm-scripts/vpn-menu") },
-  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-play") },
-  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-next") },
-  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-prev") },
-  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/bin/dwm-scripts/cmus-stop") },
-  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-muteAudio") },
-  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-raiseAudio") },
-  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/local/bin/dwm-scripts/pulse-lowerAudio") },
+  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/browser-menu") },
+  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/vpn-menu") },
+  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-play") },
+  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-next") },
+  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-prev") },
+  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-stop") },
+  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-muteAudio") },
+  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-raiseAudio") },
+  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-lowerAudio") },
 };
 
 /* button definitions */
