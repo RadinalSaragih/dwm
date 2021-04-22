@@ -11,7 +11,6 @@ patches applied:
 + attachaside -> Make new clients get attached and focused in the stacking area instead of always becoming the new master.
 + bottomstack -> Adds the bstack (bottom stack) and bstackhoriz (horizontal bottom stack) layout.
 + center -> Adds iscentered rule to automatically center clients.
-+ focusadjacenttag -> Provides the ability to focus the tag on the immediate left or right of the currently focused tag. It also allows to send the focused window either on the left or the right tag.
 + moveresize -> allows moving and resizing dwm's clients using keyboard bindings.
 + noborderfloatingfix -> Remove the border when there is only one window visible.
 + pertag -> Changes such as layouts, are only applied to the selected tags.
@@ -24,4 +23,4 @@ patches applied:
 
 - For an Arch or Arch-based distro a simple make install would be sufficient. But for debian-based distro, there would be a few library that need to be installed. 
 
->> sudo apt install libx-dev libxft-dev libxinerama-dev
+> sudo apt install libx-dev libxft-dev libxinerama-dev
