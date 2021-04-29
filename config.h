@@ -196,26 +196,26 @@ static Key keys[] = {
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 
   { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
-  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/share/scripts/cmus-raiseAudio")},
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/share/scripts/cmus-lowerAudio")},
-  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/share/scripts/lowerBrightness") },
-  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/share/scripts/raiseBrightness") },
   { MODKEY,                       XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
+  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
 
   /* media keys */
   { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
   { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
-  { 0, XF86XK_Explorer,           spawn, SHCMD("pcmanfm") },
-  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/share/scripts/browser-menu") },
-  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/share/scripts/vpn-menu") },
-  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/share/scripts/cmus-play") },
-  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/share/scripts/cmus-next") },
-  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/share/scripts/cmus-prev") },
-  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/share/scripts/cmus-stop") },
-  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/bin/pulseaudio-ctl mute && pkill -RTMIN+10 dwmblocks") },
-  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/bin/pulseaudio-ctl up && pkill -RTMIN+10 dwmblocks") },
-  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/bin/pulseaudio-ctl down && pkill -RTMIN+10 dwmblocks") },
+  { 0, XF86XK_Explorer,           spawn,     SHCMD("pcmanfm") },
+  { 0, XF86XK_HomePage,           spawn,     SHCMD("/usr/local/share/scripts/browser-menu") },
+  { 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/vpn-menu") },
+  { 0, XF86XK_AudioPlay,          spawn,     SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
+  { 0, XF86XK_AudioStop,          spawn,     SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
+  { 0, XF86XK_AudioNext,          spawn,     SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
+  { 0, XF86XK_AudioPrev,          spawn,     SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
+  { 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
+  { 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
+  { 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
 };
 
 /* button definitions */
