@@ -1,14 +1,3 @@
-From 46c883859e0cbab998febfbefd04932379d34034 Mon Sep 17 00:00:00 2001
-From: oxinosg <oxinosg@gmail.com>
-Date: Tue, 9 Jun 2020 13:49:23 +0200
-Subject: [PATCH] [dwm][patch][moveresize] Added moveresizeedge function which
- allows moving/resizing floating window to edge of screen
-
----
- config.def.h |  16 ++++++
- dwm.c        | 149 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 165 insertions(+)
-
 diff --git a/config.def.h b/config.def.h
 index 1c0b587..4195232 100644
 --- a/config.def.h
@@ -37,10 +26,10 @@ index 1c0b587..4195232 100644
  	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
  	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 diff --git a/dwm.c b/dwm.c
-index 9fd0286..00fd78a 100644
+index 4465af1..c08deaf 100644
 --- a/dwm.c
 +++ b/dwm.c
-@@ -183,6 +183,8 @@ static void mappingnotify(XEvent *e);
+@@ -182,6 +182,8 @@ static void mappingnotify(XEvent *e);
  static void maprequest(XEvent *e);
  static void monocle(Monitor *m);
  static void motionnotify(XEvent *e);
@@ -49,7 +38,7 @@ index 9fd0286..00fd78a 100644
  static void movemouse(const Arg *arg);
  static Client *nexttiled(Client *c);
  static void pop(Client *);
-@@ -1193,6 +1195,153 @@ movemouse(const Arg *arg)
+@@ -1192,6 +1194,154 @@ movemouse(const Arg *arg)
  	}
  }
  
@@ -124,7 +113,7 @@ index 9fd0286..00fd78a 100644
 +	Client *c;
 +	c = selmon->sel;
 +	char e;
-+	int nx, ny, nw, nh, ox, oy, ow, oh;
++	int nx, ny, nw, nh, ox, oy, ow, oh, bp;
 +	int msx, msy, dx, dy, nmx, nmy;
 +	int starty;
 +	unsigned int dui;
@@ -135,7 +124,8 @@ index 9fd0286..00fd78a 100644
 +	nw = c->w;
 +	nh = c->h;
 +
-+	starty = selmon->showbar ? bh : 0;
++	starty = selmon->showbar && topbar ? bh : 0;
++	bp = selmon->showbar && !topbar ? bh : 0;
 +
 +	if (!c || !arg)
 +		return;
@@ -148,13 +138,13 @@ index 9fd0286..00fd78a 100644
 +		ny = starty;
 +
 +	if(e == 'b')
-+		ny = c->h > selmon->mh - 2 * c->bw ? c->h : selmon->mh - c->h - 2 * c->bw;
++		ny = c->h > selmon->mh - 2 * c->bw ? c->h - bp : selmon->mh - c->h - 2 * c->bw - bp;
 +
 +	if(e == 'l')
-+		nx = 0;
++		nx = selmon->mx;
 +
 +	if(e == 'r')
-+		nx = c->w > selmon->mw - 2 * c->bw ? c->w : selmon->mw - c->w - 2 * c->bw;
++		nx = c->w > selmon->mw - 2 * c->bw ? selmon->mx + c->w : selmon->mx + selmon->mw - c->w - 2 * c->bw;
 +
 +	if(e == 'T') {
 +		/* if you click to resize again, it will return to old size/position */
@@ -168,20 +158,20 @@ index 9fd0286..00fd78a 100644
 +	}
 +
 +	if(e == 'B')
-+		nh = c->h + c->y + 2 * c->bw == selmon->mh ? c->oldh : selmon->mh - c->y - 2 * c->bw;
++		nh = c->h + c->y + 2 * c->bw + bp == selmon->mh ? c->oldh : selmon->mh - c->y - 2 * c->bw - bp;
 +
 +	if(e == 'L') {
-+		if(c->w == c->oldw + c->oldx) {
++		if(selmon->mx + c->w == c->oldw + c->oldx) {
 +			nw = c->oldw;
 +			nx = c->oldx;
 +		} else {
-+			nw = c->w + c->x;
-+			nx = 0;
++			nw = c->w + c->x - selmon->mx;
++			nx = selmon->mx;
 +		}
 +	}
 +
 +	if(e == 'R')
-+		nw = c->w + c->x + 2 * c->bw == selmon->mw ? c->oldw : selmon->mw - c->x - 2 * c->bw;
++		nw = c->w + c->x + 2 * c->bw == selmon->mx + selmon->mw ? c->oldw : selmon->mx + selmon->mw - c->x - 2 * c->bw;
 +
 +	ox = c->x;
 +	oy = c->y;
@@ -203,6 +193,3 @@ index 9fd0286..00fd78a 100644
  Client *
  nexttiled(Client *c)
  {
--- 
-2.20.1
-
