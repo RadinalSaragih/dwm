@@ -863,13 +863,13 @@ drawbar(Monitor *m)
 	unsigned int i, occ = 0, urg = 0;
 	Client *c;
 
-	if(showsystray && m == systraytomon(m))
+	if(showsystray && m == systraytomon(m) && !systrayonleft)
 		stw = getsystraywidth();
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
-		tw = TEXTW(stext) - lrpad / 2 + 2; /* 2px right padding */
+		tw = TEXTW(stext) - lrpad / 2 + 2; /* 2px extra right padding */
 		drw_text(drw, m->ww - tw - stw, 0, tw, bh, lrpad / 2 - 2, stext, 0);
 	}
 
@@ -1394,6 +1394,16 @@ movemouse(const Arg *arg)
 	}
 }
 
+ Client *
+nexttagged(Client *c) {
+	Client *walked = c->mon->clients;
+	for(;
+		walked && (walked->isfloating || !ISVISIBLEONTAG(walked, c->tags));
+		walked = walked->next
+	);
+	return walked;
+}
+
 void
 moveresize(const Arg *arg) {
 	/* only floating windows can be moved */
@@ -1447,7 +1457,7 @@ moveresize(const Arg *arg) {
 	oh = c->h;
 
 	XRaiseWindow(dpy, c->win);
-	Bool xqp = XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
+	Bool xqp =XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
 	resize(c, nx, ny, nw, nh, True);
 
 	/* move cursor along with the window to avoid problems caused by the sloppy focus */
@@ -1465,7 +1475,7 @@ moveresizeedge(const Arg *arg) {
 	Client *c;
 	c = selmon->sel;
 	char e;
-	int nx, ny, nw, nh, ox, oy, ow, oh;
+	int nx, ny, nw, nh, ox, oy, ow, oh, bp;
 	int msx, msy, dx, dy, nmx, nmy;
 	int starty;
 	unsigned int dui;
@@ -1476,7 +1486,8 @@ moveresizeedge(const Arg *arg) {
 	nw = c->w;
 	nh = c->h;
 
-	starty = selmon->showbar ? bh : 0;
+	starty = selmon->showbar && topbar ? bh : 0;
+	bp = selmon->showbar && !topbar ? bh : 0;
 
 	if (!c || !arg)
 		return;
@@ -1489,13 +1500,13 @@ moveresizeedge(const Arg *arg) {
 		ny = starty;
 
 	if(e == 'b')
-		ny = c->h > selmon->mh - 2 * c->bw ? c->h : selmon->mh - c->h - 2 * c->bw;
+		ny = c->h > selmon->mh - 2 * c->bw ? c->h - bp : selmon->mh - c->h - 2 * c->bw - bp;
 
 	if(e == 'l')
-		nx = 0;
+		nx = selmon->mx;
 
 	if(e == 'r')
-		nx = c->w > selmon->mw - 2 * c->bw ? c->w : selmon->mw - c->w - 2 * c->bw;
+		nx = c->w > selmon->mw - 2 * c->bw ? selmon->mx + c->w : selmon->mx + selmon->mw - c->w - 2 * c->bw;
 
 	if(e == 'T') {
 		/* if you click to resize again, it will return to old size/position */
@@ -1509,20 +1520,20 @@ moveresizeedge(const Arg *arg) {
 	}
 
 	if(e == 'B')
-		nh = c->h + c->y + 2 * c->bw == selmon->mh ? c->oldh : selmon->mh - c->y - 2 * c->bw;
+		nh = c->h + c->y + 2 * c->bw + bp == selmon->mh ? c->oldh : selmon->mh - c->y - 2 * c->bw - bp;
 
 	if(e == 'L') {
-		if(c->w == c->oldw + c->oldx) {
+		if(selmon->mx + c->w == c->oldw + c->oldx) {
 			nw = c->oldw;
 			nx = c->oldx;
 		} else {
-			nw = c->w + c->x;
-			nx = 0;
+			nw = c->w + c->x - selmon->mx;
+			nx = selmon->mx;
 		}
 	}
 
 	if(e == 'R')
-		nw = c->w + c->x + 2 * c->bw == selmon->mw ? c->oldw : selmon->mw - c->x - 2 * c->bw;
+		nw = c->w + c->x + 2 * c->bw == selmon->mx + selmon->mw ? c->oldw : selmon->mx + selmon->mw - c->x - 2 * c->bw;
 
 	ox = c->x;
 	oy = c->y;
@@ -1539,16 +1550,6 @@ moveresizeedge(const Arg *arg) {
 		nmy = c->y - oy + c->h - oh;
 		XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
 	}
-}
-
- Client *
-nexttagged(Client *c) {
-	Client *walked = c->mon->clients;
-	for(;
-		walked && (walked->isfloating || !ISVISIBLEONTAG(walked, c->tags));
-		walked = walked->next
-	);
-	return walked;
 }
 
 Client *
@@ -1700,7 +1701,7 @@ resize(Client *c, int x, int y, int w, int h, int interact)
 void
 resizebarwin(Monitor *m) {
 	unsigned int w = m->ww;
-	if (showsystray && m == systraytomon(m))
+	if (showsystray && m == systraytomon(m) && !systrayonleft)
 		w -= getsystraywidth();
 	XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, w, bh);
 }
@@ -2646,10 +2647,13 @@ updatesystray(void)
 	Client *i;
 	Monitor *m = systraytomon(NULL);
 	unsigned int x = m->mx + m->mw;
+	unsigned int sw = TEXTW(stext) - lrpad + systrayspacing;
 	unsigned int w = 1;
 
 	if (!showsystray)
 		return;
+	if (systrayonleft)
+		x -= sw + lrpad / 2;
 	if (!systray) {
 		/* init systray */
 		if (!(systray = (Systray *)calloc(1, sizeof(Systray))))

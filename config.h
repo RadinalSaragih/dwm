@@ -3,6 +3,7 @@ static const unsigned int borderpx = 1; /* border pixel of windows */
 static const unsigned int snap = 10; /* snap pixel */
 static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
 static const unsigned int systrayspacing = 2; /* systray spacing */
+static const unsigned int systrayonleft  = 0; /* systray spacing */
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
 static const int showsystray = 1; /* 0 = no systray */
 static const int showbar = 1; /* 0 = no bar */
@@ -58,7 +59,7 @@ static const Rule rules[] = {
   /* class           instance      title    tags mask   iscentered isfloating monitor */
   { "VirtualBox Manager", NULL,    NULL,    1 << 3,         0,         0,      -1 },
   { NULL,           "freetube",    NULL,    1 << 3,         0,         0,      -1 },
-  { "firefox",      "Navigator",   NULL,    1 << 4,         0,         0,      -1 },
+  { NULL,           "Navigator",   NULL,    1 << 4,         0,         0,      -1 },
   { "Chromium",      NULL,         NULL,    1 << 4,         0,         0,      -1 },
   { NULL,            "libreoffice",NULL,    1 << 5,         0,         0,      -1 },
   { "kdenlive",      NULL,         NULL,    1 << 5,         0,         0,      -1 },
@@ -103,8 +104,11 @@ static const Layout layouts[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
-/* define media keys */
+/* mediakey's keycodes */
 #include <X11/XF86keysym.h>
+
+/* define shiftview */
+#include "shiftview.c"
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -146,6 +150,8 @@ static Key keys[] = {
 
   { MODKEY|ShiftMask,             XK_j,      pushdown,       {0} },
   { MODKEY|ShiftMask,             XK_k,      pushup,         {0} },
+  { MODKEY|ShiftMask,             XK_h,      shiftview,      {.i = -1 } },
+  { MODKEY|ShiftMask,             XK_l,      shiftview,      {.i = +1 } },
 
   { MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
   { MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
@@ -198,24 +204,29 @@ static Key keys[] = {
   { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
   { MODKEY,                       XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
   { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
   { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
 
-  /* media keys */
   { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
   { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
   { 0, XF86XK_Explorer,           spawn,     SHCMD("pcmanfm") },
-  { 0, XF86XK_HomePage,           spawn,     SHCMD("/usr/local/share/scripts/browser-menu") },
-  { 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/vpn-menu") },
+  { 0, XF86XK_HomePage,           spawn,     SHCMD("librewolf") },
+  { MODKEY,      XK_F9,           spawn,     SHCMD("passmenu") },
+  //{ 0, XF86XK_HomePage,           spawn,     SHCMD("/usr/local/share/scripts/browser-menu") },
+  //{ 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/vpn-menu") },
+  { 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
+  { 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
+  { 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
+
+  /* cmus controls */
+  { MODKEY,                       XK_F1,     spawn, SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F2,     spawn, SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F3,     spawn, SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F4,     spawn, SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
   { 0, XF86XK_AudioPlay,          spawn,     SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
   { 0, XF86XK_AudioStop,          spawn,     SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
   { 0, XF86XK_AudioNext,          spawn,     SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
   { 0, XF86XK_AudioPrev,          spawn,     SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
-  { 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
-  { 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
-  { 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
 };
 
 /* button definitions */
