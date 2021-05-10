@@ -17,6 +17,7 @@ patches applied:
 + push no master -> Push up or down  clients, except the master client.
 + restartsig -> Restart dwm with a keybinding.
 + savefloats -> Saves size and position of every floating window before forced into tiled mode.
++ shiftview -> Be able to navigate through the tags
 + scratchpads -> Enables multiple scratchpads, each with one asigned window.
 + sticky -> Makes a client "sticky", and is visible to all tags
 + systray -> Adds a systray.
