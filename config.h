@@ -201,19 +201,17 @@ static Key keys[] = {
   { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 
-  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
+  { MODKEY,                       XK_F9,     spawn,          SHCMD("passmenu") },
   { MODKEY,                       XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
-  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
   { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
   { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
+  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
+  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
 
   { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
   { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
   { 0, XF86XK_Explorer,           spawn,     SHCMD("pcmanfm") },
   { 0, XF86XK_HomePage,           spawn,     SHCMD("librewolf") },
-  { MODKEY,      XK_F9,           spawn,     SHCMD("passmenu") },
-  //{ 0, XF86XK_HomePage,           spawn,     SHCMD("/usr/local/share/scripts/browser-menu") },
-  //{ 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/vpn-menu") },
   { 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
   { 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
   { 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
