@@ -12,14 +12,14 @@ static const char *fonts[] = { "Hack Regular:size=11:antialias=true:autohint=tru
 static const char dmenufont[] = "Hack Regular:size=11:antialias=true:autohint=true";
 
 /* colors */
-static const char col_grey[] = "#262626";
-static const char col_black[] = "#181818";
-static const char col_white[] = "#ebdbb2";
-static const char col_green[] = "#4b6e50";
+static const char col_01[] = "#262626";
+static const char col_02[] = "#181818";
+static const char col_03[] = "#ebdbb2";
+static const char col_04[] = "#4b6e50";
 static const char *colors[][3] = {
-  /*                   fg            bg      border */
-  [SchemeNorm]     = { col_white, col_grey, col_black },
-  [SchemeSel]      = { col_white, col_green, col_white },
+  /*                     fg      bg    border */
+  [SchemeNorm]     = { col_03, col_01, col_02 },
+  [SchemeSel]      = { col_03, col_04, col_03 },
 };
 
 /* defining some programs */
@@ -39,6 +39,7 @@ const char *spcmd2[] = { TERM, "-n", "sp-2", FM, NULL };
 const char *spcmd3[] = { TERM, "-n", "sp-3", CAL, NULL };
 const char *spcmd4[] = { TERM, "-n", "sp-4", MPLAYER, NULL };
 const char *spcmd5[] = { "thunderbird", NULL };
+const char *spcmd6[] = { TERM, "-n", "sp-6", "/usr/local/share/scripts/takeNote", NULL };
 
 static Sp scratchpads[] = {
   /* name      cmd  */
@@ -47,6 +48,7 @@ static Sp scratchpads[] = {
   {"sp-3",    spcmd3},
   {"sp-4",    spcmd4},
   {"sp-5",    spcmd5},
+  {"sp-6",    spcmd6},
 };
 
 /* tagging */
@@ -76,6 +78,7 @@ static const Rule rules[] = {
   {  NULL,           "sp-3",       NULL,    SPTAG(2),       1,         1,      -1 },
   {  NULL,           "sp-4",       NULL,    SPTAG(3),       1,         1,      -1 },
   { "Thunderbird",   "Mail",       NULL,    SPTAG(4),       1,         1,      -1 },
+  {  NULL,           "sp-6",       NULL,    SPTAG(5),       1,         1,      -1 },
 };
 
 /* layout(s) */
@@ -89,7 +92,7 @@ static const Layout layouts[] = {
   { "===",      bstackhoriz }, 
   { "|M|",      monocle },
 };
-/* To use floating mode add the following lines to the layouts and keybindings section. */
+/* To use floating mode add these following lines to the layouts and keybindings section. */
 //{ "><>",      NULL },
 //{ MODKEY|ShiftMask,             XK_s,      setlayout,      {.v = &layouts[4]} },
 
@@ -113,8 +116,8 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont,
-                                  "-nb", col_grey, "-nf", col_white, "-sb", col_green,
-                                  "-sf", col_white, "-p", "Choose a Program: ", NULL };
+                                  "-nb", col_01, "-nf", col_03, "-sb", col_04,
+                                  "-sf", col_03, "-p", "Choose a Program: ", NULL };
 
 static const char *termcmd[] = { "st", SHELL, NULL };
 
@@ -197,12 +200,12 @@ static Key keys[] = {
   { MODKEY,                       XK_q,      togglescratch,  {.ui = 0 } },
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
+  { MODKEY,                       XK_e,      togglescratch,  {.ui = 5 } },
 
   { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 
   { MODKEY,                       XK_F9,     spawn,          SHCMD("passmenu") },
-  { MODKEY,                       XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
   { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
   { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
   { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
@@ -212,6 +215,7 @@ static Key keys[] = {
   { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
   { 0, XF86XK_Explorer,           spawn,     SHCMD("pcmanfm") },
   { 0, XF86XK_HomePage,           spawn,     SHCMD("librewolf") },
+  { 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/dm-pdf") },
   { 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
   { 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
   { 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
