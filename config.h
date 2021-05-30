@@ -98,6 +98,7 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask
+#define SUPER Mod3Mask
 #define TAGKEYS(KEY,TAG) \
   { MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
   { MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -200,35 +201,56 @@ static Key keys[] = {
   { MODKEY,                       XK_q,      togglescratch,  {.ui = 0 } },
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
+  { SUPER,                        XK_F1,     togglescratch,  {.ui = 3 } },
+  { SUPER,                        XK_F10,    togglescratch,  {.ui = 4 } },
   { MODKEY,                       XK_e,      togglescratch,  {.ui = 5 } },
+
+  { MODKEY,                       XK_F9,     spawn,          SHCMD("passmenu") },
+  { SUPER,                        XK_F11,    spawn,          SHCMD("pcmanfm") },
+  { SUPER,                        XK_F9,     spawn,          SHCMD("librewolf") },
+
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
+
+  { SUPER,                        XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
+  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
+  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
+
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F4,     spawn,          SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F7,     spawn,          SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F8,     spawn,          SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F6,     spawn,          SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F5,     spawn,          SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
+
+  { MODKEY,                       XK_F1,     spawn,          SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
+
+  { SUPER,                        XK_F4,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
+  { SUPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
+  { SUPER,                        XK_F3,     spawn,          SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
 
   { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 
-  { MODKEY,                       XK_F9,     spawn,          SHCMD("passmenu") },
-  { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
-  { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
-  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
-  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
+  //{ 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
+  //{ 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
+  //{ 0, XF86XK_Explorer,           spawn,     SHCMD("pcmanfm") },
+  //{ 0, XF86XK_HomePage,           spawn,     SHCMD("librewolf") },
+  //{ 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/dm-pdf") },
+  //{ 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
+  //{ 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
+  //{ 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
 
-  { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
-  { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
-  { 0, XF86XK_Explorer,           spawn,     SHCMD("pcmanfm") },
-  { 0, XF86XK_HomePage,           spawn,     SHCMD("librewolf") },
-  { 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/dm-pdf") },
-  { 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
-  { 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
-  { 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
-
-  /* cmus controls */
-  { MODKEY,                       XK_F1,     spawn, SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F2,     spawn, SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
-  { MODKEY,                       XK_F3,     spawn, SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
-  { MODKEY,                       XK_F4,     spawn, SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
-  { 0, XF86XK_AudioPlay,          spawn,     SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
-  { 0, XF86XK_AudioStop,          spawn,     SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
-  { 0, XF86XK_AudioNext,          spawn,     SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
-  { 0, XF86XK_AudioPrev,          spawn,     SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
+  ///* cmus controls */
+  //{ MODKEY,                       XK_F1,     spawn, SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
+  //{ MODKEY,                       XK_F2,     spawn, SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
+  //{ MODKEY,                       XK_F3,     spawn, SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
+  //{ MODKEY,                       XK_F4,     spawn, SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
+  //{ 0, XF86XK_AudioPlay,          spawn,     SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
+  //{ 0, XF86XK_AudioStop,          spawn,     SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
+  //{ 0, XF86XK_AudioNext,          spawn,     SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
+  //{ 0, XF86XK_AudioPrev,          spawn,     SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
 };
 
 /* button definitions */
