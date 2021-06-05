@@ -28,6 +28,7 @@ static const char *colors[][3] = {
 #define SHELL "/usr/bin/zsh"
 #define CAL "/usr/bin/calcurse"
 #define MPLAYER "/usr/bin/cmus"
+#define takeNote "/usr/local/share/scripts/takeNote"
 
 /* scratchpads */
 typedef struct {
@@ -39,7 +40,7 @@ const char *spcmd2[] = { TERM, "-n", "sp-2", FM, NULL };
 const char *spcmd3[] = { TERM, "-n", "sp-3", CAL, NULL };
 const char *spcmd4[] = { TERM, "-n", "sp-4", MPLAYER, NULL };
 const char *spcmd5[] = { "thunderbird", NULL };
-const char *spcmd6[] = { TERM, "-n", "sp-6", "/usr/local/share/scripts/takeNote", NULL };
+const char *spcmd6[] = { TERM, "-n", "sp-6", takeNote, NULL };
 
 static Sp scratchpads[] = {
   /* name      cmd  */
@@ -127,67 +128,49 @@ static Key keys[] = {
   /* modifier                     key        function        argument */
   { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
   { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-
   { MODKEY,                       XK_b,      togglebar,      {0} },
-
   { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
   { MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-
   { MODKEY|ControlMask,           XK_bracketright, incnmaster, {.i = +1 } },
   { MODKEY|ControlMask,           XK_bracketleft, incnmaster, {.i = -1 } },
-
   { MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
   { MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-
   { MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
-
   { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
   { MODKEY,                       XK_y,      setlayout,      {.v = &layouts[1]} },
   { MODKEY,                       XK_u,      setlayout,      {.v = &layouts[2]} },
   { MODKEY,                       XK_m,      setlayout,      {.v = &layouts[3]} },
-  
   { MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
-  
   { MODKEY,                       XK_s,      togglefloating, {0} },
   { MODKEY,                       XK_f,      togglefullscr,  {0} },
   { MODKEY,                       XK_x,      togglesticky,   {0} },
-
   { MODKEY|ShiftMask,             XK_j,      pushdown,       {0} },
   { MODKEY|ShiftMask,             XK_k,      pushup,         {0} },
   { MODKEY|ShiftMask,             XK_h,      shiftview,      {.i = -1 } },
   { MODKEY|ShiftMask,             XK_l,      shiftview,      {.i = +1 } },
-
   { MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
   { MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
   { MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
   { MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
-
   { MODKEY|ShiftMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
   { MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
   { MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
   { MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
-
   { MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} },
   { MODKEY|ControlMask,           XK_Down,   moveresizeedge, {.v = "b"} },
   { MODKEY|ControlMask,           XK_Left,   moveresizeedge, {.v = "l"} },
-  { MODKEY|ControlMask,           XK_Right,  moveresizeedge, {.v = "r"} },
-
   { MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "T"} },
   { MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "B"} },
   { MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "L"} },
   { MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "R"} },
-
   { MODKEY,                       XK_n,      zoom,           {0} },
   { MODKEY,                       XK_Tab,    view,           {0} },
-
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
   { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-
   { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
   { MODKEY,                       XK_period, focusmon,       {.i = +1 } },
   { MODKEY|ControlMask,           XK_comma,  tagmon,         {.i = -1 } },
   { MODKEY|ControlMask,           XK_period, tagmon,         {.i = +1 } },
-
   TAGKEYS(                        XK_1,                      0)
   TAGKEYS(                        XK_2,                      1)
   TAGKEYS(                        XK_3,                      2)
@@ -197,60 +180,33 @@ static Key keys[] = {
   TAGKEYS(                        XK_7,                      6)
   TAGKEYS(                        XK_8,                      7)
   TAGKEYS(                        XK_9,                      8)
-
   { MODKEY,                       XK_q,      togglescratch,  {.ui = 0 } },
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
   { SUPER,                        XK_F1,     togglescratch,  {.ui = 3 } },
   { SUPER,                        XK_F10,    togglescratch,  {.ui = 4 } },
   { MODKEY,                       XK_e,      togglescratch,  {.ui = 5 } },
-
   { MODKEY,                       XK_F9,     spawn,          SHCMD("passmenu") },
   { SUPER,                        XK_F11,    spawn,          SHCMD("pcmanfm") },
   { SUPER,                        XK_F9,     spawn,          SHCMD("librewolf") },
-
   { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
   { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
-
   { SUPER,                        XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
   { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/powermenu") },
   { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/screenshotMenu") },
-
   { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
   { MODKEY,                       XK_F4,     spawn,          SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
   { SUPER,                        XK_F7,     spawn,          SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
   { SUPER,                        XK_F8,     spawn,          SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
   { SUPER,                        XK_F6,     spawn,          SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
   { SUPER,                        XK_F5,     spawn,          SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
-
   { MODKEY,                       XK_F1,     spawn,          SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
-
   { SUPER,                        XK_F4,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
   { SUPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
   { SUPER,                        XK_F3,     spawn,          SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
-
   { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
-
-  //{ 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
-  //{ 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
-  //{ 0, XF86XK_Explorer,           spawn,     SHCMD("pcmanfm") },
-  //{ 0, XF86XK_HomePage,           spawn,     SHCMD("librewolf") },
-  //{ 0, XF86XK_Favorites,          spawn,     SHCMD("/usr/local/share/scripts/dm-pdf") },
-  //{ 0, XF86XK_AudioMute,          spawn,     SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
-  //{ 0, XF86XK_AudioLowerVolume,   spawn,     SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
-  //{ 0, XF86XK_AudioRaiseVolume,   spawn,     SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
-
-  ///* cmus controls */
-  //{ MODKEY,                       XK_F1,     spawn, SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
-  //{ MODKEY,                       XK_F2,     spawn, SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
-  //{ MODKEY,                       XK_F3,     spawn, SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
-  //{ MODKEY,                       XK_F4,     spawn, SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
-  //{ 0, XF86XK_AudioPlay,          spawn,     SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
-  //{ 0, XF86XK_AudioStop,          spawn,     SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
-  //{ 0, XF86XK_AudioNext,          spawn,     SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
-  //{ 0, XF86XK_AudioPrev,          spawn,     SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
 };
 
 /* button definitions */
