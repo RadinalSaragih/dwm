@@ -26,10 +26,8 @@ static char *colors[][3] = {
 
 /* defining some programs */
 #define TERM "st", "-g", "115x40"
-
 #define FM "/usr/bin/ranger"
 #define RSS "/usr/bin/newsboat"
-#define NOTE "/usr/bin/nvim", "-c", "VimwikiIndex"
 #define SHELL "/usr/bin/zsh"
 #define MPLAYER "/usr/bin/cmus"
 
@@ -42,8 +40,6 @@ const char *spcmd1[] = { TERM, "-n", "sp-1", NULL };
 const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
 const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", RSS, NULL };
 const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
-const char *spcmd5[] = { "thunderbird", NULL };
-const char *spcmd6[] = { TERM, "-n", "sp-6", "-e", NOTE, NULL };
 
 static Sp scratchpads[] = {
   /* name      cmd  */
@@ -51,8 +47,6 @@ static Sp scratchpads[] = {
   {"sp-2",    spcmd2},
   {"sp-3",    spcmd3},
   {"sp-4",    spcmd4},
-  {"sp-5",    spcmd5},
-  {"sp-6",    spcmd6},
 };
 
 /* tagging */
@@ -63,29 +57,18 @@ static const Rule rules[] = {
    * WM_NAME(STRING) = title
    */
   /* class           instance      title    tags mask   iscentered isfloating monitor */
-  { NULL,            NULL,         "0 A.D.", 1 << 8,         0,         0,      -1 },
   { "Steam",         NULL,         NULL,     1 << 8,         0,         0,      -1 },
-
   { "VirtualBox Manager", NULL,    NULL,     1 << 7,         0,         0,      -1 },
-
   { "Inkscape",      "org.inkscape.Inkscape" , NULL, 1 << 6, 0,         0,      -1 },
-
   { "Gimp", NULL,    "GNU Image Manipulation Program", 1 << 5,  0,      0,      -1 },
   { NULL,            "libreoffice",NULL,     1 << 5,         0,         0,      -1 },
   { "kdenlive",      NULL,         NULL,     1 << 5,         0,         0,      -1 },
-
   { NULL,            "Navigator",  NULL,     1 << 4,         0,         0,      -1 },
   { NULL,            "freetube",   NULL,     1 << 3,         0,         0,      -1 },
-
-  { NULL,   NULL,    "Picture in picture",   0,              1,         1,      -1 },
-  { "password",      NULL,         NULL,     0,              1,         1,      -1 },
-
-  {  NULL,           "sp-1",       NULL,    SPTAG(0),       1,         1,      -1 },
-  {  NULL,           "sp-2",       NULL,    SPTAG(1),       1,         1,      -1 },
-  {  NULL,           "sp-3",       NULL,    SPTAG(2),       1,         1,      -1 },
-  {  NULL,           "sp-4",       NULL,    SPTAG(3),       1,         1,      -1 },
-  { "Thunderbird",   "Mail",       NULL,    SPTAG(4),       1,         1,      -1 },
-  {  NULL,           "sp-6",       NULL,    SPTAG(5),       1,         1,      -1 },
+  { NULL,           "sp-1",       NULL,    SPTAG(0),       1,         1,      -1 },
+  { NULL,           "sp-2",       NULL,    SPTAG(1),       1,         1,      -1 },
+  { NULL,           "sp-3",       NULL,    SPTAG(2),       1,         1,      -1 },
+  { NULL,           "sp-4",       NULL,    SPTAG(3),       1,         1,      -1 },
 };
 
 /* layout(s) */
@@ -225,15 +208,10 @@ static Key keys[] = {
 
   { MODKEY,                       XK_q,      togglescratch,  {.ui = 0 } },
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
-  { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
-  { SUPER,                        XK_F1,     togglescratch,  {.ui = 3 } },
-  { SUPER,                        XK_F10,    togglescratch,  {.ui = 4 } },
-  { MODKEY,                       XK_e,      togglescratch,  {.ui = 5 } },
-  { MODKEY|ControlMask,           XK_grave,  togglescratch,  {.ui = 6 } },
+  { MODKEY|ShiftMask,             XK_grave,  togglescratch,  {.ui = 2 } },
+  { MODKEY,                       XK_grave,  togglescratch,  {.ui = 3 } },
 
-  //{ SUPER,                        XK_F11,    spawn,          SHCMD("pcmanfm") },
-  //{ SUPER,                        XK_F9,     spawn,          SHCMD("librewolf") },
-  { MODKEY,                       XK_F9,     spawn,          SHCMD("passmenu") },
+  { MODKEY|Mod1Mask,              XK_grave,  spawn,          SHCMD("passmenu") },
 
   { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
   { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
@@ -252,9 +230,9 @@ static Key keys[] = {
   { MODKEY,                       XK_F1,     spawn,          SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
   { MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
 
-  { SUPER,                        XK_F4,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
-  { SUPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
-  { SUPER,                        XK_F3,     spawn,          SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
+  { SUPER,                        XK_F3,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
+  { SUPER,                        XK_F1,     spawn,          SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
+  { SUPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
 
   { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
