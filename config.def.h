@@ -11,21 +11,22 @@ static const char *fonts[] = { "monospace:size=11" };
 static const char dmenufont[] = "monospace:size=11";
 
 /* colors */
-static const char col_grey[] = "#262626";
-static const char col_black[] = "#181818";
-static const char col_white[] = "#ebdbb2";
-static const char col_green[] = "#4b6e50";
-static const char *colors[][3] = {
-  /*                   fg            bg      border */
-  [SchemeNorm]     = { col_white, col_grey, col_black },
-  [SchemeSel]      = { col_white, col_green, col_white },
+static char normbgcolor[]     = "#222222";
+static char normbordercolor[] = "#444444";
+static char normfgcolor[]     = "#bbbbbb";
+static char selfgcolor[]      = "#eeeeee";
+static char selbordercolor[]  = "#005577";
+static char selbgcolor[]      = "#005577";
+
+static char *colors[][3] = {
+       /*               fg           bg           border   */
+       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
 /* defining some programs */
 #define TERM "st", "-g", "115x40"
 #define FM "/usr/bin/ranger"
-#define SHELL "/usr/bin/zsh"
-#define CAL "/usr/bin/calcurse"
 #define MPLAYER "/usr/bin/cmus"
 
 /* scratchpads */
@@ -35,17 +36,13 @@ typedef struct {
 } Sp;
 const char *spcmd1[] = { TERM, "-n", "sp-1", SHELL, NULL };
 const char *spcmd2[] = { TERM, "-n", "sp-2", FM, NULL };
-const char *spcmd3[] = { TERM, "-n", "sp-3", CAL, NULL };
-const char *spcmd4[] = { TERM, "-n", "sp-4", MPLAYER, NULL };
-const char *spcmd5[] = { "thunderbird", NULL };
+const char *spcmd4[] = { TERM, "-n", "sp-3", MPLAYER, NULL };
 
 static Sp scratchpads[] = {
   /* name      cmd  */
   {"sp-1",    spcmd1},
   {"sp-2",    spcmd2},
   {"sp-3",    spcmd3},
-  {"sp-4",    spcmd4},
-  {"sp-5",    spcmd5},
 };
 
 /* tagging */
@@ -61,7 +58,6 @@ static const Rule rules[] = {
   {  NULL,           "sp-2",       NULL,    SPTAG(1),       1,         1,      -1 },
   {  NULL,           "sp-3",       NULL,    SPTAG(2),       1,         1,      -1 },
   {  NULL,           "sp-4",       NULL,    SPTAG(3),       1,         1,      -1 },
-  { "Thunderbird",   "Mail",       NULL,    SPTAG(4),       1,         1,      -1 },
 };
 
 /* layout(s) */
@@ -92,15 +88,15 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* define media keys */
-#include <X11/XF86keysym.h>
+//#include <X11/XF86keysym.h>
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont,
-                                  "-nb", col_grey, "-nf", col_white, "-sb", col_green,
-                                  "-sf", col_white, "-p", "Choose a Program: ", NULL };
+                                  "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor,
+                                  "-sf", selfgcolor, "-p", "Choose a Program: ", NULL };
 
-static const char *termcmd[] = { "st", SHELL, NULL };
+static const char *termcmd[] = { TERM, NULL };
 
 /* keybindings */
 static Key keys[] = {
@@ -186,29 +182,32 @@ static Key keys[] = {
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 2 } },
 
-  //{ MODKEY|Mod1Mask,              XK_Escape, quit,           {0} }, // quit WM
+  { MODKEY|Mod1Mask,              XK_grave,  spawn,          SHCMD("passmenu") },
+
+  { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
+  { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
+
+  { SUPER,                        XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
+  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/dm-SysMenu") },
+  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/dm-screenshot") },
+
+  { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
+  { MODKEY,                       XK_F4,     spawn,          SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F7,     spawn,          SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F8,     spawn,          SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F6,     spawn,          SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
+  { SUPER,                        XK_F5,     spawn,          SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
+
+  { MODKEY,                       XK_F1,     spawn,          SHCMD("cmus-remote -v -5%; pkill -RTMIN+4 dwmblocks") },
+  { MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v +5%; pkill -RTMIN+4 dwmblocks") },
+
+  { SUPER,                        XK_F3,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
+  { SUPER,                        XK_F1,     spawn,          SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
+  { SUPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
+
+  { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
   { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
-  { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/powermenu") }, // launch a powermenu
-
-  { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/screenshotMenu") },
-  { MODKEY,                       XK_F3,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-raiseAudio")},
-  { MODKEY,                       XK_F2,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-lowerAudio")},
-  { MODKEY,                       XK_F5,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/lowerBrightness") },
-  { MODKEY,                       XK_F6,     spawn,          SHCMD("/usr/local/share/dwm/dwm-scripts/raiseBrightness") },
-
-  /* media keys */
-  { 0, XF86XK_Mail,               togglescratch, {.ui = 4 } },
-  { 0, XF86XK_Tools,              togglescratch, {.ui = 3 } },
-  { 0, XF86XK_Explorer,           spawn, SHCMD("pcmanfm") },
-  { 0, XF86XK_HomePage,           spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/browser-menu") },
-  { 0, XF86XK_Favorites,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/vpn-menu") },
-  { 0, XF86XK_AudioPlay,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-play") },
-  { 0, XF86XK_AudioNext,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-next") },
-  { 0, XF86XK_AudioPrev,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-prev") },
-  { 0, XF86XK_AudioStop,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/cmus-stop") },
-  { 0, XF86XK_AudioMute,          spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-muteAudio") },
-  { 0, XF86XK_AudioRaiseVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-raiseAudio") },
-  { 0, XF86XK_AudioLowerVolume,   spawn, SHCMD("/usr/local/share/dwm/dwm-scripts/pulse-lowerAudio") },
+  { MODKEY|ControlMask,           XK_x,      xrdb,           {.v = NULL } },
 };
 
 /* button definitions */

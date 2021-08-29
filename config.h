@@ -1,22 +1,23 @@
 /* appearance */
-static const unsigned int borderpx = 1; /* border pixel of windows */
 static const unsigned int snap = 10; /* snap pixel */
+static const unsigned int borderpx = 1; /* border pixel of windows */
 static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
 static const unsigned int systrayspacing = 2; /* systray spacing */
 static const unsigned int systrayonleft  = 0; /* systray spacing */
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
+static const int focusonwheel = 0;
 static const int showsystray = 1; /* 0 = no systray */
 static const int showbar = 1; /* 0 = no bar */
 static const int topbar = 1; /* 0 = bottom bar */
-static const char *fonts[] = { "Hack Regular:size=11:antialias=true:autohint=true" };
+static const char *fonts[] = { "Hack Nerd Font Mono:size=11:antialias=true:autohint=false" };
 
 /* colors */
-static char normbgcolor[]           = "#222222";
-static char normbordercolor[]       = "#444444";
-static char normfgcolor[]           = "#bbbbbb";
-static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#005577";
-static char selbgcolor[]            = "#005577";
+static char normbgcolor[]     = "#222222";
+static char normbordercolor[] = "#444444";
+static char normfgcolor[]     = "#bbbbbb";
+static char selfgcolor[]      = "#eeeeee";
+static char selbordercolor[]  = "#005577";
+static char selbgcolor[]      = "#005577";
 
 static char *colors[][3] = {
        /*               fg           bg           border   */
@@ -25,11 +26,11 @@ static char *colors[][3] = {
 };
 
 /* defining some programs */
-#define TERM "st", "-g", "115x40"
+#define TERM "st", "-g", "115x45"
 #define FM "/usr/bin/ranger"
 #define RSS "/usr/bin/newsboat"
-#define SHELL "/usr/bin/zsh"
 #define MPLAYER "/usr/bin/cmus"
+#define BRWSR "/usr/bin/elinks", "-no-connect", "https://lite.duckduckgo.com/lite"
 
 /* scratchpads */
 typedef struct {
@@ -40,6 +41,8 @@ const char *spcmd1[] = { TERM, "-n", "sp-1", NULL };
 const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
 const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", RSS, NULL };
 const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
+const char *spcmd5[] = { TERM, "-n", "sp-5", "-e", BRWSR, NULL };
+
 
 static Sp scratchpads[] = {
   /* name      cmd  */
@@ -47,6 +50,7 @@ static Sp scratchpads[] = {
   {"sp-2",    spcmd2},
   {"sp-3",    spcmd3},
   {"sp-4",    spcmd4},
+  {"sp-5",    spcmd5},
 };
 
 /* tagging */
@@ -65,10 +69,11 @@ static const Rule rules[] = {
   { "kdenlive",      NULL,         NULL,     1 << 5,         0,         0,      -1 },
   { NULL,            "Navigator",  NULL,     1 << 4,         0,         0,      -1 },
   { NULL,            "freetube",   NULL,     1 << 3,         0,         0,      -1 },
-  { NULL,           "sp-1",       NULL,    SPTAG(0),       1,         1,      -1 },
-  { NULL,           "sp-2",       NULL,    SPTAG(1),       1,         1,      -1 },
-  { NULL,           "sp-3",       NULL,    SPTAG(2),       1,         1,      -1 },
-  { NULL,           "sp-4",       NULL,    SPTAG(3),       1,         1,      -1 },
+  { NULL,            "sp-1",       NULL,     SPTAG(0),       1,         1,      -1 },
+  { NULL,            "sp-2",       NULL,     SPTAG(1),       1,         1,      -1 },
+  { NULL,            "sp-3",       NULL,     SPTAG(2),       1,         1,      -1 },
+  { NULL,            "sp-4",       NULL,     SPTAG(3),       1,         1,      -1 },
+  { NULL,            "sp-5",       NULL,     SPTAG(4),       1,         1,      -1 },
 };
 
 /* layout(s) */
@@ -99,7 +104,7 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* mediakey's keycodes */
-#include <X11/XF86keysym.h>
+//#include <X11/XF86keysym.h>
 
 /* define view_adjacent */
 #include "view_adjacent.c"
@@ -107,13 +112,20 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", "Choose a Program", NULL };
-static const char *termcmd[] = { "st", SHELL, NULL };
+static const char *termcmd[] = { TERM, NULL };
+
+/* extra commands */
+#define EMACS "emacsclient", "-c", "-a", "emacs"
+static const char *editorcmd[] = { EMACS, NULL};
 
 /* keybindings */
 static Key keys[] = {
   /* modifier                     key        function        argument */
   { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
   { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+  { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editorcmd } },
+  //{ 0,                            XK_F9,     spawn,          {.v = emailcmd } },
+  //{ 0,                            XK_F10,    spawn,          {.v = newsfeedcmd } },
 
   { MODKEY,                       XK_b,      togglebar,      {0} },
 
@@ -128,10 +140,10 @@ static Key keys[] = {
 
   { MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
 
-  { MODKEY,                       XK_backslash,    setlayout,  {.v = &layouts[0]} },
-  { MODKEY,                       XK_bracketright, setlayout,  {.v = &layouts[1]} },
-  { MODKEY|ShiftMask,             XK_bracketright, setlayout,  {.v = &layouts[2]} },
-  { MODKEY|ShiftMask,             XK_backslash,    setlayout,  {.v = &layouts[3]} },
+  { MODKEY,                       XK_backslash,    setlayout, {.v = &layouts[0]} },
+  { MODKEY,                       XK_bracketright, setlayout, {.v = &layouts[1]} },
+  { MODKEY|ShiftMask,             XK_bracketright, setlayout, {.v = &layouts[2]} },
+  { MODKEY|ShiftMask,             XK_backslash,    setlayout, {.v = &layouts[3]} },
   
   { MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
   
@@ -141,8 +153,8 @@ static Key keys[] = {
 
   { MODKEY|ShiftMask,             XK_j,      pushdown,       {0} },
   { MODKEY|ShiftMask,             XK_k,      pushup,         {0} },
-  { MODKEY|ShiftMask,             XK_h,      view_adjacent,      {.i = -1 } },
-  { MODKEY|ShiftMask,             XK_l,      view_adjacent,      {.i = +1 } },
+  { MODKEY|ShiftMask,             XK_h,      view_adjacent,  {.i = -1 } },
+  { MODKEY|ShiftMask,             XK_l,      view_adjacent,  {.i = +1 } },
 
   { MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
   { MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
@@ -210,6 +222,7 @@ static Key keys[] = {
   { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
   { MODKEY|ShiftMask,             XK_grave,  togglescratch,  {.ui = 2 } },
   { MODKEY,                       XK_grave,  togglescratch,  {.ui = 3 } },
+  { MODKEY,                       XK_e,      togglescratch,  {.ui = 4 } },
 
   { MODKEY|Mod1Mask,              XK_grave,  spawn,          SHCMD("passmenu") },
 
