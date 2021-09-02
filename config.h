@@ -115,7 +115,8 @@ static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", "Choo
 static const char *termcmd[] = { TERM, NULL };
 
 /* extra commands */
-#define EMACS "emacsclient", "-c", "-a", "emacs"
+// #define EMACS "emacsclient", "-c", "-a", "emacs"
+#define EMACS "emacsclient", "-nc"
 static const char *editorcmd[] = { EMACS, NULL};
 
 /* keybindings */
@@ -202,11 +203,11 @@ static Key keys[] = {
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
   { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 
-  { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-  { MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+  { MODKEY|ControlMask,           XK_j,      focusmon,       {.i = -1 } },
+  { MODKEY|ControlMask,           XK_k,      focusmon,       {.i = +1 } },
 
-  { MODKEY|ControlMask,           XK_comma,  tagmon,         {.i = -1 } },
-  { MODKEY|ControlMask,           XK_period, tagmon,         {.i = +1 } },
+  { MODKEY|ControlMask|ShiftMask, XK_j,      tagmon,         {.i = -1 } },
+  { MODKEY|ControlMask|ShiftMask, XK_k,      tagmon,         {.i = +1 } },
 
   TAGKEYS(                        XK_1,                      0)
   TAGKEYS(                        XK_2,                      1)
