@@ -81,18 +81,16 @@ static const int nmaster = 1; /* number of clients in master area */
 static const int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
   /* symbol     arrange function */
-  { "TILED",      tile },    /* first entry is default */
-  { "BSTACKED",      bstack },
-  { "BSTACKED-H",      bstackhoriz }, 
-  { "MONOCLE",      monocle },
+  { "TILED",        tile        }, /* first entry is default */
+  { "BSTACK",       bstack      },
+  { "BSTACK-HORIZ", bstackhoriz },
+  { "MONOCLE",      monocle     },
+  //{ "FLOAT",        NULL        },
 };
-/* To use floating mode add these following lines to the layouts and keybindings section. */
-//{ "><>",      NULL },
-//{ MODKEY|ShiftMask,             XK_s,      setlayout,      {.v = &layouts[4]} },
 
 /* key definitions */
 #define MODKEY Mod4Mask
-#define SUPER Mod3Mask
+#define HYPER Mod3Mask
 #define TAGKEYS(KEY,TAG)                                                \
   { MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
   { MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -124,6 +122,7 @@ static Key keys[] = {
 { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
 { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editorcmd } },
+
 { MODKEY,                       XK_b,      togglebar,      {0} },
 
 { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -141,6 +140,7 @@ static Key keys[] = {
 { MODKEY,                       XK_bracketright, setlayout, {.v = &layouts[1]} },
 { MODKEY|ShiftMask,             XK_bracketright, setlayout, {.v = &layouts[2]} },
 { MODKEY|ShiftMask,             XK_backslash,    setlayout, {.v = &layouts[3]} },
+//{ MODKEY|ShiftMask,             XK_s,            setlayout, {.v = &layouts[4]} },
 
 { MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
 
@@ -173,25 +173,25 @@ static Key keys[] = {
 { MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "L"} },
 { MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "R"} },
 
-{ SUPER,                        XK_f,      moveresize,     {.v = "0x 25y 0w 0h" } },
-{ SUPER,                        XK_d,      moveresize,     {.v = "0x -25y 0w 0h" } },
-{ SUPER,                        XK_g,      moveresize,     {.v = "25x 0y 0w 0h" } },
-{ SUPER,                        XK_s,      moveresize,     {.v = "-25x 0y 0w 0h" } },
+{ HYPER,                        XK_f,      moveresize,     {.v = "0x 25y 0w 0h" } },
+{ HYPER,                        XK_d,      moveresize,     {.v = "0x -25y 0w 0h" } },
+{ HYPER,                        XK_g,      moveresize,     {.v = "25x 0y 0w 0h" } },
+{ HYPER,                        XK_s,      moveresize,     {.v = "-25x 0y 0w 0h" } },
 
-{ SUPER|ShiftMask,              XK_f,      moveresize,     {.v = "0x 0y 0w 25h" } },
-{ SUPER|ShiftMask,              XK_d,      moveresize,     {.v = "0x 0y 0w -25h" } },
-{ SUPER|ShiftMask,              XK_g,      moveresize,     {.v = "0x 0y 25w 0h" } },
-{ SUPER|ShiftMask,              XK_s,      moveresize,     {.v = "0x 0y -25w 0h" } },
+{ HYPER|ShiftMask,              XK_f,      moveresize,     {.v = "0x 0y 0w 25h" } },
+{ HYPER|ShiftMask,              XK_d,      moveresize,     {.v = "0x 0y 0w -25h" } },
+{ HYPER|ShiftMask,              XK_g,      moveresize,     {.v = "0x 0y 25w 0h" } },
+{ HYPER|ShiftMask,              XK_s,      moveresize,     {.v = "0x 0y -25w 0h" } },
 
-{ SUPER|ControlMask,            XK_f,      moveresizeedge, {.v = "b"} },
-{ SUPER|ControlMask,            XK_d,      moveresizeedge, {.v = "t"} },
-{ SUPER|ControlMask,            XK_g,      moveresizeedge, {.v = "r"} },
-{ SUPER|ControlMask,            XK_s,      moveresizeedge, {.v = "l"} },
+{ HYPER|ControlMask,            XK_f,      moveresizeedge, {.v = "b"} },
+{ HYPER|ControlMask,            XK_d,      moveresizeedge, {.v = "t"} },
+{ HYPER|ControlMask,            XK_g,      moveresizeedge, {.v = "r"} },
+{ HYPER|ControlMask,            XK_s,      moveresizeedge, {.v = "l"} },
 
-{ SUPER|ControlMask|ShiftMask,  XK_f,      moveresizeedge, {.v = "B"} },
-{ SUPER|ControlMask|ShiftMask,  XK_d,      moveresizeedge, {.v = "T"} },
-{ SUPER|ControlMask|ShiftMask,  XK_g,      moveresizeedge, {.v = "R"} },
-{ SUPER|ControlMask|ShiftMask,  XK_s,      moveresizeedge, {.v = "L"} },
+{ HYPER|ControlMask|ShiftMask,  XK_f,      moveresizeedge, {.v = "B"} },
+{ HYPER|ControlMask|ShiftMask,  XK_d,      moveresizeedge, {.v = "T"} },
+{ HYPER|ControlMask|ShiftMask,  XK_g,      moveresizeedge, {.v = "R"} },
+{ HYPER|ControlMask|ShiftMask,  XK_s,      moveresizeedge, {.v = "L"} },
 
 { MODKEY,                       XK_n,      zoom,           {0} },
 { MODKEY,                       XK_Tab,    view,           {0} },
@@ -227,24 +227,24 @@ TAGKEYS(                        XK_9,                      8)
 { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
 { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
 
-{ SUPER,                        XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
-{ MODKEY|ShiftMask,              XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-gutenberg") },
+{ HYPER,                        XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
+{ MODKEY|ShiftMask,             XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-gutenberg") },
 { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/dm-SysMenu") },
 { 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/dm-screenshot") },
 
 { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
 { MODKEY,                       XK_F4,     spawn,          SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
-{ SUPER,                        XK_F7,     spawn,          SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
-{ SUPER,                        XK_F8,     spawn,          SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
-{ SUPER,                        XK_F6,     spawn,          SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
-{ SUPER,                        XK_F5,     spawn,          SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
+{ HYPER,                        XK_F7,     spawn,          SHCMD("cmus-remote -u; pkill -RTMIN+5 dwmblocks") },
+{ HYPER,                        XK_F8,     spawn,          SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
+{ HYPER,                        XK_F6,     spawn,          SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
+{ HYPER,                        XK_F5,     spawn,          SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
 
-{ MODKEY,                       XK_F1,     spawn,          SHCMD("cmus-remote -v -5%; pkill -RTMIN+5 dwmblocks") },
-{ MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v +5%; pkill -RTMIN+5 dwmblocks") },
+{ MODKEY,                       XK_F1,     spawn,          SHCMD("cmus-remote -v -1%; pkill -RTMIN+10 dwmblocks") },
+{ MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v +1%; pkill -RTMIN+10 dwmblocks") },
 
-{ SUPER,                        XK_F3,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
-{ SUPER,                        XK_F1,     spawn,          SHCMD("pamixer --allow-boost -d 5; pkill -RTMIN+10 dwmblocks") },
-{ SUPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -i 5; pkill -RTMIN+10 dwmblocks") },
+{ HYPER,                        XK_F3,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
+{ HYPER,                        XK_F1,     spawn,          SHCMD("pamixer --allow-boost -d 1; pkill -RTMIN+10 dwmblocks") },
+{ HYPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -i 1; pkill -RTMIN+10 dwmblocks") },
 
 { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
 { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
