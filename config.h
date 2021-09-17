@@ -81,11 +81,12 @@ static const int nmaster = 1; /* number of clients in master area */
 static const int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
   /* symbol     arrange function */
-  { "TILED",        tile        }, /* first entry is default */
-  { "BSTACK",       bstack      },
-  { "BSTACK-HORIZ", bstackhoriz },
+  { "TILED-R",      tile        }, /* first entry is default */
+  { "TILED-L",      left_stack    },
+  { "FLOAT",        NULL        },
   { "MONOCLE",      monocle     },
-  //{ "FLOAT",        NULL        },
+  /* { "BSTACK",       bstack      }, */
+  /* { "BSTACK-HORIZ", bstackhoriz }, */
 };
 
 /* key definitions */
@@ -111,7 +112,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", "Choose a Program", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
 static const char *termcmd[] = { TERM, NULL };
 static const char *editorcmd[] = { EMACS, NULL};
 static const char *brwsrcmd[] = { "qutebrowser", NULL };
@@ -140,7 +141,6 @@ static Key keys[] = {
 { MODKEY,                       XK_bracketright, setlayout, {.v = &layouts[1]} },
 { MODKEY|ShiftMask,             XK_bracketright, setlayout, {.v = &layouts[2]} },
 { MODKEY|ShiftMask,             XK_backslash,    setlayout, {.v = &layouts[3]} },
-//{ MODKEY|ShiftMask,             XK_s,            setlayout, {.v = &layouts[4]} },
 
 { MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
 
@@ -222,15 +222,15 @@ TAGKEYS(                        XK_9,                      8)
 { MODKEY,                       XK_e,      togglescratch,  {.ui = 4 } },
 
 { MODKEY|ShiftMask,             XK_o,      spawn,          {.v = brwsrcmd } },
-{ MODKEY,                       XK_F12,    spawn,          SHCMD("passmenu") },
+{ MODKEY,                       XK_F12,    spawn,          SHCMD("$HOME/.local/bin/networkmanager_dmenu") },
 
-{ MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") },
-{ MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") },
+/* { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") }, */
+/* { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") }, */
 
-{ HYPER,                        XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-pdf") },
-{ MODKEY|ShiftMask,             XK_F12,    spawn,          SHCMD("/usr/local/share/scripts/dm-gutenberg") },
-{ MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("/usr/local/share/scripts/dm-SysMenu") },
-{ 0,                            XK_Print,  spawn,          SHCMD("/usr/local/share/scripts/dm-screenshot") },
+{ HYPER,                        XK_F12,    spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-pdf") },
+{ MODKEY|ShiftMask,             XK_F12,    spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-gutenberg") },
+{ MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-SysMenu") },
+{ 0,                            XK_Print,  spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-screenshot") },
 
 { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
 { MODKEY,                       XK_F4,     spawn,          SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
@@ -242,9 +242,9 @@ TAGKEYS(                        XK_9,                      8)
 { MODKEY,                       XK_F1,     spawn,          SHCMD("cmus-remote -v -1%; pkill -RTMIN+10 dwmblocks") },
 { MODKEY,                       XK_F2,     spawn,          SHCMD("cmus-remote -v +1%; pkill -RTMIN+10 dwmblocks") },
 
-{ HYPER,                        XK_F3,     spawn,          SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
-{ HYPER,                        XK_F1,     spawn,          SHCMD("pamixer --allow-boost -d 1; pkill -RTMIN+10 dwmblocks") },
-{ HYPER,                        XK_F2,     spawn,          SHCMD("pamixer --allow-boost -i 1; pkill -RTMIN+10 dwmblocks") },
+{ HYPER,                        XK_F3,     spawn,          SHCMD("pactl set-sink-mute $(pactl info | grep 'Default Sink' | awk '{print $3}') toggle ; pkill -RTMIN+10 dwmblocks") },
+{ HYPER,                        XK_F1,     spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') -1% ; pkill -RTMIN+10 dwmblocks") },
+{ HYPER,                        XK_F2,     spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') +1% ; pkill -RTMIN+10 dwmblocks") },
 
 { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
 { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM

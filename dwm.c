@@ -338,17 +338,22 @@ static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 
-		        /* Tried to make  the patches modular as possible. */
 // ---------------------------------------------------------------------------------------- //
 
-/* add the bstack (bottom stack) and bstackhoriz (horizontal bottom stack) */
-#include "bottomstack.c"
+/* enable the bstack (bottom stack) and bstackhoriz (horizontal bottom stack) */
+//#include "bottomstack.c"
+
+/* enable the left stack layout */
+#include "left-stack.c"
 
 /* enables pushing down or up windows in the client list, but not to the master area */
 #include "push-no-master.c"
 
 /* actually fullscreen a window */
 #include "actual-fullscreen.c"
+
+/* autostart programs via shellscript */
+#include "autostart.c"
 
 // ---------------------------------------------------------------------------------------- //
 
@@ -2889,6 +2894,7 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
+	runautostart();
 	run();
 	if(restart) execvp(argv[0], argv);
 	cleanup();
