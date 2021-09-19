@@ -338,24 +338,26 @@ static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 
-// ---------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------- //
 
-/* enable the bstack (bottom stack) and bstackhoriz (horizontal bottom stack) */
+/* Enable the bstack (bottom stack) and bstackhoriz
+   (horizontal bottom stack) */
 //#include "bottomstack.c"
 
-/* enable the left stack layout */
+/* Enable the left stack layout */
 #include "left-stack.c"
 
-/* enables pushing down or up windows in the client list, but not to the master area */
+/* Enables pushing down or up windows in the client list,
+   but not to the master area */
 #include "push-no-master.c"
 
-/* actually fullscreen a window */
+/* A proper fullscreen */
 #include "actual-fullscreen.c"
 
 /* autostart programs via shellscript */
 #include "autostart.c"
 
-// ---------------------------------------------------------------------------------------- //
+// ------------------------------------------------------------ //
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
