@@ -225,16 +225,16 @@ TAGKEYS(                        XK_9,                      8)
 { MODKEY,                       XK_grave,  togglescratch,  {.ui = 3 } },
 { MODKEY,                       XK_e,      togglescratch,  {.ui = 4 } },
 
-{ MODKEY|ShiftMask,             XK_o,      spawn,          {.v = brwsrcmd } },
-{ MODKEY,                       XK_F12,    spawn,          SHCMD("$HOME/.local/bin/networkmanager_dmenu") },
+{ MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("$BROWSER") },
+{ MODKEY,                       XK_F12,    spawn,          SHCMD("networkmanager_dmenu") },
 
 /* { MODKEY,                       XK_F5,     spawn,          SHCMD("brightnessctl -c backlight s 50-") }, */
 /* { MODKEY,                       XK_F6,     spawn,          SHCMD("brightnessctl -c backlight s 50+") }, */
 
-{ HYPER,                        XK_F12,    spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-pdf") },
-{ MODKEY|ShiftMask,             XK_F12,    spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-gutenberg") },
-{ MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-SysMenu") },
-{ 0,                            XK_Print,  spawn,          SHCMD("$HOME/.local/share/dwm/scripts/dm-screenshot") },
+{ HYPER,                        XK_F12,    spawn,          SHCMD("dm-pdf") },
+{ MODKEY|ShiftMask,             XK_F12,    spawn,          SHCMD("dm-gutenberg") },
+{ MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("dm-SysMenu") },
+{ 0,                            XK_Print,  spawn,          SHCMD("dm-screenshot") },
 
 { MODKEY,                       XK_F3,     spawn,          SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
 { MODKEY,                       XK_F4,     spawn,          SHCMD("cmus-remote -S; pkill -RTMIN+5 dwmblocks") },
