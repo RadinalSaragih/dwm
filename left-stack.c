@@ -19,11 +19,11 @@ left_stack(Monitor *m)
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
 			resize(c, m->wx + m->ww - mw, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
 			if (my + HEIGHT(c) < m->wh)
-        my += HEIGHT(c);
+			    my += HEIGHT(c);
 		} else {
 			h = (m->wh - ty) / (n - i);
 			resize(c, m->wx, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
 			if (ty + HEIGHT(c) < m->wh)
-        ty += HEIGHT(c);
+			    ty += HEIGHT(c);
 		}
 }
