@@ -26,7 +26,7 @@ static char *colors[][3] = {
 };
 
 /* defining some programs */
-#define TERM "st", "-g", "115x45"
+#define SP_TERM "st", "-g", "115x45"
 #define FM "/usr/bin/ranger"
 #define RSS "/usr/bin/newsboat"
 #define MPLAYER "/usr/bin/cmus"
@@ -37,11 +37,11 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = { TERM, "-n", "sp-1", NULL };
-const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
-const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", RSS, NULL };
-const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
-const char *spcmd5[] = { TERM, "-n", "sp-5", "-e", BRWSR, NULL };
+const char *spcmd1[] = { SP_TERM, "-n", "sp-1", NULL };
+const char *spcmd2[] = { SP_TERM, "-n", "sp-2", "-e", FM, NULL };
+const char *spcmd3[] = { SP_TERM, "-n", "sp-3", "-e", RSS, NULL };
+const char *spcmd4[] = { SP_TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
+const char *spcmd5[] = { SP_TERM, "-n", "sp-5", "-e", BRWSR, NULL };
 
 
 static Sp scratchpads[] = {
@@ -108,21 +108,25 @@ static const Layout layouts[] = {
 #include "view_adjacent.c"
 
 /* extra commands */
-#define EMACS "emacsclient", "-nc"
+#define TERM "st"
+//#define EMACS "emacsclient", "-nc"
+#define TABTERM "tabbed", "-f","-r", "2", TERM, "-w", "''"
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
-static const char *termcmd[] = { TERM, NULL };
-static const char *editorcmd[] = { EMACS, NULL};
-static const char *brwsrcmd[] = { "qutebrowser", NULL };
+static const char *termCMD[] = { TERM, NULL };
+static const char *tabTermCMD[] = { TABTERM, NULL };
+static const char *editorCMD[] = { TERM, "nvim", NULL };
+//static const char *brwsrcmd[] = { "qutebrowser", NULL };
 
 /* keybindings */
 static Key keys[] = {
 /* modifier                     key        function        argument */
 { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
-{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editorcmd } },
+{ MODKEY,                       XK_Return, spawn,          {.v = termCMD } },
+{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = tabTermCMD } },
+{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editorCMD } },
 
 { MODKEY,                       XK_b,      togglebar,      {0} },
 
@@ -258,7 +262,7 @@ static Button buttons[] = {
   { ClkLtSymbol,    0,                Button1,        setlayout,      {0} },
   { ClkLtSymbol,    0,                Button3,        setlayout,      {.v = &layouts[2]} },
   { ClkWinTitle,    0,                Button2,        zoom,           {0} },
-  { ClkStatusText,  0,                Button2,        spawn,          {.v = termcmd } },
+  { ClkStatusText,  0,                Button2,        spawn,          {.v = termCMD } },
   { ClkClientWin,   MODKEY,           Button1,        movemouse,      {0} },
   { ClkClientWin,   MODKEY,           Button2,        togglefloating, {0} },
   { ClkClientWin,   MODKEY|ShiftMask, Button1,        resizemouse,    {0} },
