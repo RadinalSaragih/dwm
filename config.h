@@ -5,11 +5,13 @@ static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selec
 static const unsigned int systrayspacing = 2; /* systray spacing */
 static const unsigned int systrayonleft  = 0; /* systray on the left of status text */
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
+static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 static const int focusonwheel = 0;
 static const int showsystray = 1; /* 0 = no systray */
 static const int showbar = 1; /* 0 = no bar */
+
 static const int topbar = 1; /* 0 = bottom bar */
-static const char *fonts[] = { "monospace:size=11" };
+static const char *fonts[] = { "Liberation Mono:style=Regular:pixelsize=9" };
 
 /* colors */
 static char normbgcolor[]     = "#222222";
