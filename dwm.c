@@ -1703,9 +1703,8 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->oldw = c->w; c->w = wc.width = w;
 	c->oldh = c->h; c->h = wc.height = h;
 	wc.border_width = c->bw;
-    /* also an attempt to make patches modular...
-       this hides the bar when only one windows is opened 
-       but dont remove floating window's border */
+	/* This hides the bar when only one windows is opened 
+	   but dont remove floating window's border */
 	#include "no-border-floating.c" 
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
