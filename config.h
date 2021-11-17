@@ -15,11 +15,11 @@ static const unsigned int systrayonleft  = 0; /* systray on the left of status t
 static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
 static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 static const int focusonwheel = 0;
-static const int showsystray = 1; /* 0 = no systray */
+static const int showsystray = 0; /* 0 = no systray */
 static const int showbar = 1; /* 0 = no bar */
 
 static const int topbar = 1; /* 0 = bottom bar */
-static const char *fonts[] = { "Liberation Mono:style=Regular:pixelsize=9" };
+static const char *fonts[] = { "Liberation Mono:style=Regular:pixelsize=10" };
 
 /* colors */
 static char normbgcolor[]     = "#222222";
@@ -28,13 +28,11 @@ static char normfgcolor[]     = "#bbbbbb";
 static char selfgcolor[]      = "#eeeeee";
 static char selbordercolor[]  = "#005577";
 static char selbgcolor[]      = "#005577";
-
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
-
 
 /* scratchpads */
 typedef struct {
@@ -46,7 +44,6 @@ const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
 const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", RSS, NULL };
 const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
 const char *spcmd5[] = { TERM, "-n", "sp-5", "-e", BRWSR, NULL };
-
 
 static Sp scratchpads[] = {
 /* name      cmd  */
@@ -109,20 +106,18 @@ static const Layout layouts[] = {
 //#include <X11/XF86keysym.h>
 
 /* define view_adjacent */
-#include "view_adjacent.c"
+#include "modules/view_adjacent.c"
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
 static const char *termCMD[] = { TERM, NULL };
-static const char *editorCMD[] = { TERM, "tmux", NULL };
 
 /* keybindings */
 static Key keys[] = {
 /* modifier                     key        function        argument */
 { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
 { MODKEY,                       XK_Return, spawn,          {.v = termCMD } },
-{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = editorCMD } },
 
 { MODKEY,                       XK_b,      togglebar,      {0} },
 
@@ -222,10 +217,10 @@ TAGKEYS(                        XK_9,                      8)
 { MODKEY,                       XK_e,      togglescratch,  {.ui = 4 } },
 
 { MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("$BROWSER") },
-{ MODKEY,                       XK_F12,    spawn,          SHCMD("networkmanager_dmenu") },
 
 { MODKEY,                       XK_F12,    spawn,          SHCMD("dm-pdf") },
-{ MODKEY|ShiftMask,             XK_F12,    spawn,          SHCMD("dm-gutenberg") },
+{ MODKEY|ShiftMask,             XK_F12,    spawn,          SHCMD("dm-scripts") },
+{ MODKEY|ControlMask,           XK_F12,    spawn,          SHCMD("passmenu") },
 { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("dm-powermenu") },
 { 0,                            XK_Print,  spawn,          SHCMD("dm-screenshot") },
 
@@ -238,9 +233,9 @@ TAGKEYS(                        XK_9,                      8)
 { HYPER,                        XK_F7,     spawn,          SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
 { HYPER,                        XK_F8,     spawn,          SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
 
-{ MODKEY,                        XK_F1,    spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') -1% ; pkill -RTMIN+10 dwmblocks") },
-{ MODKEY,                        XK_F2,    spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') +1% ; pkill -RTMIN+10 dwmblocks") },
-{ MODKEY,                        XK_F3,    spawn,          SHCMD("pactl set-sink-mute $(pactl info | grep 'Default Sink' | awk '{print $3}') toggle ; pkill -RTMIN+10 dwmblocks") },
+{ MODKEY,                       XK_F1,     spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') -1% ; pkill -RTMIN+10 dwmblocks") },
+{ MODKEY,                       XK_F2,     spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') +1% ; pkill -RTMIN+10 dwmblocks") },
+{ MODKEY,                       XK_F3,     spawn,          SHCMD("pactl set-sink-mute $(pactl info | grep 'Default Sink' | awk '{print $3}') toggle ; pkill -RTMIN+10 dwmblocks") },
 
 { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
 { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM

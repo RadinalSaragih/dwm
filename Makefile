@@ -44,7 +44,7 @@ install: all
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	cp -r dwm.desktop /usr/share/xsessions 
+	echo -e "[Desktop Entry]\nName=dwm\nComment=The Suckless Dynamic Window Manager\nExec=${DESTDIR}${PREFIX}/bin/dwm\nType=Application\nKeywords=wm;tiling" >> /usr/share/xsessions/dwm.desktop
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\

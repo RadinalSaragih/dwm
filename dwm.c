@@ -338,26 +338,27 @@ static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 
-// ----------------------------------------------------------- //
+// ------------------------------------------------------ //
+    /* Comment to disable or Uncomment to enable. */ 
+
+/* Enable the left stack (tiled to the left) layout */
+#include "modules/left-stack.c"
 
 /* Enable the bstack (bottom stack) and bstackhoriz
    (horizontal bottom stack) */
-//#include "bottomstack.c"
-
-/* Enable the left stack layout */
-#include "left-stack.c"
+//#include "modules/bottomstack.c"
 
 /* Enables pushing down or up windows in the client list,
    but not to the master area */
-#include "push-no-master.c"
+#include "modules/push-no-master.c"
 
 /* A proper fullscreen */
-#include "actual-fullscreen.c"
+#include "modules/actual-fullscreen.c"
 
 /* autostart programs via shellscript */
-#include "autostart.c"
+#include "modules/autostart.c"
 
-// ------------------------------------------------------------ //
+// ------------------------------------------------------ //
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -1703,9 +1704,10 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->oldw = c->w; c->w = wc.width = w;
 	c->oldh = c->h; c->h = wc.height = h;
 	wc.border_width = c->bw;
-	/* This hides the bar when only one windows is opened 
+	/* Comment to disable or Uncomment to enable.
+	   This hides the bar when only one windows is opened 
 	   but dont remove floating window's border */
-	#include "no-border-floating.c" 
+	#include "modules/no-border-floating.c" 
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
 	XSync(dpy, False);

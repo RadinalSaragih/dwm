@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=dwm
-Comment=Suckless Dynamic Window Manager
-Exec=/usr/local/bin/dwm
-Type=Application
-Keywords=wm;tiling
