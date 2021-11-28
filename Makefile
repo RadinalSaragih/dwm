@@ -27,7 +27,7 @@ dwm: ${OBJ}
 
 clean:
 	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
-	rm -f /usr/share/xsessions/dwm.desktop
+	rm -f ${XSESSIONS}/dwm.desktop
 
 dist: clean
 	mkdir -p dwm-${VERSION}
@@ -44,11 +44,14 @@ install: all
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	echo -e "[Desktop Entry]\nName=dwm\nComment=The Suckless Dynamic Window Manager\nExec=${DESTDIR}${PREFIX}/bin/dwm\nType=Application\nKeywords=wm;tiling" >> /usr/share/xsessions/dwm.desktop
+	if [ ! -d "${XSESSIONS}" ];then \
+		mkdir "${XSESSIONS}";       \
+	fi
+	echo -e "[Desktop Entry]\nName=dwm\nComment=The Suckless Dynamic Window Manager\nExec=${DESTDIR}${PREFIX}/bin/dwm\nType=Application\nKeywords=wm;tiling" >> ${XSESSIONS}/dwm.desktop
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
 		${DESTDIR}${MANPREFIX}/man1/dwm.1\
-		/usr/share/xsessions/dwm.desktop\
+		${XSESSIONS}/dwm.desktop\
 
 .PHONY: all options clean dist install uninstall
