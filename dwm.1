@@ -6,7 +6,7 @@ dwm \- dynamic window manager
 .RB [ \-v ]
 .SH DESCRIPTION
 This is my customized version of dwm.dwm is a dynamic window manager for X.
-It manages windows in tiled, monocle and floating layouts.
+It manages windows in tiled (left & right), monocle and floating layouts.
 Either layout can be applied dynamically, optimising the
 environment for the application in use and the task performed.
 .P
@@ -50,127 +50,149 @@ label toggles between tiled and floating layout.
 .B Button3
 click on a tag label adds/removes all windows with that tag to/from the view.
 .TP
-.B Mod\-Button1
+.B Mod4\-Button1
 click on a tag label applies that tag to the focused window.
 .TP
-.B Mod\-Button3
+.B Mod4\-Button3
 click on a tag label adds/removes that tag to/from the focused window.
 .SS Keyboard commands
 .TP
-.B Mod\-Shift\-Return
+.B Mod4\-Shift\-Return
 Start
 .BR st(1).
 .TP
-.B Mod\-space
+.B Mod4\-space
 Spawn
 .BR dmenu(1)
 for launching other programs.
 .TP
-.B Mod\-,
+.B Mod4\-Ctrl-j
 Focus previous screen, if any.
 .TP
-.B Mod\-.
+.B Mod4\-Ctrl-k
 Focus next screen, if any.
 .TP
-.B Mod\-Shift\-,
+.B Mod4\-Ctrl-Shift\-j
 Send focused window to previous screen, if any.
 .TP
-.B Mod\-Shift\-.
+.B Mod4\-Ctrl-Shift\-k
 Send focused window to next screen, if any.
 .TP
-.B Mod\-Right
+.B Mod4\-Shift-l
 Focus tag on the right, if any.
 .TP
-.B Mod\-Left
+.B Mod4\-Shift-h
 Focus tag on the left, if any.
 .TP
-.B Mod\-Shift\-Right
+.B Mod4\-Shift\-Right
 Send focused window to tag on the right, if any.
 .TP
-.B Mod\-Shift\-Left
+.B Mod4\-Shift\-Left
 Send focused window to tag on the left, if any.
 .TP
-.B Mod\-b
+.B Mod4\-b
 Toggles bar on and off.
 .TP
-.B Mod\-t
+.B Mod4\-/
 Sets tiled layout.
 .TP
-.B Mod\-f
+.B Mod4\-}
+Sets tiled layout.
+.TP
+.B Mod4\-Shift-{
 Sets floating layout.
 .TP
-.B Mod\-m
+.B Mod4\-Shift-/
 Sets monocle layout.
 .TP
-.B Mod\-space
+.B Mod4\-Control-space
 Toggles between current and previous layout.
 .TP
-.B Mod\-j
+.B Mod4\-j
 Focus next window.
 .TP
-.B Mod\-k
+.B Mod4\-k
 Focus previous window.
 .TP
-.B Mod\-i
+.B Mod4\-Control-}
 Increase number of windows in master area.
 .TP
-.B Mod\-d
+.B Mod4\-Control-{
 Decrease number of windows in master area.
 .TP
-.B Mod\-l
+.B Mod4\-l
 Increase master area size.
 .TP
-.B Mod\-h
+.B Mod4\-h
 Decrease master area size.
 .TP
-.B Mod\-Return
-Zooms/cycles focused window to/from master area (tiled layouts only).
+.B Mod4\-Return
+Open $TERMINAL
 .TP
-.B Mod\-Shift\-c
+.B Mod4\-Shift\-q
 Close focused window.
 .TP
-.B Mod\-Shift\-space
+.B Mod4\-s
 Toggle focused window between tiled and floating state.
 .TP
-.B Mod\-Tab
+.B Mod4\-Tab
 Toggles to the previously selected tags.
 .TP
-.B Mod\-Shift\-[1..n]
+.B Mod4\-Shift\-[1..n]
 Apply nth tag to focused window.
 .TP
-.B Mod\-Shift\-0
+.B Mod4\-Shift\-0
 Apply all tags to focused window.
 .TP
-.B Mod\-Control\-Shift\-[1..n]
+.B Mod4\-Control\-Shift\-[1..n]
 Add/remove nth tag to/from focused window.
 .TP
-.B Mod\-[1..n]
+.B Mod4\-[1..n]
 View all windows with nth tag.
 .TP
-.B Mod\-0
+.B Mod4\-0
 View all windows with any tag.
 .TP
-.B Mod\-Control\-[1..n]
+.B Mod4\-Control\-[1..n]
 Add/remove all windows with nth tag to/from the view.
 .TP
-.B Mod\-Shift\-q
+.B Mod4\-Alt\-Control-Esc
 Quit dwm.
 .TP
-.B Mod\-Control\-Shift\-q
+.B Mod4\-Alt-r
 Restart dwm.
 .SS Mouse commands
 .TP
-.B Mod\-Button1
+.B Mod4\-Button1
 Move focused window while dragging. Tiled windows will be toggled to the floating state.
 .TP
-.B Mod\-Button2
+.B Mod4\-Button2
 Toggles focused window between floating and tiled state.
 .TP
-.B Mod\-Button3
+.B Mod4\-Button3
 Resize focused window while dragging. Tiled windows will be toggled to the floating state.
+.P
+See the "config.h" file for more keybindings.
+.P
 .SH CUSTOMIZATION
 dwm is customized by creating a custom config.h and (re)compiling the source
 code. This keeps it fast, secure and simple.
+.TP
+.B Xresources
+To change dwm's colorschemes without (re)compiling add these to the Xresources file.
+
+dwm.normbgcolor     : #222222
+
+dwm.normbordercolor : #444444
+
+dwm.normfgcolor     : #bbbbbb
+
+dwm.selfgcolor      : #eeeeee
+
+dwm.selbordercolor  : #005577
+
+dwm.selbgcolor      : #005577
+.TP
 .SH SIGNALS
 .TP
 .B SIGHUP - 1
