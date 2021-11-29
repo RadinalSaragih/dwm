@@ -1,6 +1,5 @@
 /* defining some programs */
 #define TERM "st", "-g", "115x45"
-//#define EMACS "emacsclient", "-nc"
 #define FM "/usr/bin/ranger"
 #define RSS "/usr/bin/newsboat"
 #define MPLAYER "/usr/bin/cmus"
@@ -83,7 +82,7 @@ static const int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
   /* symbol     arrange function */
   { "TILED-R",      tile        }, /* first entry is default */
-  { "TILED-L",      left_stack    },
+  { "TILED-L",      left_stack  },
   { "FLOAT",        NULL        },
   { "MONOCLE",      monocle     },
   /* { "BSTACK",       bstack      }, */
