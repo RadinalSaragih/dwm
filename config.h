@@ -1,24 +1,17 @@
-/* defining some programs */
-#define TERM "st", "-g", "115x45"
-#define FM "/usr/bin/ranger"
-#define RSS "/usr/bin/newsboat"
-#define MPLAYER "/usr/bin/cmus"
-#define BRWSR "/usr/bin/elinks", "-no-connect", "https://lite.duckduckgo.com/lite"
-
 /* appearance */
-static const unsigned int snap = 10; /* snap pixel */
-static const unsigned int borderpx = 1; /* border pixel of windows */
-static const unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
-static const unsigned int systrayspacing = 2; /* systray spacing */
-static const unsigned int systrayonleft  = 0; /* systray on the left of status text */
-static const int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
-static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
-static const int focusonwheel = 0;
-static const int showsystray = 0; /* 0 = no systray */
-static const int showbar = 1; /* 0 = no bar */
-
-static const int topbar = 1; /* 0 = bottom bar */
-static const char *fonts[] = { "Liberation Mono:style=Regular:pixelsize=10" };
+static unsigned int snap = 10; /* snap pixel */
+static unsigned int borderpx = 1; /* border pixel of windows */
+static unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
+static unsigned int systrayspacing = 2; /* systray spacing */
+static unsigned int systrayonleft  = 0; /* systray on the left of status text */
+static int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
+static int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
+static int focusonwheel = 0;
+static int showsystray = 0; /* 0 = no systray */
+static int showbar = 1; /* 0 = no bar */
+static int topbar = 1; /* 0 = bottom bar */
+static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
+static const char *fonts[] = { font };
 
 /* colors */
 static char normbgcolor[]     = "#222222";
@@ -33,24 +26,29 @@ static char *colors[][3] = {
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
+static char scratchpad1[] = "/bin/ranger";
+static char scratchpad2[] = "/bin/newsboat";
+static char scratchpad3[] = "/bin/cmus";
+static char scratchpad4[] = "/bin/elinks";
+
 /* scratchpads */
 typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = { TERM, "-n", "sp-1", NULL };
-const char *spcmd2[] = { TERM, "-n", "sp-2", "-e", FM, NULL };
-const char *spcmd3[] = { TERM, "-n", "sp-3", "-e", RSS, NULL };
-const char *spcmd4[] = { TERM, "-n", "sp-4", "-e", MPLAYER, NULL };
-const char *spcmd5[] = { TERM, "-n", "sp-5", "-e", BRWSR, NULL };
+const char *spcmd0[] = { "st", "-n", "sp-0", NULL };
+const char *spcmd1[] = { "st", "-n", "sp-1", "-e", scratchpad1, NULL };
+const char *spcmd2[] = { "st", "-n", "sp-2", "-e", scratchpad2, NULL };
+const char *spcmd3[] = { "st", "-n", "sp-3", "-e", scratchpad3, NULL };
+const char *spcmd4[] = { "st", "-n", "sp-4", "-e", scratchpad4, NULL };
 
 static Sp scratchpads[] = {
 /* name      cmd  */
+{"sp-0",    spcmd0},
 {"sp-1",    spcmd1},
 {"sp-2",    spcmd2},
 {"sp-3",    spcmd3},
 {"sp-4",    spcmd4},
-{"sp-5",    spcmd5},
 };
 
 /* tagging */
@@ -61,24 +59,23 @@ static const Rule rules[] = {
  * WM_NAME(STRING) = title */
 /* class          instance      title    tags mask   iscentered isfloating monitor */
 { "Steam",        NULL,         NULL,     1 << 8,         0,         0,      -1 },
-{ "VirtualBox Manager", NULL,    NULL,    1 << 7,         0,         0,      -1 },
 { "Inkscape",     "org.inkscape.Inkscape", NULL, 1 << 6, 0,          0,      -1 },
 { "Gimp", NULL,   "GNU Image Manipulation Program", 1 << 5,  0,      0,      -1 },
 { NULL,           "libreoffice",NULL,     1 << 5,         0,         0,      -1 },
 { "kdenlive",     NULL,         NULL,     1 << 5,         0,         0,      -1 },
 { NULL,           "Navigator",  NULL,     1 << 4,         0,         0,      -1 },
 { NULL,           "freetube",   NULL,     1 << 3,         0,         0,      -1 },
-{ NULL,           "sp-1",       NULL,     SPTAG(0),       1,         1,      -1 },
-{ NULL,           "sp-2",       NULL,     SPTAG(1),       1,         1,      -1 },
-{ NULL,           "sp-3",       NULL,     SPTAG(2),       1,         1,      -1 },
-{ NULL,           "sp-4",       NULL,     SPTAG(3),       1,         1,      -1 },
-{ NULL,           "sp-5",       NULL,     SPTAG(4),       1,         1,      -1 },
+{ NULL,           "sp-0",       NULL,     SPTAG(0),       1,         1,      -1 },
+{ NULL,           "sp-1",       NULL,     SPTAG(1),       1,         1,      -1 },
+{ NULL,           "sp-2",       NULL,     SPTAG(2),       1,         1,      -1 },
+{ NULL,           "sp-3",       NULL,     SPTAG(3),       1,         1,      -1 },
+{ NULL,           "sp-4",       NULL,     SPTAG(4),       1,         1,      -1 },
 };
 
 /* layout(s) */
-static const float mfact = 0.50; /* factor of master area size [0.05..0.95] */
-static const int nmaster = 1; /* number of clients in master area */
-static const int resizehints = 0; /* 1 = respect size hints in tiled resizals */
+static float mfact = 0.50; /* factor of master area size [0.05..0.95] */
+static int nmaster = 1; /* number of clients in master area */
+static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
   /* symbol     arrange function */
   { "TILED-R",      tile        }, /* first entry is default */
@@ -110,13 +107,46 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
-static const char *termCMD[] = { TERM, NULL };
+static char terminal[] = "st";
+static const char *termcmd[] = { terminal, NULL };
+
+/*
+ * Xresources preferences to load at startup
+ */
+ResourcePref resources[] = {
+		{ "font",                    STRING,  &font },
+		{ "normbgcolor",             STRING,  &normbgcolor },
+		{ "normbordercolor",         STRING,  &normbordercolor },
+		{ "normfgcolor",             STRING,  &normfgcolor },
+		{ "selbgcolor",              STRING,  &selbgcolor },
+		{ "selbordercolor",          STRING,  &selbordercolor },
+		{ "selfgcolor",              STRING,  &selfgcolor },
+		{ "borderpx",          	     INTEGER, &borderpx },
+		{ "snap",          	     INTEGER, &snap },
+		{ "showbar",          	     INTEGER, &showbar },
+		{ "topbar",          	     INTEGER, &topbar },
+		{ "nmaster",          	     INTEGER, &nmaster },
+		{ "resizehints",       	     INTEGER, &resizehints },
+		{ "mfact",      	     FLOAT,   &mfact },
+		{ "focusonwheel",            INTEGER, &focusonwheel},
+		{ "lockfullscreen",          INTEGER, &lockfullscreen},
+		{ "showsystray",             INTEGER, &showsystray },
+		{ "systraypinning",          INTEGER, &systraypinning },
+		{ "systrayspacing",          INTEGER, &systrayspacing },
+		{ "systrayonleft",           INTEGER, &systrayonleft },
+		{ "systraypinningfailfirst", INTEGER, &systraypinningfailfirst },
+		{ "scratchpad1",             STRING,  &scratchpad1 },
+		{ "scratchpad2",             STRING,  &scratchpad2 },
+		{ "scratchpad3",             STRING,  &scratchpad3 },
+		{ "scratchpad4",             STRING,  &scratchpad4 },
+};
+
 
 /* keybindings */
 static Key keys[] = {
 /* modifier                     key        function        argument */
 { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
-{ MODKEY,                       XK_Return, spawn,          {.v = termCMD } },
+{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 
 { MODKEY,                       XK_b,      togglebar,      {0} },
 
@@ -211,9 +241,9 @@ TAGKEYS(                        XK_9,                      8)
 
 { MODKEY,                       XK_q,      togglescratch,  {.ui = 0 } },
 { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
-{ MODKEY|ShiftMask,             XK_grave,  togglescratch,  {.ui = 2 } },
+{ MODKEY,                       XK_e,      togglescratch,  {.ui = 2 } },
 { MODKEY,                       XK_grave,  togglescratch,  {.ui = 3 } },
-{ MODKEY,                       XK_e,      togglescratch,  {.ui = 4 } },
+{ MODKEY|ShiftMask,             XK_grave,  togglescratch,  {.ui = 4 } },
 
 { MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("$BROWSER") },
 
@@ -238,7 +268,7 @@ TAGKEYS(                        XK_9,                      8)
 
 { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
 { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
-{ MODKEY|ControlMask,           XK_x,      xrdb,           {.v = NULL } },
+/* { MODKEY|ControlMask,           XK_x,      xrdb,           {.v = NULL } }, */
 };
 
 /* button definitions */
@@ -248,7 +278,7 @@ static Button buttons[] = {
   { ClkLtSymbol,    0,                Button1,        setlayout,      {0} },
   { ClkLtSymbol,    0,                Button3,        setlayout,      {.v = &layouts[2]} },
   { ClkWinTitle,    0,                Button2,        zoom,           {0} },
-  { ClkStatusText,  0,                Button2,        spawn,          {.v = termCMD } },
+  { ClkStatusText,  0,                Button2,        spawn,          {.v = termcmd } },
   { ClkClientWin,   MODKEY,           Button1,        movemouse,      {0} },
   { ClkClientWin,   MODKEY,           Button2,        togglefloating, {0} },
   { ClkClientWin,   MODKEY|ShiftMask, Button1,        resizemouse,    {0} },
