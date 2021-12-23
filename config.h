@@ -10,6 +10,7 @@ static int focusonwheel = 0;
 static int showsystray = 0; /* 0 = no systray */
 static int showbar = 1; /* 0 = no bar */
 static int topbar = 1; /* 0 = bottom bar */
+static int noborder = 1; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
 
@@ -122,12 +123,12 @@ ResourcePref resources[] = {
 		{ "selbordercolor",          STRING,  &selbordercolor },
 		{ "selfgcolor",              STRING,  &selfgcolor },
 		{ "borderpx",          	     INTEGER, &borderpx },
-		{ "snap",          	     INTEGER, &snap },
+		{ "snap",          	         INTEGER, &snap },
 		{ "showbar",          	     INTEGER, &showbar },
 		{ "topbar",          	     INTEGER, &topbar },
 		{ "nmaster",          	     INTEGER, &nmaster },
 		{ "resizehints",       	     INTEGER, &resizehints },
-		{ "mfact",      	     FLOAT,   &mfact },
+		{ "mfact",      	         FLOAT,   &mfact },
 		{ "focusonwheel",            INTEGER, &focusonwheel},
 		{ "lockfullscreen",          INTEGER, &lockfullscreen},
 		{ "showsystray",             INTEGER, &showsystray },
@@ -139,6 +140,7 @@ ResourcePref resources[] = {
 		{ "scratchpad2",             STRING,  &scratchpad2 },
 		{ "scratchpad3",             STRING,  &scratchpad3 },
 		{ "scratchpad4",             STRING,  &scratchpad4 },
+		{ "noborder",                INTEGER, &noborder },
 };
 
 

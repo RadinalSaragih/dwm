@@ -239,6 +239,8 @@ static Client *nexttiled(Client *c);
 static void pop(Client *);
 static Client *prevtiled(Client *c);
 static void propertynotify(XEvent *e);
+static void pushdown(const Arg *arg);
+static void pushup(const Arg *arg);
 static void quit(const Arg *arg);
 static Monitor *recttomon(int x, int y, int w, int h);
 static void removesystrayicon(Client *i);
@@ -270,6 +272,7 @@ static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglefullscr(const Arg *arg);
 static void togglesticky(const Arg *arg);
 static void togglescratch(const Arg *arg);
 static void toggletag(const Arg *arg);
@@ -345,14 +348,7 @@ static Window root, wmcheckwin;
 
 /* Enable the bstack (bottom stack) and bstackhoriz
    (horizontal bottom stack) */
-//#include "modules/bottomstack.c"
-
-/* Enables pushing down or up windows in the client list,
-   but not to the master area */
-#include "modules/push-no-master.c"
-
-/* A proper fullscreen */
-#include "modules/actual-fullscreen.c"
+/* #include "modules/bottomstack.c" */
 
 /* autostart programs via shellscript */
 #include "modules/autostart.c"
@@ -1570,6 +1566,16 @@ pop(Client *c)
 	arrange(c->mon);
 }
 
+Client *
+prevtiled(Client *c) {
+	Client *p, *r;
+
+	for(p = selmon->clients, r = NULL; p && p != c; p = p->next)
+		if(!p->isfloating && ISVISIBLE(p))
+			r = p;
+	return r;
+}
+
 void
 propertynotify(XEvent *e)
 {
@@ -1615,6 +1621,37 @@ propertynotify(XEvent *e)
 		if (ev->atom == netatom[NetWMWindowType])
 			updatewindowtype(c);
 	}
+}
+
+void
+pushdown(const Arg *arg) {
+	Client *sel = selmon->sel, *c;
+
+	if(!sel || sel->isfloating || sel == nexttiled(selmon->clients))
+		return;
+	if((c = nexttiled(sel->next))) {
+		detach(sel);
+		sel->next = c->next;
+		c->next = sel;
+	}
+	focus(sel);
+	arrange(selmon);
+}
+
+void
+pushup(const Arg *arg) {
+	Client *sel = selmon->sel, *c;
+
+	if(!sel || sel->isfloating)
+		return;
+	if((c = prevtiled(sel)) && c != nexttiled(selmon->clients)) {
+		detach(sel);
+		sel->next = c;
+		for(c = selmon->clients; c->next != sel->next; c = c->next);
+		c->next = sel;
+	}
+	focus(sel);
+	arrange(selmon);
 }
 
 void
@@ -1677,10 +1714,18 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->oldw = c->w; c->w = wc.width = w;
 	c->oldh = c->h; c->h = wc.height = h;
 	wc.border_width = c->bw;
-	/* Comment to disable or Uncomment to enable.
-	   This hides the bar when only one windows is opened 
-	   but dont remove floating window's border */
-	#include "modules/no-border-floating.c" 
+
+    if ( noborder ) {
+        if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
+            || &monocle == c->mon->lt[c->mon->sellt]->arrange)
+            && !c->isfullscreen && !c->isfloating
+            && NULL != c->mon->lt[c->mon->sellt]->arrange) {
+        	c->w = wc.width += c->bw * 2;
+        	c->h = wc.height += c->bw * 2;
+        	wc.border_width = 0;
+        }
+    }
+
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
 	XSync(dpy, False);
@@ -2190,6 +2235,13 @@ togglefloating(const Arg *arg)
 		selmon->sel->sfh = selmon->sel->h;
 	}
 	arrange(selmon);
+}
+
+void
+togglefullscr(const Arg *arg)
+{
+  if(selmon->sel)
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
 void
