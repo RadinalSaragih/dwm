@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=dwm
+Comment=The Suckless Dynamic Window Manager
+Exec=/bin/dwm
+Type=Application
+Keywords=wm;tiling

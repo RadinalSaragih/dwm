@@ -44,10 +44,11 @@ install: all
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	if [ ! -d "${XSESSIONS}" ];then \
-		mkdir "${XSESSIONS}";       \
+
+	if [ ! -d "${XSESSIONS}" ]; then \
+		mkdir -p "${XSESSIONS}"; \
 	fi
-	echo -e "[Desktop Entry]\nName=dwm\nComment=The Suckless Dynamic Window Manager\nExec=${DESTDIR}${PREFIX}/bin/dwm\nType=Application\nKeywords=wm;tiling" >> ${XSESSIONS}/dwm.desktop
+	cp -f dwm.desktop ${XSESSIONS}
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
