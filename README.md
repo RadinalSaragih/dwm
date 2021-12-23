@@ -2,10 +2,6 @@
 This is my bloated build of the Suckless's Dynamic Window Manager
 dwm is an extremely fast, small, and dynamic window manager for X.
 
-<p align="center">
-<img alt="DWM" src=".img/screenshot.png"/>
-</p>
-
 ### Installation
 A basic make install would do the job.
 
