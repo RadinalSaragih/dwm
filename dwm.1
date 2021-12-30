@@ -179,7 +179,10 @@ dwm is customized by creating a custom config.h and (re)compiling the source
 code. This keeps it fast, secure and simple.
 .TP
 .B Xresources
-To change dwm's colorschemes without (re)compiling add these to the Xresources file.
+The Xresources patch enables changing some of dwm settings through the Xresources file,
+this makes it easier to change settings without constantly recompiling. 
+
+This for example changes the colorscheme.
 
 dwm.normbgcolor     : #222222
 
@@ -192,6 +195,8 @@ dwm.selfgcolor      : #eeeeee
 dwm.selbordercolor  : #005577
 
 dwm.selbgcolor      : #005577
+
+See the "config.h" file for more options.
 .TP
 .SH SIGNALS
 .TP
@@ -218,4 +223,4 @@ or
 XToolkit/XAWT backend can recognize) or when using OpenJDK setting the environment variable
 .BR _JAVA_AWT_WM_NONREPARENTING=1 .
 .SH BUGS
-Send all bug reports with a patch to hackers@suckless.org.
+Send all upstream bug reports with a patch to hackers@suckless.org.
