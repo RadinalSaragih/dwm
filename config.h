@@ -5,12 +5,14 @@ static unsigned int systraypinning = 0; /* 0: sloppy systray follows selected mo
 static unsigned int systrayspacing = 2; /* systray spacing */
 static unsigned int systrayonleft  = 0; /* systray on the left of status text */
 static int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
+static int swallowfloating = 0; /* 1 means swallow floating windows by default */
 static int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 static int focusonwheel = 0;
 static int showsystray = 0; /* 0 = no systray */
 static int showbar = 1; /* 0 = no bar */
 static int topbar = 1; /* 0 = bottom bar */
 static int noborder = 1; /* 1 = hide the bar if only a single window is opened. */
+static int showtitle = 0; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
 
@@ -24,7 +26,7 @@ static char selbgcolor[]      = "#005577";
 static char *colors[][3] = {
     /*               fg           bg           border   */
     [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-    [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+    [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor },
 };
 
 static char scratchpad1[] = "/bin/ranger";
@@ -58,19 +60,26 @@ static const Rule rules[] = {
     /* xprop(1):
      * WM_CLASS(STRING) = instance, class
      * WM_NAME(STRING) = title */
-    /* class          instance      title    tags mask   iscentered isfloating monitor */
-    { "Steam",        NULL,         NULL,     1 << 8,         0,         0,      -1 },
-    { "Inkscape",     "org.inkscape.Inkscape", NULL, 1 << 6, 0,          0,      -1 },
-    { "Gimp", NULL,   "GNU Image Manipulation Program", 1 << 5,  0,      0,      -1 },
-    { NULL,           "libreoffice",NULL,     1 << 5,         0,         0,      -1 },
-    { "kdenlive",     NULL,         NULL,     1 << 5,         0,         0,      -1 },
-    { NULL,           "Navigator",  NULL,     1 << 4,         0,         0,      -1 },
-    { NULL,           "freetube",   NULL,     1 << 3,         0,         0,      -1 },
-    { NULL,           "sp-0",       NULL,     SPTAG(0),       1,         1,      -1 },
-    { NULL,           "sp-1",       NULL,     SPTAG(1),       1,         1,      -1 },
-    { NULL,           "sp-2",       NULL,     SPTAG(2),       1,         1,      -1 },
-    { NULL,           "sp-3",       NULL,     SPTAG(3),       1,         1,      -1 },
-    { NULL,           "sp-4",       NULL,     SPTAG(4),       1,         1,      -1 },
+    /* class          instance      title    tags mask   iscentered isfloating isterminal noswallow monitor */
+    { "Steam",        NULL,         NULL,     1 << 8,         0,         0,        0,         1,      -1 },
+    { "retroarch",    NULL,         NULL,     1 << 8,         0,         0,        0,         1,      -1 },
+    { "dolphin-emu",  NULL,         NULL,     1 << 8,         0,         0,        0,         1,      -1 },
+    { "Godot",        NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
+    { "Inkscape",     NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
+    { "Gimp",         NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
+    { "kdenlive",     NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
+    { "Firefox-esr",  NULL,         NULL,     1 << 6,         0,         0,        0,         1,      -1 },
+    { "qutebrowser",  NULL,         NULL,     1 << 6,         0,         0,        0,         1,      -1 },
+    { "FreeTube",     NULL,         NULL,     1 << 6,         0,         0,        0,         1,      -1 },
+    { "Virt-manager", NULL,         NULL,     1 << 5,         0,         0,        0,         1,      -1 },
+    { "St",           NULL,         NULL,     0,              0,         0,        1,         0,      -1 },
+	{ NULL,           NULL,         "Event Tester", 0,        0,         0,        0,         1,      -1 },
+
+    { NULL,           "sp-0",       NULL,     SPTAG(0),       1,         1,        1,         0,      -1 },
+    { NULL,           "sp-1",       NULL,     SPTAG(1),       1,         1,        1,         0,      -1 },
+    { NULL,           "sp-2",       NULL,     SPTAG(2),       1,         1,        1,         0,      -1 },
+    { NULL,           "sp-3",       NULL,     SPTAG(3),       1,         1,        1,         0,      -1 },
+    { NULL,           "sp-4",       NULL,     SPTAG(4),       1,         1,        1,         0,      -1 },
 };
 
 /* layout(s) */
@@ -78,11 +87,11 @@ static float mfact = 0.50; /* factor of master area size [0.05..0.95] */
 static int nmaster = 1; /* number of clients in master area */
 static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
-    /* symbol     arrange function */
-    { "TILED-R",      tile        }, /* first entry is default */
-    { "TILED-L",      left_stack  },
-    { "FLOAT",        NULL        },
-    { "MONOCLE",      monocle     },
+    /* symbol   arrange function */
+    { "T-R",    tile        }, /* first entry is default */
+    { "T-L",    left_stack  },
+    { "F",      NULL        },
+    { "M",      monocle     },
     /* { "BSTACK",       bstack      }, */
     /* { "BSTACK-HORIZ", bstackhoriz }, */
 };
@@ -140,6 +149,8 @@ ResourcePref resources[] = {
     { "scratchpad3",             STRING,  &scratchpad3 },
     { "scratchpad4",             STRING,  &scratchpad4 },
     { "noborder",                INTEGER, &noborder },
+    { "showtitle",               INTEGER, &showtitle },
+    { "swallowfloating",         INTEGER, &swallowfloating }, 
 };
 
 
@@ -148,88 +159,88 @@ static Key keys[] = {
     /* modifier                     key        function        argument */
     { MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
     { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-
+    
     { MODKEY,                       XK_b,      togglebar,      {0} },
-
+    
     { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
     { MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-
+    
     { MODKEY|ControlMask,           XK_bracketright, incnmaster, {.i = +1 } },
     { MODKEY|ControlMask,           XK_bracketleft, incnmaster, {.i = -1 } },
-
+    
     { MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
     { MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-
+    
     { MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
-
+    
     { MODKEY,                       XK_backslash,    setlayout, {.v = &layouts[0]} },
     { MODKEY,                       XK_bracketright, setlayout, {.v = &layouts[1]} },
     { MODKEY|ShiftMask,             XK_bracketright, setlayout, {.v = &layouts[2]} },
     { MODKEY|ShiftMask,             XK_backslash,    setlayout, {.v = &layouts[3]} },
-
+    
     { MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
-
+    
     { MODKEY,                       XK_s,      togglefloating, {0} },
     { MODKEY,                       XK_f,      togglefullscr,  {0} },
     { MODKEY,                       XK_x,      togglesticky,   {0} },
-
+    
     { MODKEY|ShiftMask,             XK_j,      pushdown,       {0} },
     { MODKEY|ShiftMask,             XK_k,      pushup,         {0} },
     { MODKEY|ShiftMask,             XK_h,      view_adjacent,  {.i = -1 } },
     { MODKEY|ShiftMask,             XK_l,      view_adjacent,  {.i = +1 } },
-
+    
     { MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
     { MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
     { MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
     { MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
-
+    
     { MODKEY|ShiftMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
     { MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
     { MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
     { MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
-
+    
     { MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} },
     { MODKEY|ControlMask,           XK_Down,   moveresizeedge, {.v = "b"} },
     { MODKEY|ControlMask,           XK_Left,   moveresizeedge, {.v = "l"} },
     { MODKEY|ControlMask,           XK_Right,  moveresizeedge, {.v = "r"} },
-
+    
     { MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "T"} },
     { MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "B"} },
     { MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "L"} },
     { MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "R"} },
-
+    
     { HYPER,                        XK_f,      moveresize,     {.v = "0x 25y 0w 0h" } },
     { HYPER,                        XK_d,      moveresize,     {.v = "0x -25y 0w 0h" } },
     { HYPER,                        XK_g,      moveresize,     {.v = "25x 0y 0w 0h" } },
     { HYPER,                        XK_s,      moveresize,     {.v = "-25x 0y 0w 0h" } },
-
+    
     { HYPER|ShiftMask,              XK_f,      moveresize,     {.v = "0x 0y 0w 25h" } },
     { HYPER|ShiftMask,              XK_d,      moveresize,     {.v = "0x 0y 0w -25h" } },
     { HYPER|ShiftMask,              XK_g,      moveresize,     {.v = "0x 0y 25w 0h" } },
     { HYPER|ShiftMask,              XK_s,      moveresize,     {.v = "0x 0y -25w 0h" } },
-
+    
     { HYPER|ControlMask,            XK_f,      moveresizeedge, {.v = "b"} },
     { HYPER|ControlMask,            XK_d,      moveresizeedge, {.v = "t"} },
     { HYPER|ControlMask,            XK_g,      moveresizeedge, {.v = "r"} },
     { HYPER|ControlMask,            XK_s,      moveresizeedge, {.v = "l"} },
-
+    
     { HYPER|ControlMask|ShiftMask,  XK_f,      moveresizeedge, {.v = "B"} },
     { HYPER|ControlMask|ShiftMask,  XK_d,      moveresizeedge, {.v = "T"} },
     { HYPER|ControlMask|ShiftMask,  XK_g,      moveresizeedge, {.v = "R"} },
     { HYPER|ControlMask|ShiftMask,  XK_s,      moveresizeedge, {.v = "L"} },
-
+    
     { MODKEY,                       XK_n,      zoom,           {0} },
     { MODKEY,                       XK_Tab,    view,           {0} },
-
+    
     { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
     { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-
+    
     { MODKEY|ControlMask,           XK_j,      focusmon,       {.i = -1 } },
     { MODKEY|ControlMask,           XK_k,      focusmon,       {.i = +1 } },
-
+    
     { MODKEY|ControlMask|ShiftMask, XK_j,      tagmon,         {.i = -1 } },
     { MODKEY|ControlMask|ShiftMask, XK_k,      tagmon,         {.i = +1 } },
-
+    
     TAGKEYS(                        XK_1,                      0)
     TAGKEYS(                        XK_2,                      1)
     TAGKEYS(                        XK_3,                      2)
@@ -239,20 +250,20 @@ static Key keys[] = {
     TAGKEYS(                        XK_7,                      6)
     TAGKEYS(                        XK_8,                      7)
     TAGKEYS(                        XK_9,                      8)
-
+    
     { MODKEY,                       XK_q,      togglescratch,  {.ui = 0 } },
     { MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
     { MODKEY,                       XK_e,      togglescratch,  {.ui = 2 } },
     { MODKEY,                       XK_grave,  togglescratch,  {.ui = 3 } },
     { MODKEY|ShiftMask,             XK_grave,  togglescratch,  {.ui = 4 } },
-
+    
     { MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("$BROWSER") },
-
+    
     { MODKEY,                       XK_F12,    spawn,          SHCMD("dm-pdf") },
     { MODKEY|ControlMask,           XK_F12,    spawn,          SHCMD("passmenu") },
     { MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("dm-powermenu") },
     { 0,                            XK_Print,  spawn,          SHCMD("dm-screenshot") },
-
+    
     { HYPER,                        XK_F1,     spawn,          SHCMD("cmus-remote -v -1%; pkill -RTMIN+10 dwmblocks") },
     { HYPER,                        XK_F2,     spawn,          SHCMD("cmus-remote -v +1%; pkill -RTMIN+10 dwmblocks") },
     { HYPER,                        XK_F3,     spawn,          SHCMD("cmus-remote -R; pkill -RTMIN+5 dwmblocks") },
@@ -261,11 +272,11 @@ static Key keys[] = {
     { HYPER,                        XK_F6,     spawn,          SHCMD("cmus-remote -s; pkill -RTMIN+5 dwmblocks") },
     { HYPER,                        XK_F7,     spawn,          SHCMD("cmus-remote -n; pkill -RTMIN+5 dwmblocks") },
     { HYPER,                        XK_F8,     spawn,          SHCMD("cmus-remote -r; pkill -RTMIN+5 dwmblocks") },
-
+    
     { MODKEY,                       XK_F1,     spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') -1% ; pkill -RTMIN+10 dwmblocks") },
     { MODKEY,                       XK_F2,     spawn,          SHCMD("pactl set-sink-volume $(pactl info | grep 'Default Sink' | awk '{print $3}') +1% ; pkill -RTMIN+10 dwmblocks") },
     { MODKEY,                       XK_F3,     spawn,          SHCMD("pactl set-sink-mute $(pactl info | grep 'Default Sink' | awk '{print $3}') toggle ; pkill -RTMIN+10 dwmblocks") },
-
+    
     { MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
     { MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 };
