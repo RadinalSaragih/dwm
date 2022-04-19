@@ -12,8 +12,7 @@ sudo make install
 ### Build Dependencies
 * Debian Based Distros
 ```sh
-sudo apt install build-essential libgdk-pixbuf-xlib-2.0-0 libxft-dev libxinerama-dev
+sudo apt install build-essential libgdk-pixbuf-xlib-2.0-0 libxft-dev libxinerama-dev libxcb1-dev libx11-xcb-dev libxcb-res0-dev
 ```
 
 ## 
-##### Note: The manpage is kinda up to date, But to be sure just read the source files (most importantly dwm.c and config.h).
