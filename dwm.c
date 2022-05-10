@@ -52,37 +52,36 @@
 #include "util.h"
 
 /* macros */
-#define BUTTONMASK              (ButtonPressMask|ButtonReleaseMask)
-#define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
-#define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
-		* MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
-#define ISVISIBLEONTAG(C, T)    ((C->tags & T))
-#define ISVISIBLE(C)            ISVISIBLEONTAG(C, C->mon->tagset[C->mon->seltags] ||  C->issticky)
-#define LENGTH(X)               (sizeof X / sizeof X[0])
-#define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
-#define WIDTH(X)                ((X)->w + 2 * (X)->bw)
-#define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
-#define NUMTAGS       			(LENGTH(tags) + LENGTH(scratchpads))
-#define TAGMASK           		((1 << NUMTAGS) - 1)
-#define SPTAG(i) 			    ((1 << LENGTH(tags)) << (i))
-#define SPTAGMASK   		    (((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
-#define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
-#define ColSPC 					3
+#define BUTTONMASK 		(ButtonPressMask|ButtonReleaseMask)
+#define CLEANMASK(mask) 	(mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
+#define INTERSECT(x,y,w,h,m) 	(MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
+				* MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
+#define ISVISIBLEONTAG(C, T) 	((C->tags & T))
+#define ISVISIBLE(C) 		ISVISIBLEONTAG(C, C->mon->tagset[C->mon->seltags] ||  C->issticky)
+#define LENGTH(X) 		(sizeof X / sizeof X[0])
+#define MOUSEMASK 		(BUTTONMASK|PointerMotionMask)
+#define WIDTH(X) 		((X)->w + 2 * (X)->bw)
+#define HEIGHT(X) 		((X)->h + 2 * (X)->bw)
+#define NUMTAGS 		(LENGTH(tags) + LENGTH(scratchpads))
+#define TAGMASK 		((1 << NUMTAGS) - 1)
+#define SPTAG(i) 		((1 << LENGTH(tags)) << (i))
+#define SPTAGMASK 		(((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
+#define TEXTW(X) 		(drw_fontset_getwidth(drw, (X)) + lrpad)
 
 #define SYSTEM_TRAY_REQUEST_DOCK 	0
 
 /* XEMBED messages */
 #define XEMBED_EMBEDDED_NOTIFY 		0
 #define XEMBED_WINDOW_ACTIVATE 		1
-#define XEMBED_FOCUS_IN 			4
-#define XEMBED_MODALITY_ON 			10
+#define XEMBED_FOCUS_IN 		4
+#define XEMBED_MODALITY_ON 		10
 
-#define XEMBED_MAPPED 				(1 << 0)
+#define XEMBED_MAPPED 			(1 << 0)
 #define XEMBED_WINDOW_ACTIVATE 		1
 #define XEMBED_WINDOW_DEACTIVATE 	2
 
-#define VERSION_MAJOR 				0
-#define VERSION_MINOR 				0
+#define VERSION_MAJOR 			0
+#define VERSION_MINOR 			0
 #define XEMBED_EMBEDDED_VERSION (VERSION_MAJOR << 16) | VERSION_MINOR
 
 /* enums */
@@ -327,9 +326,9 @@ static Systray *systray =  NULL;
 static const char broken[] = "broken";
 static char stext[256];
 static int screen;
-static int sw, sh;           /* X display screen geometry width, height */
-static int bh, blw = 0;      /* bar geometry */
-static int lrpad;            /* sum of left and right padding for text */
+static int sw, sh; 		/* X display screen geometry width, height */
+static int bh, blw = 0; 	/* bar geometry */
+static int lrpad; 		/* sum of left and right padding for text */
 static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
 static void (*handler[LASTEvent]) (XEvent *) = {
@@ -359,20 +358,8 @@ static Window root, wmcheckwin;
 
 static xcb_connection_t *xcon;
 
-// ------------------------------------------------------ //
-/* Comment to disable or Uncomment to enable. */ 
-
-/* Enable the left stack (tiled to the left) layout */
-#include "modules/left-stack.c"
-
-/* Enable the bstack (bottom stack) and bstackhoriz
-   (horizontal bottom stack) */
-/* #include "modules/bottomstack.c" */
-
 /* autostart programs via shellscript */
 #include "modules/autostart.c"
-
-// ------------------------------------------------------ //
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -756,7 +743,7 @@ clientmessage(XEvent *e)
 	if (cme->message_type == netatom[NetWMState]) {
 		if (cme->data.l[1] == netatom[NetWMFullscreen]
 				|| cme->data.l[2] == netatom[NetWMFullscreen])
-			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
+			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD */
 						|| (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->isfullscreen)));
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
 		if (c != selmon->sel && !c->isurgent)
@@ -997,22 +984,14 @@ drawbar(Monitor *m)
 
 	if ((w = m->ww - tw - stw - x) > bh) {
 		if (m->sel){
-
-			if ( showtitle ){
+			if (showtitle) {
 				drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 				drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);  
 				if (m->sel->isfloating)
 					drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
 			}
-			else{
+			else
 				drw_text(drw, x, 0, w, bh, lrpad / 2, "", 0);
-			}
-
-			/* if (m->sel->isfloating) */
-			/*     drw_text(drw, x, 0, w, bh, lrpad / 2, "FLOAT", 0);   */
-
-			/* if (m->sel->issticky) */
-			/*     drw_text(drw, x, 0, w, bh, lrpad / 2, "STICKY", 0);   */
 		}
 		else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
@@ -1063,7 +1042,7 @@ focus(Client *c)
 		/* XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel); */
 
 		if(c->isfloating || c->issticky)
-			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColSPC].pixel);
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][3].pixel);
 		else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 
@@ -1346,7 +1325,7 @@ manage(Window w, XWindowAttributes *wa)
 
 
 	if(c->isfloating || c->issticky)
-		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColSPC].pixel);
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][3].pixel);
 	else
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
 
@@ -1372,7 +1351,7 @@ manage(Window w, XWindowAttributes *wa)
 		XRaiseWindow(dpy, c->win);
 
 	if(c->isfloating || c->issticky)
-		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColSPC].pixel);
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][3].pixel);
 
 	attachaside(c);
 	attachstack(c);
@@ -2330,7 +2309,7 @@ togglefloating(const Arg *arg)
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
 
 	if (selmon->sel->isfloating){
-		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColSPC].pixel);
+		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][3].pixel);
 	}else{
 		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColBorder].pixel);
 	}
@@ -2389,7 +2368,7 @@ togglesticky(const Arg *arg)
 		return;
 	selmon->sel->issticky = !selmon->sel->issticky;
 	if (selmon->sel->issticky){
-		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColSPC].pixel);
+		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][3].pixel);
 	}else{
 		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColBorder].pixel);
 	}

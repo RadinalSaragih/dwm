@@ -35,7 +35,9 @@ static char *colors[][4] = {
 static char scratchpad1[] = "/bin/ranger";
 static char scratchpad2[] = "/bin/newsboat";
 static char scratchpad3[] = "/bin/cmus";
-static char scratchpad4[] = "/bin/elinks"; /* scratchpads */
+static char scratchpad4[] = "/bin/elinks";
+
+/* scratchpads */
 typedef struct {
 	const char *name;
 	const void *cmd;
@@ -68,6 +70,7 @@ static const Rule rules[] = {
 	{ "Godot",        NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
 	{ "Inkscape",     NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
 	{ "Gimp",         NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
+	{ "lmms",         NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
 	{ "kdenlive",     NULL,         NULL,     1 << 7,         0,         0,        0,         1,      -1 },
 	{ "Firefox-esr",  NULL,         NULL,     1 << 6,         0,         0,        0,         1,      -1 },
 	{ "qutebrowser",  NULL,         NULL,     1 << 6,         0,         0,        0,         1,      -1 },
@@ -75,7 +78,6 @@ static const Rule rules[] = {
 	{ "Virt-manager", NULL,         NULL,     1 << 5,         0,         0,        0,         1,      -1 },
 	{ "St",           NULL,         NULL,     0,              0,         0,        1,         0,      -1 },
 	{ NULL,           NULL,         "Event Tester", 0,        0,         0,        0,         1,      -1 },
-
 	{ NULL,           "sp-0",       NULL,     SPTAG(0),       1,         1,        1,         0,      -1 },
 	{ NULL,           "sp-1",       NULL,     SPTAG(1),       1,         1,        1,         0,      -1 },
 	{ NULL,           "sp-2",       NULL,     SPTAG(2),       1,         1,        1,         0,      -1 },
@@ -89,12 +91,9 @@ static int nmaster = 1; /* number of clients in master area */
 static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
 	/* symbol   arrange function */
-	{ "T-R",    tile        }, /* first entry is default */
-	{ "T-L",    left_stack  },
-	{ "F",      NULL        },
-	{ "M",      monocle     },
-	/* { "BSTACK",       bstack      }, */
-	/* { "BSTACK-HORIZ", bstackhoriz }, */
+	{ "T", 		tile 	}, /* first entry is default */
+	{ "M", 		monocle },
+	{ "F", 		NULL 	},
 };
 
 /* key definitions */
@@ -132,12 +131,12 @@ ResourcePref resources[] = {
 	{ "selbordercolor",          STRING,  &selbordercolor },
 	{ "selfgcolor",              STRING,  &selfgcolor },
 	{ "borderpx",          	     INTEGER, &borderpx },
-	{ "snap",          	         INTEGER, &snap },
+	{ "snap",          	     INTEGER, &snap },
 	{ "showbar",          	     INTEGER, &showbar },
 	{ "topbar",          	     INTEGER, &topbar },
 	{ "nmaster",          	     INTEGER, &nmaster },
 	{ "resizehints",       	     INTEGER, &resizehints },
-	{ "mfact",      	         FLOAT,   &mfact },
+	{ "mfact",      	     FLOAT,   &mfact },
 	{ "focusonwheel",            INTEGER, &focusonwheel},
 	{ "lockfullscreen",          INTEGER, &lockfullscreen},
 	{ "showsystray",             INTEGER, &showsystray },
@@ -174,10 +173,9 @@ static Key keys[] = {
 
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
 
-	{ MODKEY,                       XK_backslash,    setlayout, {.v = &layouts[0]} },
-	{ MODKEY,                       XK_bracketright, setlayout, {.v = &layouts[1]} },
-	{ MODKEY|ShiftMask,             XK_bracketright, setlayout, {.v = &layouts[2]} },
-	{ MODKEY|ShiftMask,             XK_backslash,    setlayout, {.v = &layouts[3]} },
+	{ MODKEY,                       XK_bracketleft,  setlayout, {.v = &layouts[0]} },
+	{ MODKEY, 			XK_bracketright, setlayout, {.v = &layouts[1]} },
+	{ MODKEY, 			XK_backslash,    setlayout, {.v = &layouts[2]} },
 
 	{ MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
 
@@ -252,16 +250,6 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 
-	TAGKEYS(                        XK_KP_End,                 0)
-	TAGKEYS(                        XK_KP_Down,                1)
-	TAGKEYS(                        XK_KP_Next,                2)
-	TAGKEYS(                        XK_KP_Left,                3)
-	TAGKEYS(                        XK_KP_Begin,               4)
-	TAGKEYS(                        XK_KP_Right,               5)
-	TAGKEYS(                        XK_KP_Home,                6)
-	TAGKEYS(                        XK_KP_Up,                  7)
-	TAGKEYS(                        XK_KP_Prior,               8)
-
 	{ MODKEY,                       XK_q,      togglescratch,  {.ui = 0 } },
 	{ MODKEY,                       XK_w,      togglescratch,  {.ui = 1 } },
 	{ MODKEY,                       XK_e,      togglescratch,  {.ui = 2 } },
@@ -270,7 +258,7 @@ static Key keys[] = {
 
 	{ MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("$BROWSER") },
 	{ MODKEY|Mod1Mask,              XK_Escape, spawn,          SHCMD("dm-powermenu") },
-	{ 0,                            XK_Print,  spawn,          SHCMD("dm-screenshot") },
+	{ MODKEY,               	XK_Print,  spawn,          SHCMD("dm-screenshot") },
 
 	{ HYPER,                        XK_F1,     spawn,          SHCMD("cmus-remote -v -1%; pkill -RTMIN+10 dwmblocks") },
 	{ HYPER,                        XK_F2,     spawn,          SHCMD("cmus-remote -v +1%; pkill -RTMIN+10 dwmblocks") },
