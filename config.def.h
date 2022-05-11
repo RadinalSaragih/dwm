@@ -7,7 +7,6 @@ static unsigned int systrayonleft  = 0; /* systray on the left of status text */
 static int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
 static int swallowfloating = 0; /* 1 means swallow floating windows by default */
 static int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
-static int decorhints  = 1;    /* 1 means respect decoration hints */
 static int focusonwheel = 0;
 static int showsystray = 0; /* 0 = no systray */
 static int showbar = 1; /* 0 = no bar */
@@ -117,7 +116,6 @@ ResourcePref resources[] = {
 	{ "borderpx",          	     INTEGER, &borderpx },
 	{ "snap",          	     INTEGER, &snap },
 	{ "showbar",          	     INTEGER, &showbar },
-	{ "decorhints", 	     INTEGER, &decorhints},
 	{ "topbar",          	     INTEGER, &topbar },
 	{ "nmaster",          	     INTEGER, &nmaster },
 	{ "resizehints",       	     INTEGER, &resizehints },
