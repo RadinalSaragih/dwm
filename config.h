@@ -273,6 +273,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F2,     spawn,          SHCMD("pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') +1% ; pkill -RTMIN+10 dwmblocks") },
 	{ MODKEY,                       XK_F3,     spawn,          SHCMD("pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle ; pkill -RTMIN+10 dwmblocks") },
 
+	{ MODKEY|ShiftMask,             XK_F1,     spawn,          SHCMD("pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') -1% ; pkill -RTMIN+12 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_F2,     spawn,          SHCMD("pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') +1% ; pkill -RTMIN+12 dwmblocks") },
+	{ MODKEY|ShiftMask, 		XK_F3,     spawn,          SHCMD("pactl set-source-mute $(pactl info | awk '/Default Source/ {print $3}') toggle ; pkill -RTMIN+12 dwmblocks") },
+
 	{ MODKEY|Mod1Mask|ControlMask,  XK_Escape, quit,           {0} }, // quit WM
 	{ MODKEY|Mod1Mask,              XK_r,      quit,           {1} }, // reload WM
 };
