@@ -377,7 +377,7 @@ struct Pertag {
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
 /* function implementations */
-	void
+void
 applyrules(Client *c)
 {
 	const char *class, *instance;
@@ -1042,7 +1042,7 @@ focus(Client *c)
 		/* XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel); */
 
 		if(c->isfloating || c->issticky)
-			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][3].pixel);
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColSpcBorder].pixel);
 		else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 

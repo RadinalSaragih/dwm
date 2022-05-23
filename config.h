@@ -23,13 +23,13 @@ static char normfgcolor[]     = "#bbbbbb";
 static char selfgcolor[]      = "#eeeeee";
 static char selbordercolor[]  = "#005577";
 static char selbgcolor[]      = "#005577";
-static char normSpcBorder[]   = "#719611";
-static char selSpcBorder[]    = "#aa4450";
+static char normspcbordercolor[] = "#719611";
+static char selspcbordercolor[]  = "#aa4450";
 
 static char *colors[][4] = {
-	/*               fg           bg           border            SPC_BORDER*/
-	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor, normSpcBorder },
-	[SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor,  selSpcBorder },
+	/*               fg           bg           border           SPC_BORDER*/
+	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor, normspcbordercolor },
+	[SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor,  selspcbordercolor },
 };
 
 static char scratchpad1[] = "/bin/ranger";
@@ -123,13 +123,15 @@ static const char *termcmd[] = { "st", NULL };
  * Xresources preferences to load at startup
  */
 ResourcePref resources[] = {
-	{ "font",                    STRING,  &font },
+	{ "fonts",                   STRING,  &font },
 	{ "normbgcolor",             STRING,  &normbgcolor },
 	{ "normbordercolor",         STRING,  &normbordercolor },
 	{ "normfgcolor",             STRING,  &normfgcolor },
 	{ "selbgcolor",              STRING,  &selbgcolor },
 	{ "selbordercolor",          STRING,  &selbordercolor },
 	{ "selfgcolor",              STRING,  &selfgcolor },
+	{ "selspcbordercolor", 	     STRING,  &selspcbordercolor },
+	{ "normspcbordercolor",      STRING,  &normspcbordercolor },
 	{ "borderpx",          	     INTEGER, &borderpx },
 	{ "snap",          	     INTEGER, &snap },
 	{ "showbar",          	     INTEGER, &showbar },
