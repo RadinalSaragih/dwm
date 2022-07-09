@@ -52,36 +52,36 @@
 #include "util.h"
 
 /* macros */
-#define BUTTONMASK 		(ButtonPressMask|ButtonReleaseMask)
+#define BUTTONMASK		(ButtonPressMask|ButtonReleaseMask)
 #define CLEANMASK(mask) 	(mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
-#define INTERSECT(x,y,w,h,m) 	(MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
+#define INTERSECT(x,y,w,h,m)	(MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
 				* MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
-#define ISVISIBLEONTAG(C, T) 	((C->tags & T))
-#define ISVISIBLE(C) 		ISVISIBLEONTAG(C, C->mon->tagset[C->mon->seltags] ||  C->issticky)
-#define LENGTH(X) 		(sizeof X / sizeof X[0])
-#define MOUSEMASK 		(BUTTONMASK|PointerMotionMask)
-#define WIDTH(X) 		((X)->w + 2 * (X)->bw)
-#define HEIGHT(X) 		((X)->h + 2 * (X)->bw)
+#define ISVISIBLEONTAG(C, T)	((C->tags & T))
+#define ISVISIBLE(C)		ISVISIBLEONTAG(C, C->mon->tagset[C->mon->seltags] || C->issticky)
+#define LENGTH(X)		(sizeof X / sizeof X[0])
+#define MOUSEMASK		(BUTTONMASK|PointerMotionMask)
+#define WIDTH(X)		((X)->w + 2 * (X)->bw)
+#define HEIGHT(X)		((X)->h + 2 * (X)->bw)
 #define NUMTAGS 		(LENGTH(tags) + LENGTH(scratchpads))
 #define TAGMASK 		((1 << NUMTAGS) - 1)
-#define SPTAG(i) 		((1 << LENGTH(tags)) << (i))
-#define SPTAGMASK 		(((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
-#define TEXTW(X) 		(drw_fontset_getwidth(drw, (X)) + lrpad)
+#define SPTAG(i)		((1 << LENGTH(tags)) << (i))
+#define SPTAGMASK		(((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
+#define TEXTW(X)		(drw_fontset_getwidth(drw, (X)) + lrpad)
 
-#define SYSTEM_TRAY_REQUEST_DOCK 	0
+#define SYSTEM_TRAY_REQUEST_DOCK	0
 
 /* XEMBED messages */
-#define XEMBED_EMBEDDED_NOTIFY 		0
-#define XEMBED_WINDOW_ACTIVATE 		1
+#define XEMBED_EMBEDDED_NOTIFY		0
+#define XEMBED_WINDOW_ACTIVATE		1
 #define XEMBED_FOCUS_IN 		4
-#define XEMBED_MODALITY_ON 		10
+#define XEMBED_MODALITY_ON		10
 
-#define XEMBED_MAPPED 			(1 << 0)
-#define XEMBED_WINDOW_ACTIVATE 		1
-#define XEMBED_WINDOW_DEACTIVATE 	2
+#define XEMBED_MAPPED			(1 << 0)
+#define XEMBED_WINDOW_ACTIVATE		1
+#define XEMBED_WINDOW_DEACTIVATE	2
 
-#define VERSION_MAJOR 			0
-#define VERSION_MINOR 			0
+#define VERSION_MAJOR			0
+#define VERSION_MINOR			0
 #define XEMBED_EMBEDDED_VERSION (VERSION_MAJOR << 16) | VERSION_MINOR
 
 /* enums */
@@ -150,9 +150,9 @@ struct Monitor {
 	float mfact;
 	int nmaster;
 	int num;
-	int by;               /* bar geometry */
-	int mx, my, mw, mh;   /* screen size */
-	int wx, wy, ww, wh;   /* window area  */
+	int by; 		/* bar geometry */
+	int mx, my, mw, mh;	/* screen size */
+	int wx, wy, ww, wh;	/* window area */
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -179,7 +179,7 @@ typedef struct {
 	int monitor;
 } Rule;
 
-typedef struct Systray   Systray;
+typedef struct Systray Systray;
 struct Systray {
 	Window win;
 	Client *icons;
@@ -197,7 +197,6 @@ typedef struct {
 	enum resource_type type;
 	void *dst;
 } ResourcePref;
-
 
 /* function declarations */
 static void applyrules(Client *c);
@@ -321,14 +320,13 @@ static Client *termforwin(const Client *c);
 static pid_t winpid(Window w);
 
 /* variables */
-
-static Systray *systray =  NULL;
+static Systray *systray = NULL;
 static const char broken[] = "broken";
 static char stext[256];
 static int screen;
-static int sw, sh; 		/* X display screen geometry width, height */
+static int sw, sh;		/* X display screen geometry width, height */
 static int bh, blw = 0; 	/* bar geometry */
-static int lrpad; 		/* sum of left and right padding for text */
+static int lrpad;		/* sum of left and right padding for text */
 static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
 static void (*handler[LASTEvent]) (XEvent *) = {
@@ -369,7 +367,7 @@ struct Pertag {
 	int nmasters[LENGTH(tags) + 1]; /* number of windows in master area */
 	float mfacts[LENGTH(tags) + 1]; /* mfacts per tag */
 	unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */
-	const Layout *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */
+	const Layout *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes */
 	int showbars[LENGTH(tags) + 1]; /* display bar for the current tag */
 };
 
@@ -391,8 +389,8 @@ applyrules(Client *c)
 	c->isfloating = 0;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
-	class    = ch.res_class ? ch.res_class : broken;
-	instance = ch.res_name  ? ch.res_name  : broken;
+	class = ch.res_class ? ch.res_class : broken;
+	instance = ch.res_name ? ch.res_name : broken;
 
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
@@ -401,7 +399,7 @@ applyrules(Client *c)
 				&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isterminal = r->isterminal;
-			c->noswallow  = r->noswallow;
+			c->noswallow = r->noswallow;
 			c->iscentered = r->iscentered;
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
@@ -527,7 +525,6 @@ attachaside(Client *c) {
 	c->next = at->next;
 	at->next = c;
 }
-
 
 void
 attachstack(Client *c)
@@ -724,7 +721,7 @@ clientmessage(XEvent *e)
 			XSelectInput(dpy, c->win, StructureNotifyMask | PropertyChangeMask | ResizeRedirectMask);
 			XReparentWindow(dpy, c->win, systray->win, 0, 0);
 			/* use parents background color */
-			swa.background_pixel  = scheme[SchemeNorm][ColBg].pixel;
+			swa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
 			XChangeWindowAttributes(dpy, c->win, CWBackPixel, &swa);
 			sendevent(c->win, netatom[Xembed], StructureNotifyMask, CurrentTime, XEMBED_EMBEDDED_NOTIFY, 0 , systray->win, XEMBED_EMBEDDED_VERSION);
 			/* FIXME not sure if I have to send these events, too */
@@ -986,7 +983,7 @@ drawbar(Monitor *m)
 		if (m->sel){
 			if (showtitle) {
 				drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-				drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);  
+				drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
 				if (m->sel->isfloating)
 					drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
 			}
@@ -1480,7 +1477,7 @@ nexttagged(Client *c) {
 	for(;
 			walked && (walked->isfloating || !ISVISIBLEONTAG(walked, c->tags));
 			walked = walked->next
-	   );
+	);
 	return walked;
 }
 
@@ -2774,9 +2771,9 @@ updatesystray(void)
 		if (!(systray = (Systray *)calloc(1, sizeof(Systray))))
 			die("fatal: could not malloc() %u bytes\n", sizeof(Systray));
 		systray->win = XCreateSimpleWindow(dpy, root, x, m->by, w, bh, 0, 0, scheme[SchemeSel][ColBg].pixel);
-		wa.event_mask        = ButtonPressMask | ExposureMask;
+		wa.event_mask = ButtonPressMask | ExposureMask;
 		wa.override_redirect = True;
-		wa.background_pixel  = scheme[SchemeNorm][ColBg].pixel;
+		wa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
 		XSelectInput(dpy, systray->win, SubstructureNotifyMask);
 		XChangeProperty(dpy, systray->win, netatom[NetSystemTrayOrientation], XA_CARDINAL, 32,
 				PropModeReplace, (unsigned char *)&netatom[NetSystemTrayOrientationHorz], 1);
@@ -2796,7 +2793,7 @@ updatesystray(void)
 	}
 	for (w = 0, i = systray->icons; i; i = i->next) {
 		/* make sure the background color stays the same */
-		wa.background_pixel  = scheme[SchemeNorm][ColBg].pixel;
+		wa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
 		XChangeWindowAttributes(dpy, i->win, CWBackPixel, &wa);
 		XMapRaised(dpy, i->win);
 		w += systrayspacing;
@@ -3191,7 +3188,6 @@ load_xresources(void)
 		resource_load(db, p->name, p->type, p->dst);
 	XCloseDisplay(display);
 }
-
 
 int
 main(int argc, char *argv[])
