@@ -36,11 +36,10 @@ typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
-const char *spcmd0[] = { "st", "-n", "sp-0", NULL };
-const char *spcmd1[] = { "st", "-n", "sp-1", NULL };
-const char *spcmd2[] = { "st", "-n", "sp-2", NULL };
-const char *spcmd3[] = { "st", "-n", "sp-3", NULL };
-const char *spcmd4[] = { "st", "-n", "sp-4", NULL };
+const char *spcmd0[] = { "st", "-T", "SP-0", "-n", "sp-0", NULL };
+const char *spcmd1[] = { "st", "-T", "SP-1", "-n", "sp-1", NULL };
+const char *spcmd2[] = { "st", "-T", "SP-2", "-n", "sp-2", NULL };
+const char *spcmd3[] = { "st", "-T", "SP-3", "-n", "sp-3", NULL };
 
 static Sp scratchpads[] = {
 	/* name 	cmd  */
@@ -48,7 +47,6 @@ static Sp scratchpads[] = {
 	{ "sp-1", 	spcmd1 },
 	{ "sp-2", 	spcmd2 },
 	{ "sp-3", 	spcmd3 },
-	{ "sp-4", 	spcmd4 },
 };
 
 /* tagging */
@@ -85,7 +83,6 @@ static const Rule rules[] = {
 	{ NULL, "sp-1", NULL, SPTAG(1), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-2", NULL, SPTAG(2), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-3", NULL, SPTAG(3), 1, 1, 1, 0, -1 },
-	{ NULL, "sp-4", NULL, SPTAG(4), 1, 1, 1, 0, -1 },
 };
 
 /* layout(s) */
@@ -119,19 +116,21 @@ static const Layout layouts[] = {
 #include "modules/view_adjacent.c"
 
 /* extra variables */
-static const char cmus_decvol[] = "cmus-remote -v -1%; pkill -RTMIN+10 dwmblocks";
-static const char cmus_incvol[] = "cmus-remote -v +1%; pkill -RTMIN+10 dwmblocks";
+static const char cmus_decvol[] = "cmus-remote -v -1%; pkill -RTMIN+5 dwmblocks";
+static const char cmus_incvol[] = "cmus-remote -v +1%; pkill -RTMIN+5 dwmblocks";
 static const char cmus_pause[] = "cmus-remote -u; pkill -RTMIN+5 dwmblocks";
 static const char cmus_stop[] = "cmus-remote -s; pkill -RTMIN+5 dwmblocks";
 static const char cmus_next[] = "cmus-remote -n; pkill -RTMIN+5 dwmblocks";
 static const char cmus_prev[] = "cmus-remote -r; pkill -RTMIN+5 dwmblocks";
+static const char cmus_repeat[] = "cmus-remote -R; pkill -RTMIN+5 dwmblocks";
+static const char cmus_shuffle[] = "cmus-remote -S; pkill -RTMIN+5 dwmblocks";
 static const char vol_dec[] = "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') -1%; pkill -RTMIN+10 dwmblocks";
 static const char vol_inc[] = "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') +1%; pkill -RTMIN+10 dwmblocks";
 static const char vol_mute[] = "pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle; pkill -RTMIN+10 dwmblocks";
-static const char mic_vol_dec[] = "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') -1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_vol_inc[] = "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') +1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_vol_mute[] = "pactl set-source-mute $(pactl info | awk '/Default Source/ {print $3}') toggle; pkill -RTMIN+12 dwmblocks";
-static const char powermenu[] = "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'systemctl reboot\n' 'systemctl poweroff\n' | dmenu | /bin/sh";
+static const char mic_decvol[] = "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') -1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_incvol[] = "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') +1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_mute[] = "pactl set-source-mute $(pactl info | awk '/Default Source/ {print $3}') toggle; pkill -RTMIN+12 dwmblocks";
+static const char powermenu[] = "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'systemctl reboot\n' 'systemctl poweroff\n' | dmenu -m -1 | /bin/sh";
 static const char screenshot[] = "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
 
 /* commands */
@@ -264,11 +263,10 @@ static Key keys[] = {
 	TAGKEYS( 		XK_8, 					7 )
 	TAGKEYS( 		XK_9, 					8 )
 
-	{ MODKEY,	 	XK_q, 			togglescratch, 	{.ui = 0 } },
-	{ MODKEY,	 	XK_w, 			togglescratch, 	{.ui = 1 } },
-	{ MODKEY,	 	XK_e, 			togglescratch, 	{.ui = 2 } },
-	{ MODKEY,	 	XK_grave, 		togglescratch, 	{.ui = 3 } },
-	{ MODKEY|ShiftMask,	XK_grave, 		togglescratch, 	{.ui = 4 } },
+	{ MODKEY,	 	XK_F9, 			togglescratch, 	{.ui = 0 } },
+	{ MODKEY,	 	XK_F10, 		togglescratch, 	{.ui = 1 } },
+	{ MODKEY,	 	XK_F11, 		togglescratch, 	{.ui = 2 } },
+	{ MODKEY,	 	XK_F12, 		togglescratch, 	{.ui = 3 } },
 
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
@@ -276,18 +274,22 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD("$BROWSER") },
 	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
-	{ HYPER, 		XK_F3,			spawn, 		SHCMD(cmus_decvol) },
-	{ HYPER, 		XK_F4,			spawn, 		SHCMD(cmus_incvol) },
-	{ HYPER, 		XK_F5,			spawn, 		SHCMD(cmus_pause) },
-	{ HYPER, 		XK_F6,			spawn, 		SHCMD(cmus_stop) },
-	{ HYPER, 		XK_F7,			spawn, 		SHCMD(cmus_prev) },
-	{ HYPER, 		XK_F8,			spawn, 		SHCMD(cmus_next) },
+
+	{ HYPER, 		XK_F1,			spawn, 		SHCMD(cmus_decvol) },
+	{ HYPER, 		XK_F2,			spawn, 		SHCMD(cmus_incvol) },
+	{ HYPER, 		XK_F3,			spawn, 		SHCMD(cmus_pause) },
+	{ HYPER, 		XK_F4,			spawn, 		SHCMD(cmus_stop) },
+	{ HYPER, 		XK_F5,			spawn, 		SHCMD(cmus_prev) },
+	{ HYPER, 		XK_F6,			spawn, 		SHCMD(cmus_next) },
+	{ HYPER, 		XK_F7,			spawn, 		SHCMD(cmus_repeat) },
+	{ HYPER, 		XK_F8,			spawn, 		SHCMD(cmus_shuffle) },
+
 	{ MODKEY, 		XK_F1,			spawn, 		SHCMD(vol_dec) },
 	{ MODKEY,		XK_F2,			spawn, 		SHCMD(vol_inc) },
 	{ MODKEY,		XK_F3,			spawn, 		SHCMD(vol_mute) },
-	{ MODKEY|ShiftMask,	XK_F1, 			spawn, 		SHCMD(mic_vol_dec) },
-	{ MODKEY|ShiftMask,	XK_F2,			spawn, 		SHCMD(mic_vol_inc) },
-	{ MODKEY|ShiftMask,	XK_F3,			spawn, 		SHCMD(mic_vol_mute) },
+	{ MODKEY|ShiftMask,	XK_F1, 			spawn, 		SHCMD(mic_decvol) },
+	{ MODKEY|ShiftMask,	XK_F2,			spawn, 		SHCMD(mic_incvol) },
+	{ MODKEY|ShiftMask,	XK_F3,			spawn, 		SHCMD(mic_mute) },
 };
 
 /* button definitions */

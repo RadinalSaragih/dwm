@@ -143,7 +143,6 @@ typedef struct {
 	void (*arrange)(Monitor *);
 } Layout;
 
-#define MAXTABS 50
 typedef struct Pertag Pertag;
 struct Monitor {
 	char ltsymbol[16];
