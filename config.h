@@ -99,7 +99,6 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask
-#define HYPER Mod3Mask
 #define TAGKEYS(KEY,TAG)                                                \
 { MODKEY,			KEY,	view,		{.ui = 1 << TAG} }, \
 { MODKEY|ControlMask,		KEY,	toggleview, 	{.ui = 1 << TAG} }, \
@@ -115,28 +114,25 @@ static const Layout layouts[] = {
 /* define view_adjacent */
 #include "modules/view_adjacent.c"
 
-/* extra variables */
-static const char cmus_decvol[] = "cmus-remote -v -1%; pkill -RTMIN+5 dwmblocks";
-static const char cmus_incvol[] = "cmus-remote -v +1%; pkill -RTMIN+5 dwmblocks";
-static const char cmus_pause[] = "cmus-remote -u; pkill -RTMIN+5 dwmblocks";
-static const char cmus_stop[] = "cmus-remote -s; pkill -RTMIN+5 dwmblocks";
-static const char cmus_next[] = "cmus-remote -n; pkill -RTMIN+5 dwmblocks";
-static const char cmus_prev[] = "cmus-remote -r; pkill -RTMIN+5 dwmblocks";
-static const char cmus_repeat[] = "cmus-remote -R; pkill -RTMIN+5 dwmblocks";
-static const char cmus_shuffle[] = "cmus-remote -S; pkill -RTMIN+5 dwmblocks";
-static const char vol_dec[] = "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') -1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_inc[] = "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') +1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_mute[] = "pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle; pkill -RTMIN+10 dwmblocks";
-static const char mic_decvol[] = "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') -1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_incvol[] = "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') +1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_mute[] = "pactl set-source-mute $(pactl info | awk '/Default Source/ {print $3}') toggle; pkill -RTMIN+12 dwmblocks";
-static const char powermenu[] = "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'systemctl reboot\n' 'systemctl poweroff\n' | dmenu -m -1 | /bin/sh";
-static const char screenshot[] = "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
-
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
-static const char *termcmd[] = { "st", NULL };
+static const char *dmenucmd[]	= { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
+static const char *termcmd[]	= { "st", NULL };
+static const char cmus_decvol[] = "cmus-remote -v -1%; pkill -RTMIN+5 dwmblocks";
+static const char cmus_incvol[] = "cmus-remote -v +1%; pkill -RTMIN+5 dwmblocks";
+static const char cmus_pause[]	= "cmus-remote -u; pkill -RTMIN+5 dwmblocks";
+static const char cmus_stop[]	= "cmus-remote -s; pkill -RTMIN+5 dwmblocks";
+static const char cmus_next[]	= "cmus-remote -n; pkill -RTMIN+5 dwmblocks";
+static const char cmus_prev[]	= "cmus-remote -r; pkill -RTMIN+5 dwmblocks";
+static const char cmus_repeat[] = "cmus-remote -R; pkill -RTMIN+5 dwmblocks";
+static const char vol_dec[]	= "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') -1%; pkill -RTMIN+10 dwmblocks";
+static const char vol_inc[]	= "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') +1%; pkill -RTMIN+10 dwmblocks";
+static const char vol_mute[]	= "pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle; pkill -RTMIN+10 dwmblocks";
+static const char mic_decvol[]	= "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') -1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_incvol[]	= "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') +1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_mute[]	= "pactl set-source-mute $(pactl info | awk '/Default Source/ {print $3}') toggle; pkill -RTMIN+12 dwmblocks";
+static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'systemctl reboot\n' 'systemctl poweroff\n' | dmenu -m -1 | /bin/sh";
+static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -221,26 +217,6 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask,	XK_Left,	moveresizeedge,	{.v = "L"} },
 	{ MODKEY|ControlMask|ShiftMask,	XK_Right, 	moveresizeedge,	{.v = "R"} },
 
-	{ HYPER, 		XK_d, 			moveresize,	{.v = "0x 25y 0w 0h" } },
-	{ HYPER, 		XK_s, 			moveresize,	{.v = "0x -25y 0w 0h" } },
-	{ HYPER, 		XK_f, 			moveresize,	{.v = "25x 0y 0w 0h" } },
-	{ HYPER, 		XK_a, 			moveresize,	{.v = "-25x 0y 0w 0h" } },
-
-	{ HYPER|ShiftMask, 	XK_d, 			moveresize,	{.v = "0x 0y 0w 25h" } },
-	{ HYPER|ShiftMask, 	XK_s, 			moveresize,	{.v = "0x 0y 0w -25h" } },
-	{ HYPER|ShiftMask, 	XK_f, 			moveresize,	{.v = "0x 0y 25w 0h" } },
-	{ HYPER|ShiftMask, 	XK_a, 			moveresize,	{.v = "0x 0y -25w 0h" } },
-
-	{ HYPER|ControlMask, 	XK_d, 			moveresizeedge,	{.v = "b"} },
-	{ HYPER|ControlMask, 	XK_s, 			moveresizeedge,	{.v = "t"} },
-	{ HYPER|ControlMask, 	XK_f, 			moveresizeedge,	{.v = "r"} },
-	{ HYPER|ControlMask, 	XK_a, 			moveresizeedge,	{.v = "l"} },
-
-	{ HYPER|ControlMask|ShiftMask, 	XK_d, 		moveresizeedge,	{.v = "B"} },
-	{ HYPER|ControlMask|ShiftMask, 	XK_s, 		moveresizeedge,	{.v = "T"} },
-	{ HYPER|ControlMask|ShiftMask, 	XK_f, 		moveresizeedge,	{.v = "R"} },
-	{ HYPER|ControlMask|ShiftMask, 	XK_a, 		moveresizeedge,	{.v = "L"} },
-
 	{ MODKEY,		XK_n, 			zoom,		{0} },
 	{ MODKEY,		XK_Tab, 		view,		{0} },
 
@@ -263,10 +239,10 @@ static Key keys[] = {
 	TAGKEYS( 		XK_8, 					7 )
 	TAGKEYS( 		XK_9, 					8 )
 
-	{ MODKEY,	 	XK_F9, 			togglescratch, 	{.ui = 0 } },
-	{ MODKEY,	 	XK_F10, 		togglescratch, 	{.ui = 1 } },
-	{ MODKEY,	 	XK_F11, 		togglescratch, 	{.ui = 2 } },
-	{ MODKEY,	 	XK_F12, 		togglescratch, 	{.ui = 3 } },
+	{ MODKEY,	 	XK_u, 			togglescratch, 	{.ui = 0 } },
+	{ MODKEY,	 	XK_i, 			togglescratch, 	{.ui = 1 } },
+	{ MODKEY,	 	XK_o, 			togglescratch, 	{.ui = 2 } },
+	{ MODKEY,	 	XK_p, 			togglescratch, 	{.ui = 3 } },
 
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
@@ -275,21 +251,19 @@ static Key keys[] = {
 	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
 
-	{ HYPER, 		XK_F1,			spawn, 		SHCMD(cmus_decvol) },
-	{ HYPER, 		XK_F2,			spawn, 		SHCMD(cmus_incvol) },
-	{ HYPER, 		XK_F3,			spawn, 		SHCMD(cmus_pause) },
-	{ HYPER, 		XK_F4,			spawn, 		SHCMD(cmus_stop) },
-	{ HYPER, 		XK_F5,			spawn, 		SHCMD(cmus_prev) },
-	{ HYPER, 		XK_F6,			spawn, 		SHCMD(cmus_next) },
-	{ HYPER, 		XK_F7,			spawn, 		SHCMD(cmus_repeat) },
-	{ HYPER, 		XK_F8,			spawn, 		SHCMD(cmus_shuffle) },
+	{ MODKEY|ShiftMask,	XK_Next,		spawn, 		SHCMD(cmus_decvol) },
+	{ MODKEY|ShiftMask,	XK_Prior,		spawn, 		SHCMD(cmus_incvol) },
+	{ MODKEY|ShiftMask,	XK_Home,		spawn, 		SHCMD(cmus_prev) },
+	{ MODKEY|ShiftMask,	XK_End,			spawn, 		SHCMD(cmus_next) },
+	{ MODKEY|ShiftMask,	XK_Delete,		spawn, 		SHCMD(cmus_pause) },
+	{ MODKEY|ShiftMask,	XK_Insert,		spawn, 		SHCMD(cmus_repeat) },
 
-	{ MODKEY, 		XK_F1,			spawn, 		SHCMD(vol_dec) },
-	{ MODKEY,		XK_F2,			spawn, 		SHCMD(vol_inc) },
-	{ MODKEY,		XK_F3,			spawn, 		SHCMD(vol_mute) },
-	{ MODKEY|ShiftMask,	XK_F1, 			spawn, 		SHCMD(mic_decvol) },
-	{ MODKEY|ShiftMask,	XK_F2,			spawn, 		SHCMD(mic_incvol) },
-	{ MODKEY|ShiftMask,	XK_F3,			spawn, 		SHCMD(mic_mute) },
+	{ MODKEY|ControlMask, 	XK_Next,		spawn, 		SHCMD(vol_dec) },
+	{ MODKEY|ControlMask,	XK_Prior,		spawn, 		SHCMD(vol_inc) },
+	{ MODKEY|ControlMask,	XK_Insert,		spawn, 		SHCMD(vol_mute) },
+	{ MODKEY|ControlMask, 	XK_End, 		spawn, 		SHCMD(mic_decvol) },
+	{ MODKEY|ControlMask, 	XK_Home,		spawn, 		SHCMD(mic_incvol) },
+	{ MODKEY|ControlMask, 	XK_Delete,		spawn, 		SHCMD(mic_mute) },
 };
 
 /* button definitions */
