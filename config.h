@@ -92,9 +92,10 @@ static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
 	/* first entry is default */
 	/* symbol 	arrange function */
-	{ "T",		tile 	}, 
+	{ "T",		tile	}, 
 	{ "M",		monocle },
-	{ "F",		NULL 	},
+	{ "F",		NULL	},
+ 	{ "[D]",	deck	},
 };
 
 /* key definitions */
@@ -186,6 +187,7 @@ static Key keys[] = {
 	{ MODKEY,		XK_bracketleft,		setlayout,	{.v = &layouts[0]} },
 	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[1]} },
 	{ MODKEY,		XK_backslash,		setlayout,	{.v = &layouts[2]} },
+	{ MODKEY, 		XK_d,  			setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ControlMask,	XK_space, 		setlayout, 	{0} },
 
 	{ MODKEY,		XK_s, 			togglefloating,	{0} },
@@ -217,7 +219,8 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask,	XK_Left,	moveresizeedge,	{.v = "L"} },
 	{ MODKEY|ControlMask|ShiftMask,	XK_Right, 	moveresizeedge,	{.v = "R"} },
 
-	{ MODKEY,		XK_n, 			zoom,		{0} },
+	{ MODKEY,		XK_n, 			focusmaster,	{0} },
+	{ MODKEY|ShiftMask,	XK_n,			zoom,		{0} },
 	{ MODKEY,		XK_Tab, 		view,		{0} },
 
 	{ MODKEY,		XK_0, 			view,		{.ui = ~0 } },
