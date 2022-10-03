@@ -187,7 +187,7 @@ static Key keys[] = {
 	{ MODKEY,		XK_bracketleft,		setlayout,	{.v = &layouts[0]} },
 	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[1]} },
 	{ MODKEY,		XK_backslash,		setlayout,	{.v = &layouts[2]} },
-	{ MODKEY, 		XK_d,  			setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask, 	XK_backslash, 		setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ControlMask,	XK_space, 		setlayout, 	{0} },
 
 	{ MODKEY,		XK_s, 			togglefloating,	{0} },
