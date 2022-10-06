@@ -1387,6 +1387,7 @@ manage(Window w, XWindowAttributes *wa)
 
 	configure(c); /* propagates border_width, if size doesn't change */
 	updatewindowtype(c);
+	updatesizehints(c);
 	updatewmhints(c);
 	{
 		int format;
