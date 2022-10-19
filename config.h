@@ -63,8 +63,6 @@ static const Rule rules[] = {
 	{ "Pcsx2", 	  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
 	{ "pyrogenesis",  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
 	{ "Freeciv-gtk3.22",  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ "Lutris",  	  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ NULL,  	  NULL, 	"WineDesktop - Wine desktop", 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
 
 	{ "Godot",        NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
 	{ "Inkscape",     NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
@@ -72,12 +70,10 @@ static const Rule rules[] = {
 	{ "lmms",         NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
 	{ "kdenlive",     NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
 
-	{ "Firefox-esr",  NULL, 	NULL, 	1 << 6, 	0, 	0, 	0, 	1, 	-1 },
-	{ "qutebrowser",  NULL, 	NULL, 	1 << 6, 	0, 	0, 	0, 	1, 	-1 },
+	{ "Firefox-esr",  NULL, 	NULL, 	1 << 4, 	0, 	0, 	0, 	1, 	-1 },
+	{ "qutebrowser",  NULL, 	NULL, 	1 << 4, 	0, 	0, 	0, 	1, 	-1 },
 
-	{ "Virt-manager", NULL, 	NULL, 	1 << 5, 	0, 	0, 	0, 	1, 	-1 },
-
-	{ "St", NULL, NULL, 0, 0, 0, 1, 0, -1 },
+	{ "st-256color", NULL, NULL, 0, 0, 0, 1, 0, -1 },
 	{ NULL, NULL, "Event Tester", 0, 0, 0, 0, 1, -1 },
 	{ NULL, "sp-0", NULL, SPTAG(0), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-1", NULL, SPTAG(1), 1, 1, 1, 0, -1 },
@@ -125,14 +121,15 @@ static const char cmus_stop[]	= "cmus-remote -s; pkill -RTMIN+5 dwmblocks";
 static const char cmus_next[]	= "cmus-remote -n; pkill -RTMIN+5 dwmblocks";
 static const char cmus_prev[]	= "cmus-remote -r; pkill -RTMIN+5 dwmblocks";
 static const char cmus_repeat[] = "cmus-remote -R; pkill -RTMIN+5 dwmblocks";
-static const char vol_dec[]	= "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') -1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_inc[]	= "pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') +1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_mute[]	= "pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle; pkill -RTMIN+10 dwmblocks";
-static const char mic_decvol[]	= "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') -1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_incvol[]	= "pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') +1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_mute[]	= "pactl set-source-mute $(pactl info | awk '/Default Source/ {print $3}') toggle; pkill -RTMIN+12 dwmblocks";
+static const char vol_dec[]	= "pactl set-sink-volume @DEFAULT_SINK@ -1%; pkill -RTMIN+10 dwmblocks";
+static const char vol_inc[]	= "pactl set-sink-volume @DEFAULT_SINK@ +1%; pkill -RTMIN+10 dwmblocks";
+static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; pkill -RTMIN+10 dwmblocks";
+static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+12 dwmblocks";
 static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'systemctl reboot\n' 'systemctl poweroff\n' | dmenu -m -1 | /bin/sh";
 static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
+static const char browser[]	= "qutebrowser";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -249,7 +246,7 @@ static const Key keys[] = {
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
 
-	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD("$BROWSER") },
+	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
 	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
 

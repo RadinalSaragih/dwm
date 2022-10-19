@@ -49,7 +49,6 @@ static Sp scratchpads[] = {
 	{ "sp-1", 	spcmd1 },
 	{ "sp-2", 	spcmd2 },
 	{ "sp-3", 	spcmd3 },
-	{ "sp-4", 	spcmd4 },
 };
 
 /* tagging */
@@ -60,14 +59,13 @@ static const Rule rules[] = {
 	 * WM_NAME(STRING) = title */
 	/* class          instance      title 	tags mask   centered floating terminal noswallow monitor */
 	{ "Firefox-esr",  NULL, 	NULL, 	1 << 6, 	0, 	0, 	0, 	1, 	-1 },
-	{ "St",           NULL, 	NULL, 	0,      	0, 	0, 	1, 	0, 	-1 },
+	{ "st-256color",  NULL, 	NULL,   0,		0,	0,	1,	0,	-1 },
 
 	{ NULL, NULL, "Event Tester", 0, 0, 0, 0, 1, -1 },
 	{ NULL, "sp-0", NULL, SPTAG(0), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-1", NULL, SPTAG(1), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-2", NULL, SPTAG(2), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-3", NULL, SPTAG(3), 1, 1, 1, 0, -1 },
-	{ NULL, "sp-4", NULL, SPTAG(4), 1, 1, 1, 0, -1 },
 };
 
 /* layout(s) */
@@ -104,6 +102,13 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
 static const char *termcmd[] = { "st", NULL };
+static const char vol_dec[]	= "pactl set-sink-volume @DEFAULT_SINK@ -1%; pkill -RTMIN+10 dwmblocks";
+static const char vol_inc[]	= "pactl set-sink-volume @DEFAULT_SINK@ +1%; pkill -RTMIN+10 dwmblocks";
+static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; pkill -RTMIN+10 dwmblocks";
+static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+12 dwmblocks";
+static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+12 dwmblocks";
+static const char browser[]	= "qutebrowser";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -161,7 +166,7 @@ static Key keys[] = {
 	{ MODKEY,		XK_bracketleft,		setlayout,	{.v = &layouts[0]} },
 	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[1]} },
 	{ MODKEY,		XK_backslash,		setlayout,	{.v = &layouts[2]} },
-
+	{ MODKEY|ShiftMask, 	XK_backslash, 		setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ControlMask,	XK_space, 		setlayout, 	{0} },
 
 	{ MODKEY,		XK_s, 			togglefloating,	{0} },
@@ -193,27 +198,8 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask,	XK_Left,	moveresizeedge,	{.v = "L"} },
 	{ MODKEY|ControlMask|ShiftMask,	XK_Right, 	moveresizeedge,	{.v = "R"} },
 
-	{ HYPER, 		XK_d, 			moveresize,	{.v = "0x 25y 0w 0h" } },
-	{ HYPER, 		XK_s, 			moveresize,	{.v = "0x -25y 0w 0h" } },
-	{ HYPER, 		XK_f, 			moveresize,	{.v = "25x 0y 0w 0h" } },
-	{ HYPER, 		XK_a, 			moveresize,	{.v = "-25x 0y 0w 0h" } },
-
-	{ HYPER|ShiftMask, 	XK_d, 			moveresize,	{.v = "0x 0y 0w 25h" } },
-	{ HYPER|ShiftMask, 	XK_s, 			moveresize,	{.v = "0x 0y 0w -25h" } },
-	{ HYPER|ShiftMask, 	XK_f, 			moveresize,	{.v = "0x 0y 25w 0h" } },
-	{ HYPER|ShiftMask, 	XK_a, 			moveresize,	{.v = "0x 0y -25w 0h" } },
-
-	{ HYPER|ControlMask, 	XK_d, 			moveresizeedge,	{.v = "b"} },
-	{ HYPER|ControlMask, 	XK_s, 			moveresizeedge,	{.v = "t"} },
-	{ HYPER|ControlMask, 	XK_f, 			moveresizeedge,	{.v = "r"} },
-	{ HYPER|ControlMask, 	XK_a, 			moveresizeedge,	{.v = "l"} },
-
-	{ HYPER|ControlMask|ShiftMask, 	XK_d, 		moveresizeedge,	{.v = "B"} },
-	{ HYPER|ControlMask|ShiftMask, 	XK_s, 		moveresizeedge,	{.v = "T"} },
-	{ HYPER|ControlMask|ShiftMask, 	XK_f, 		moveresizeedge,	{.v = "R"} },
-	{ HYPER|ControlMask|ShiftMask, 	XK_a, 		moveresizeedge,	{.v = "L"} },
-
-	{ MODKEY,		XK_n, 			zoom,		{0} },
+	{ MODKEY,		XK_n, 			focusmaster,	{0} },
+	{ MODKEY|ShiftMask,	XK_n,			zoom,		{0} },
 	{ MODKEY,		XK_Tab, 		view,		{0} },
 
 	{ MODKEY,		XK_0, 			view,		{.ui = ~0 } },
@@ -225,34 +211,31 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask,	XK_j, 		tagmon,	 	{.i = -1 } },
 	{ MODKEY|ControlMask|ShiftMask,	XK_k, 		tagmon,	 	{.i = +1 } },
 
-	TAGKEYS( XK_1, 	0 )
-	TAGKEYS( XK_2, 	1 )
-	TAGKEYS( XK_3, 	2 )
-	TAGKEYS( XK_4, 	3 )
-	TAGKEYS( XK_5, 	4 )
-	TAGKEYS( XK_6, 	5 )
-	TAGKEYS( XK_7, 	6 )
-	TAGKEYS( XK_8, 	7 )
-	TAGKEYS( XK_9, 	8 )
+	TAGKEYS( 		XK_1, 					0 )
+	TAGKEYS( 		XK_2, 					1 )
+	TAGKEYS( 		XK_3, 					2 )
+	TAGKEYS( 		XK_4, 					3 )
+	TAGKEYS( 		XK_5, 					4 )
+	TAGKEYS( 		XK_6, 					5 )
+	TAGKEYS( 		XK_7, 					6 )
+	TAGKEYS( 		XK_8, 					7 )
+	TAGKEYS( 		XK_9, 					8 )
 
-	{ MODKEY,	 	XK_q, 			togglescratch, 	{.ui = 0 } },
-	{ MODKEY,	 	XK_w, 			togglescratch, 	{.ui = 1 } },
-	{ MODKEY,	 	XK_e, 			togglescratch, 	{.ui = 2 } },
-	{ MODKEY,	 	XK_grave, 		togglescratch, 	{.ui = 3 } },
-	{ MODKEY|ShiftMask,	XK_grave, 		togglescratch, 	{.ui = 4 } },
-
-	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD("$BROWSER") },
-
-	{ MODKEY, 		XK_F1,			spawn, 		SHCMD("pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') -1% ; pkill -RTMIN+10 dwmblocks") },
-	{ MODKEY,		XK_F2,			spawn, 		SHCMD("pactl set-sink-volume $(pactl info | awk '/Default Sink/ {print $3}') +1% ; pkill -RTMIN+10 dwmblocks") },
-	{ MODKEY,		XK_F3,			spawn, 		SHCMD("pactl set-sink-mute $(pactl info | awk '/Default Sink/ {print $3}') toggle ; pkill -RTMIN+10 dwmblocks") },
-
-	{ MODKEY|ShiftMask,	XK_F1, 			spawn, 		SHCMD("pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') -1% ; pkill -RTMIN+12 dwmblocks") },
-	{ MODKEY|ShiftMask,	XK_F2,			spawn, 		SHCMD("pactl set-source-volume $(pactl info | awk '/Default Source/ {print $3}') +1% ; pkill -RTMIN+12 dwmblocks") },
-	{ MODKEY|ShiftMask,	XK_F3,			spawn, 		SHCMD("pactl set-source-mute $(pactl info | awk '/Default Source/ {print $3}') toggle ; pkill -RTMIN+12 dwmblocks") },
+	{ MODKEY,	 	XK_u, 			togglescratch, 	{.ui = 0 } },
+	{ MODKEY,	 	XK_i, 			togglescratch, 	{.ui = 1 } },
+	{ MODKEY,	 	XK_o, 			togglescratch, 	{.ui = 2 } },
+	{ MODKEY,	 	XK_p, 			togglescratch, 	{.ui = 3 } },
 
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
+
+	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
+	{ MODKEY|ControlMask, 	XK_Next,		spawn, 		SHCMD(vol_dec) },
+	{ MODKEY|ControlMask,	XK_Prior,		spawn, 		SHCMD(vol_inc) },
+	{ MODKEY|ControlMask,	XK_Insert,		spawn, 		SHCMD(vol_mute) },
+	{ MODKEY|ControlMask, 	XK_End, 		spawn, 		SHCMD(mic_decvol) },
+	{ MODKEY|ControlMask, 	XK_Home,		spawn, 		SHCMD(mic_incvol) },
+	{ MODKEY|ControlMask, 	XK_Delete,		spawn, 		SHCMD(mic_mute) },
 };
 
 /* button definitions */
