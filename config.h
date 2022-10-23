@@ -178,7 +178,7 @@ static const Key keys[] = {
 	{ MODKEY,		XK_h,			setmfact,	{.f = -0.05} },
 	{ MODKEY,		XK_l,			setmfact,	{.f = +0.05} },
 
-	{ MODKEY|ShiftMask,	XK_q,			killclient,	{0} },
+	{ MODKEY|ShiftMask,	XK_c,			killclient,	{0} },
 
 	{ MODKEY,		XK_bracketleft,		setlayout,	{.v = &layouts[0]} },
 	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[1]} },
@@ -222,11 +222,11 @@ static const Key keys[] = {
 	{ MODKEY,		XK_0, 			view,		{.ui = ~0 } },
 	{ MODKEY|ShiftMask,	XK_0, 			tag, 		{.ui = ~0 } },
 
-	{ MODKEY|ControlMask,	XK_j, 			focusmon,	{.i = -1 } },
-	{ MODKEY|ControlMask,	XK_k, 			focusmon,	{.i = +1 } },
+	{ MODKEY,		XK_comma, 		focusmon,	{.i = -1 } },
+	{ MODKEY,		XK_period, 		focusmon,	{.i = +1 } },
 
-	{ MODKEY|ControlMask|ShiftMask,	XK_j, 		tagmon,	 	{.i = -1 } },
-	{ MODKEY|ControlMask|ShiftMask,	XK_k, 		tagmon,	 	{.i = +1 } },
+	{ MODKEY|ShiftMask,	XK_comma, 		tagmon,	 	{.i = -1 } },
+	{ MODKEY|ShiftMask,	XK_period, 		tagmon,	 	{.i = +1 } },
 
 	TAGKEYS( 		XK_1, 					0 )
 	TAGKEYS( 		XK_2, 					1 )
