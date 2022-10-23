@@ -95,9 +95,6 @@ static const Layout layouts[] = {
 /* mediakey's keycodes */
 /* #include <X11/XF86keysym.h> */
 
-/* define view_adjacent */
-#include "modules/view_adjacent.c"
-
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
