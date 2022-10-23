@@ -360,9 +360,6 @@ static Window root, wmcheckwin;
 
 static xcb_connection_t *xcon;
 
-/* autostart programs via shellscript */
-#include "modules/autostart.c"
-
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
@@ -3324,7 +3321,6 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
-	runautostart();
 	run();
 	if(restart) execvp(argv[0], argv);
 	cleanup();
