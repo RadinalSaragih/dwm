@@ -13,6 +13,7 @@ sudo make install
 * center
 * decorhints
 * focusonclick
+* focusmaster
 * leftstack
 * moveresize
 * noborderfloatingfix 
