@@ -75,6 +75,7 @@ static const Rule rules[] = {
 
 	{ "st-256color", NULL, NULL, 0, 0, 0, 1, 0, -1 },
 	{ NULL, NULL, "Event Tester", 0, 0, 0, 0, 1, -1 },
+	{ "Zathura", NULL, NULL, 0, 0, 0, 0, 1, -1 },
 	{ NULL, "sp-0", NULL, SPTAG(0), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-1", NULL, SPTAG(1), 1, 1, 1, 0, -1 },
 	{ NULL, "sp-2", NULL, SPTAG(2), 1, 1, 1, 0, -1 },
@@ -90,8 +91,8 @@ static const Layout layouts[] = {
 	/* symbol 	arrange function */
 	{ "T",		tile	}, 
 	{ "M",		monocle },
-	{ "F",		NULL	},
  	{ "[D]",	deck	},
+	{ "F",		NULL	},
 };
 
 /* key definitions */
@@ -121,12 +122,13 @@ static const char cmus_repeat[] = "cmus-remote -R; pkill -RTMIN+5 dwmblocks";
 static const char vol_dec[]	= "pactl set-sink-volume @DEFAULT_SINK@ -1%; pkill -RTMIN+10 dwmblocks";
 static const char vol_inc[]	= "pactl set-sink-volume @DEFAULT_SINK@ +1%; pkill -RTMIN+10 dwmblocks";
 static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; pkill -RTMIN+10 dwmblocks";
-static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+12 dwmblocks";
-static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'systemctl reboot\n' 'systemctl poweroff\n' | dmenu -m -1 | /bin/sh";
+static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+10 dwmblocks";
+static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+10 dwmblocks";
+static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+10 dwmblocks";
+static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'reboot\n' 'poweroff\n' | dmenu -m -1 | /bin/sh";
 static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
 static const char browser[]	= "qutebrowser";
+static const char xmouseless[]	= "xmouseless";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -169,8 +171,8 @@ static const Key keys[] = {
 	{ MODKEY,		XK_j,			focusstack,	{.i = +1 } },
 	{ MODKEY,		XK_k,			focusstack,	{.i = -1 } },
 
-	{ MODKEY|ControlMask,	XK_bracketright,	incnmaster,	{.i = +1 } },
-	{ MODKEY|ControlMask,	XK_bracketleft,	 	incnmaster,	{.i = -1 } },
+	{ MODKEY|ControlMask,	XK_equal,		incnmaster,	{.i = +1 } },
+	{ MODKEY|ControlMask,	XK_minus,		incnmaster,	{.i = -1 } },
 
 	{ MODKEY,		XK_h,			setmfact,	{.f = -0.05} },
 	{ MODKEY,		XK_l,			setmfact,	{.f = +0.05} },
@@ -178,9 +180,9 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_c,			killclient,	{0} },
 
 	{ MODKEY,		XK_bracketleft,		setlayout,	{.v = &layouts[0]} },
-	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[1]} },
-	{ MODKEY,		XK_backslash,		setlayout,	{.v = &layouts[2]} },
-	{ MODKEY|ShiftMask, 	XK_backslash, 		setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask,	XK_bracketleft,		setlayout,	{.v = &layouts[1]} },
+	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[2]} },
+	{ MODKEY|ShiftMask, 	XK_bracketright, 	setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ControlMask,	XK_space, 		setlayout, 	{0} },
 
 	{ MODKEY,		XK_s, 			togglefloating,	{0} },
@@ -246,6 +248,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
 	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
+	{ MODKEY,		XK_F1, 	 		spawn, 	 	SHCMD(xmouseless) },
 
 	{ MODKEY|ShiftMask,	XK_Next,		spawn, 		SHCMD(cmus_decvol) },
 	{ MODKEY|ShiftMask,	XK_Prior,		spawn, 		SHCMD(cmus_incvol) },

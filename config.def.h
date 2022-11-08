@@ -25,7 +25,6 @@ static char selbordercolor[]  = "#005577";
 static char selbgcolor[]      = "#005577";
 static char normspcbordercolor[] = "#719611";
 static char selspcbordercolor[]  = "#aa4450";
-
 static char *colors[][4] = {
 	/* 		    fg 		bg 		border 		SPC_BORDER*/
 	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor, normspcbordercolor },
@@ -37,11 +36,10 @@ typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
-const char *spcmd0[] = { "st", "-n", "sp-0", NULL };
-const char *spcmd1[] = { "st", "-n", "sp-1", NULL };
-const char *spcmd2[] = { "st", "-n", "sp-2", NULL };
-const char *spcmd3[] = { "st", "-n", "sp-3", NULL };
-const char *spcmd4[] = { "st", "-n", "sp-4", NULL };
+const char *spcmd0[] = { "st", "-T", "SP-0", "-n", "sp-0", NULL };
+const char *spcmd1[] = { "st", "-T", "SP-1", "-n", "sp-1", NULL };
+const char *spcmd2[] = { "st", "-T", "SP-2", "-n", "sp-2", NULL };
+const char *spcmd3[] = { "st", "-T", "SP-3", "-n", "sp-3", NULL };
 
 static Sp scratchpads[] = {
 	/* name 	cmd  */
@@ -58,8 +56,8 @@ static const Rule rules[] = {
 	 * WM_CLASS(STRING) = instance, class
 	 * WM_NAME(STRING) = title */
 	/* class          instance      title 	tags mask   centered floating terminal noswallow monitor */
-	{ "Firefox-esr",  NULL, 	NULL, 	1 << 6, 	0, 	0, 	0, 	1, 	-1 },
-	{ "st-256color",  NULL, 	NULL,   0,		0,	0,	1,	0,	-1 },
+	{ "Firefox-esr",  NULL, 	NULL, 	1 << 4, 	0, 	0, 	0, 	1, 	-1 },
+	{ "st-256color", NULL, NULL, 0, 0, 0, 1, 0, -1 },
 
 	{ NULL, NULL, "Event Tester", 0, 0, 0, 0, 1, -1 },
 	{ NULL, "sp-0", NULL, SPTAG(0), 1, 1, 1, 0, -1 },
@@ -75,14 +73,14 @@ static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
 	/* first entry is default */
 	/* symbol 	arrange function */
-	{ "T",		tile 	}, 
+	{ "T",		tile	}, 
 	{ "M",		monocle },
-	{ "F",		NULL 	},
+ 	{ "[D]",	deck	},
+	{ "F",		NULL	},
 };
 
 /* key definitions */
 #define MODKEY Mod4Mask
-#define HYPER Mod3Mask
 #define TAGKEYS(KEY,TAG)                                                \
 { MODKEY,			KEY,	view,		{.ui = 1 << TAG} }, \
 { MODKEY|ControlMask,		KEY,	toggleview, 	{.ui = 1 << TAG} }, \
@@ -96,16 +94,18 @@ static const Layout layouts[] = {
 /* #include <X11/XF86keysym.h> */
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-p", ">", NULL };
-static const char *termcmd[] = { "st", NULL };
+static const char *dmenucmd[]	= { "dmenu_run", "-i", "-p", ">", NULL };
+static const char *termcmd[]	= { "st", NULL };
 static const char vol_dec[]	= "pactl set-sink-volume @DEFAULT_SINK@ -1%; pkill -RTMIN+10 dwmblocks";
 static const char vol_inc[]	= "pactl set-sink-volume @DEFAULT_SINK@ +1%; pkill -RTMIN+10 dwmblocks";
 static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; pkill -RTMIN+10 dwmblocks";
-static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+12 dwmblocks";
-static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+12 dwmblocks";
+static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+10 dwmblocks";
+static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+10 dwmblocks";
+static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+10 dwmblocks";
+static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'reboot\n' 'poweroff\n' | dmenu -m -1 | /bin/sh";
+static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
 static const char browser[]	= "qutebrowser";
+static const char xmouseless[]	= "xmouseless";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -122,8 +122,8 @@ ResourcePref resources[] = {
 	{ "snap", 			INTEGER,	&snap },
 	{ "showbar", 			INTEGER,	&showbar },
 	{ "topbar", 			INTEGER,	&topbar },
-	{ "nmaster", 			INTEGER, 	&nmaster },
-	{ "resizehints", 		INTEGER, 	&resizehints },
+	{ "nmaster", 			INTEGER,	&nmaster },
+	{ "resizehints", 		INTEGER,	&resizehints },
 	{ "mfact", 			FLOAT,		&mfact },
 	{ "focusonwheel", 		INTEGER, 	&focusonwheel},
 	{ "lockfullscreen", 		INTEGER, 	&lockfullscreen},
@@ -132,17 +132,13 @@ ResourcePref resources[] = {
 	{ "systrayspacing", 		INTEGER, 	&systrayspacing },
 	{ "systrayonleft", 		INTEGER, 	&systrayonleft },
 	{ "systraypinningfailfirst", 	INTEGER, 	&systraypinningfailfirst },
-	{ "scratchpad1",  		STRING, 	&scratchpad1 },
-	{ "scratchpad2",  		STRING, 	&scratchpad2 },
-	{ "scratchpad3",  		STRING, 	&scratchpad3 },
-	{ "scratchpad4",  		STRING, 	&scratchpad4 },
 	{ "noborder", 			INTEGER, 	&noborder },
 	{ "showtitle", 			INTEGER, 	&showtitle },
 	{ "swallowfloating", 		INTEGER, 	&swallowfloating }, 
 };
 
 /* keybindings */
-static Key keys[] = {
+static const Key keys[] = {
 	/* modifier		key 			function	argument */
 	{ MODKEY,		XK_space,		spawn,		{.v = dmenucmd } },
 	{ MODKEY,		XK_Return,		spawn,		{.v = termcmd } },
@@ -152,18 +148,18 @@ static Key keys[] = {
 	{ MODKEY,		XK_j,			focusstack,	{.i = +1 } },
 	{ MODKEY,		XK_k,			focusstack,	{.i = -1 } },
 
-	{ MODKEY|ControlMask,	XK_bracketright,	incnmaster,	{.i = +1 } },
-	{ MODKEY|ControlMask,	XK_bracketleft,	 	incnmaster,	{.i = -1 } },
+	{ MODKEY|ControlMask,	XK_equal,		incnmaster,	{.i = +1 } },
+	{ MODKEY|ControlMask,	XK_minus,		incnmaster,	{.i = -1 } },
 
 	{ MODKEY,		XK_h,			setmfact,	{.f = -0.05} },
 	{ MODKEY,		XK_l,			setmfact,	{.f = +0.05} },
 
-	{ MODKEY|ShiftMask,	XK_q,			killclient,	{0} },
+	{ MODKEY|ShiftMask,	XK_c,			killclient,	{0} },
 
 	{ MODKEY,		XK_bracketleft,		setlayout,	{.v = &layouts[0]} },
-	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[1]} },
-	{ MODKEY,		XK_backslash,		setlayout,	{.v = &layouts[2]} },
-	{ MODKEY|ShiftMask, 	XK_backslash, 		setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask,	XK_bracketleft,		setlayout,	{.v = &layouts[1]} },
+	{ MODKEY,		XK_bracketright,	setlayout,	{.v = &layouts[2]} },
+	{ MODKEY|ShiftMask, 	XK_bracketright, 	setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ControlMask,	XK_space, 		setlayout, 	{0} },
 
 	{ MODKEY,		XK_s, 			togglefloating,	{0} },
@@ -202,11 +198,11 @@ static Key keys[] = {
 	{ MODKEY,		XK_0, 			view,		{.ui = ~0 } },
 	{ MODKEY|ShiftMask,	XK_0, 			tag, 		{.ui = ~0 } },
 
-	{ MODKEY|ControlMask,	XK_j, 			focusmon,	{.i = -1 } },
-	{ MODKEY|ControlMask,	XK_k, 			focusmon,	{.i = +1 } },
+	{ MODKEY,		XK_comma, 		focusmon,	{.i = -1 } },
+	{ MODKEY,		XK_period, 		focusmon,	{.i = +1 } },
 
-	{ MODKEY|ControlMask|ShiftMask,	XK_j, 		tagmon,	 	{.i = -1 } },
-	{ MODKEY|ControlMask|ShiftMask,	XK_k, 		tagmon,	 	{.i = +1 } },
+	{ MODKEY|ShiftMask,	XK_comma, 		tagmon,	 	{.i = -1 } },
+	{ MODKEY|ShiftMask,	XK_period, 		tagmon,	 	{.i = +1 } },
 
 	TAGKEYS( 		XK_1, 					0 )
 	TAGKEYS( 		XK_2, 					1 )
@@ -227,6 +223,10 @@ static Key keys[] = {
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
 
 	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
+	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
+	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
+	{ MODKEY,		XK_F1, 	 		spawn, 	 	SHCMD(xmouseless) },
+
 	{ MODKEY|ControlMask, 	XK_Next,		spawn, 		SHCMD(vol_dec) },
 	{ MODKEY|ControlMask,	XK_Prior,		spawn, 		SHCMD(vol_inc) },
 	{ MODKEY|ControlMask,	XK_Insert,		spawn, 		SHCMD(vol_mute) },
@@ -237,7 +237,7 @@ static Key keys[] = {
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
-static Button buttons[] = {
+static const Button buttons[] = {
 	/* click event 		mask 			button 		function 		argument */
 	{ ClkLtSymbol,		0,			Button1,	setlayout,		{0} },
 	{ ClkLtSymbol,		0,			Button3,	setlayout,		{.v = &layouts[2]} },
