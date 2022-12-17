@@ -67,6 +67,8 @@
 #define SPTAG(i)		((1 << LENGTH(tags)) << (i))
 #define SPTAGMASK		(((1 << LENGTH(scratchpads))-1) << LENGTH(tags))
 #define TEXTW(X)		(drw_fontset_getwidth(drw, (X)) + lrpad)
+#define ColStickyBorder		3
+#define ColFloatBorder		4
 
 #define SYSTEM_TRAY_REQUEST_DOCK	0
 
@@ -1014,7 +1016,7 @@ drawbar(Monitor *m)
 			if (showtitle) {
 				drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 				drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
-				if (m->sel->isfloating)
+				if (m->sel->isfloating || m->sel->issticky)
 					drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
 			}
 			else
@@ -1068,8 +1070,10 @@ focus(Client *c)
 
 		/* XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel); */
 
-		if(c->isfloating || c->issticky)
-			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColSpcBorder].pixel);
+		if ((c->issticky) || (c->issticky && c->isfloating))
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColStickyBorder].pixel);
+		else if (c->isfloating)
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloatBorder].pixel);
 		else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 
@@ -1375,9 +1379,10 @@ manage(Window w, XWindowAttributes *wa)
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
 	/* XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel); */
 
-
-	if(c->isfloating || c->issticky)
-		XSetWindowBorder(dpy, w, scheme[SchemeNorm][3].pixel);
+	if ((c->issticky) || (c->issticky && c->isfloating))
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColStickyBorder].pixel);
+	else if (c->isfloating)
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloatBorder].pixel);
 	else
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
 
@@ -1422,8 +1427,10 @@ manage(Window w, XWindowAttributes *wa)
 	if (c->isfloating)
 		XRaiseWindow(dpy, c->win);
 
-	if(c->isfloating || c->issticky)
-		XSetWindowBorder(dpy, w, scheme[SchemeNorm][3].pixel);
+	if ((c->issticky) || (c->issticky && c->isfloating))
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColStickyBorder].pixel);
+	else if (c->isfloating)
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloatBorder].pixel);
 
 	attachaside(c);
 	attachstack(c);
@@ -2230,8 +2237,7 @@ setup(void)
 	/* init appearance */
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
-		/* scheme[i] = drw_scm_create(drw, colors[i], 3); */
-		scheme[i] = drw_scm_create(drw, colors[i], 4);
+		scheme[i] = drw_scm_create(drw, colors[i], 5);
 	/* init system tray */
 	updatesystray();
 	/* init bars */
@@ -2417,11 +2423,10 @@ togglefloating(const Arg *arg)
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
 
-	if (selmon->sel->isfloating){
-		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][3].pixel);
-	}else{
-		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColBorder].pixel);
-	}
+	if (selmon->sel->isfloating)
+		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFloatBorder].pixel);
+	else
+	    	XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColBorder].pixel);
 
 	if (selmon->sel->isfloating)
 		/* restore last known float dimensions */
@@ -2476,11 +2481,12 @@ togglesticky(const Arg *arg)
 	if (!selmon->sel)
 		return;
 	selmon->sel->issticky = !selmon->sel->issticky;
-	if (selmon->sel->issticky){
-		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][3].pixel);
-	}else{
+	if (selmon->sel->issticky)
+		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColStickyBorder].pixel);
+	else if (selmon->sel->isfloating)
+		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFloatBorder].pixel);
+	else
 		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColBorder].pixel);
-	}
 	arrange(selmon);
 }
 

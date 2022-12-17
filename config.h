@@ -17,18 +17,20 @@ static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
 
 /* colors */
-static char normbgcolor[]     = "#222222";
-static char normbordercolor[] = "#444444";
-static char normfgcolor[]     = "#bbbbbb";
-static char selfgcolor[]      = "#eeeeee";
-static char selbordercolor[]  = "#005577";
-static char selbgcolor[]      = "#005577";
-static char normspcbordercolor[] = "#719611";
-static char selspcbordercolor[]  = "#aa4450";
-static char *colors[][4] = {
-	/* 		    fg 		bg 		border 		SPC_BORDER*/
-	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor, normspcbordercolor },
-	[SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor,  selspcbordercolor },
+static char normbg[]     = "#222222";
+static char normborder[] = "#444444";
+static char normfg[]     = "#bbbbbb";
+static char selfg[]      = "#eeeeee";
+static char selborder[]  = "#005577";
+static char selbg[]      = "#005577";
+static char normstickyborder[] = "#719611";
+static char selstickyborder[]  = "#aa4450";
+static char normfloatborder[] = "#719611";
+static char selfloatborder[]  = "#aa4450";
+static char *colors[][5] = {
+	/* 		 fg	bg	border		sticky_border*/
+	[SchemeNorm] = { normfg, normbg, normborder, normstickyborder, normfloatborder },
+	[SchemeSel]  = { selfg,  selbg,  selborder,  selstickyborder, selfloatborder },
 };
 
 /* scratchpads */
@@ -133,14 +135,16 @@ static const char xmouseless[]	= "xmouseless";
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
 	{ "fonts", 			STRING, 	&font },
-	{ "normbgcolor", 		STRING, 	&normbgcolor },
-	{ "normbordercolor", 		STRING, 	&normbordercolor },
-	{ "normfgcolor",  		STRING, 	&normfgcolor },
-	{ "selbgcolor", 		STRING, 	&selbgcolor },
-	{ "selbordercolor", 		STRING, 	&selbordercolor },
-	{ "selfgcolor", 		STRING, 	&selfgcolor },
-	{ "selspcbordercolor", 		STRING, 	&selspcbordercolor },
-	{ "normspcbordercolor", 	STRING, 	&normspcbordercolor },
+	{ "normbg",			STRING, 	&normbg },
+	{ "normborder", 		STRING, 	&normborder },
+	{ "normfg",			STRING, 	&normfg },
+	{ "selbg",			STRING,		&selbg },
+	{ "selborder",			STRING, 	&selborder },
+	{ "selfg",			STRING, 	&selfg },
+	{ "selstickyborder", 		STRING, 	&selstickyborder },
+	{ "normstickyborder",		STRING, 	&normstickyborder },
+	{ "selfloatborder", 		STRING, 	&selfloatborder },
+	{ "normfloatborder",		STRING, 	&normfloatborder },
 	{ "borderpx", 			INTEGER,	&borderpx },
 	{ "snap", 			INTEGER,	&snap },
 	{ "showbar", 			INTEGER,	&showbar },
