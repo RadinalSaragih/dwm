@@ -131,6 +131,7 @@ static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'reboot
 static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
 static const char browser[]	= "qutebrowser";
 static const char xmouseless[]	= "xmouseless";
+static const char launch_tmux[]	= "st -e tmux-start";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -267,6 +268,8 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask, 	XK_End, 		spawn, 		SHCMD(mic_decvol) },
 	{ MODKEY|ControlMask, 	XK_Home,		spawn, 		SHCMD(mic_incvol) },
 	{ MODKEY|ControlMask, 	XK_Delete,		spawn, 		SHCMD(mic_mute) },
+
+	{ MODKEY|ShiftMask,	XK_Return,		spawn,		SHCMD(launch_tmux) },
 };
 
 /* button definitions */
