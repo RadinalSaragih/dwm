@@ -253,7 +253,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
 	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
-	{ MODKEY,		XK_F1, 	 		spawn, 	 	SHCMD(xmouseless) },
+	{ MODKEY,		XK_m, 	 		spawn, 	 	SHCMD(xmouseless) },
 
 	{ MODKEY|ShiftMask,	XK_Next,		spawn, 		SHCMD(cmus_decvol) },
 	{ MODKEY|ShiftMask,	XK_Prior,		spawn, 		SHCMD(cmus_incvol) },
