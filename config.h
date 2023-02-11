@@ -59,19 +59,11 @@ static const Rule rules[] = {
 	 * WM_NAME(STRING) = title */
 	/* class          instance      title 	tags mask   centered floating terminal noswallow monitor */
 	{ "Steam",        NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ "retroarch",    NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ "dolphin-emu",  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ "PPSSPPSDL", 	  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ "Pcsx2", 	  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ "pyrogenesis",  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-	{ "Freeciv-gtk3.22",  NULL, 	NULL, 	1 << 8, 	0, 	0, 	0, 	1, 	-1 },
-
 	{ "Godot",        NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
 	{ "Inkscape",     NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
 	{ "Gimp",         NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
 	{ "lmms",         NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
 	{ "kdenlive",     NULL, 	NULL, 	1 << 7, 	0, 	0, 	0, 	1, 	-1 },
-
 	{ "Firefox-esr",  NULL, 	NULL, 	1 << 4, 	0, 	0, 	0, 	1, 	-1 },
 	{ "qutebrowser",  NULL, 	NULL, 	1 << 4, 	0, 	0, 	0, 	1, 	-1 },
 
