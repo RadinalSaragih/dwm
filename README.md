@@ -12,6 +12,9 @@ sudo make install
 * autostart
 * center
 * decorhints
+* deck
+* uselessgaps
+* exitmenu
 * focusonclick
 * focusmaster
 * leftstack
