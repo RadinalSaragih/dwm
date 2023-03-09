@@ -103,6 +103,7 @@ static const Layout layouts[] = {
 
 /* mediakey's keycodes */
 /* #include <X11/XF86keysym.h> */
+#include "powermenu.c"
 
 /* commands */
 static const char *dmenucmd[]	= { "dmenu_run", "-i", "-p", ">", NULL };
@@ -120,7 +121,6 @@ static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; pkill
 static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+10 dwmblocks";
 static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+10 dwmblocks";
 static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+10 dwmblocks";
-static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'reboot\n' 'poweroff\n' | dmenu -m -1 | /bin/sh";
 static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
 static const char browser[]	= "qutebrowser";
 static const char xmouseless[]	= "xmouseless";
@@ -243,9 +243,9 @@ static const Key keys[] = {
 
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
+	{ MODKEY|Mod1Mask,	XK_Escape,		powermenu,	{0} },  // powermenu
 
 	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
-	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
 	{ MODKEY,		XK_m, 	 		spawn, 	 	SHCMD(xmouseless) },
 
