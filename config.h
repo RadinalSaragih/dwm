@@ -125,6 +125,9 @@ static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/
 static const char browser[]	= "qutebrowser";
 static const char xmouseless[]	= "xmouseless";
 static const char launch_tmux[]	= "st -e tmux-start";
+static const char dunstctl_show_all[] = "dunstctl history-pop";
+static const char dunstctl_close_all[] = "dunstctl close-all";
+static const char dunstctl_close_top[] = "dunstctl close";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -262,6 +265,10 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask, 	XK_End, 		spawn, 		SHCMD(mic_decvol) },
 	{ MODKEY|ControlMask, 	XK_Home,		spawn, 		SHCMD(mic_incvol) },
 	{ MODKEY|ControlMask, 	XK_Delete,		spawn, 		SHCMD(mic_mute) },
+
+	{ MODKEY,		XK_F11,			spawn, 		SHCMD(dunstctl_show_all) },
+	{ MODKEY,		XK_F12,			spawn, 		SHCMD(dunstctl_close_top) },
+	{ MODKEY|ShiftMask,	XK_F12,			spawn, 		SHCMD(dunstctl_close_all) },
 
 	{ MODKEY|ShiftMask,	XK_Return,		spawn,		SHCMD(launch_tmux) },
 };
