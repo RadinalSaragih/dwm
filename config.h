@@ -131,7 +131,7 @@ static const char dunstctl_close_top[] = "dunstctl close";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
-	{ "fonts", 			STRING, 	&font },
+	{ "font", 			STRING, 	&font },
 	{ "normbg",			STRING, 	&normbg },
 	{ "normborder", 		STRING, 	&normborder },
 	{ "normfg",			STRING, 	&normfg },
