@@ -11,6 +11,7 @@ static int focusonwheel = 0;
 static int showsystray = 0; /* 0 = no systray */
 static int showbar = 1; /* 0 = no bar */
 static int topbar = 1; /* 0 = bottom bar */
+static int gappx  = 5;  /* gaps between windows */
 static int noborder = 1; /* 1 = hide the bar if only a single window is opened. */
 static int showtitle = 0; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
@@ -153,6 +154,7 @@ ResourcePref resources[] = {
 	{ "systrayonleft", 		INTEGER, 	&systrayonleft },
 	{ "systraypinningfailfirst", 	INTEGER, 	&systraypinningfailfirst },
 	{ "noborder", 			INTEGER, 	&noborder },
+	{ "gaps",			INTEGER,	&gappx },
 	{ "showtitle", 			INTEGER, 	&showtitle },
 	{ "swallowfloating", 		INTEGER, 	&swallowfloating }, 
 };
