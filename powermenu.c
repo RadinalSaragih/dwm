@@ -50,7 +50,7 @@ void powermenu ()
 			S_FORMAT (EXIT) "\n"
 			S_FORMAT (REBOOT) "\n"
 			S_FORMAT (SHUTDOWN)
-			"\" | dmenu -l 10 -p 'Power Menu':" 
+			"\" | dmenu -i -l 10 -p 'Power Menu':" 
 		,
 		"r"
 	);
