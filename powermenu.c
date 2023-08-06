@@ -1,5 +1,6 @@
 # include <stdio.h>
 # include <string.h>
+# include <stdlib.h>
 
 void powermenu ()
 {
@@ -10,12 +11,6 @@ void powermenu ()
 	defined S_EXIT				|| \
 	defined S_REBOOT			|| \
 	defined S_SHUTDOWN			|| \
-	defined S_LOCK_ICON			|| \
-	defined S_RESTART_DWM_ICON	|| \
-	defined S_SCREEN_OFF_ICON	|| \
-	defined S_EXIT_ICON			|| \
-	defined S_REBOOT_ICON		|| \
-	defined S_SHUTDOWN_ICON		|| \
 	defined S_FORMAT			|| \
 	defined S_FORMAT_CLEAR
 # error (conflicting macro names)
@@ -29,13 +24,6 @@ void powermenu ()
 # define S_SHUTDOWN "Shutdown"
 # define S_LOAD_XRESOURCES "Load Xresources"
 # define S_CHANGE_WP "Change WP"
-
-# define S_LOCK_ICON "\uf023"			// <= FontAwesome icons
-# define S_RESTART_DWM_ICON "\uf01e"
-# define S_SCREEN_OFF_ICON "\uf108"
-# define S_EXIT_ICON "\uf2f5"
-# define S_REBOOT_ICON "\uf021"
-# define S_SHUTDOWN_ICON "\uf011"
 
 # define S_FORMAT(ACTION) S_##ACTION
 # define S_FORMAT_CLEAR "sed 's/^..//'"
@@ -86,12 +74,6 @@ close_streams:
 # undef S_EXIT
 # undef S_REBOOT
 # undef S_SHUTDOWN
-# undef S_LOCK_ICON
-# undef S_RESTART_DWM_ICON
-# undef S_SCREEN_OFF_ICON
-# undef S_EXIT_ICON
-# undef S_REBOOT_ICON
-# undef S_SHUTDOWN_ICON
 # undef S_FORMAT
 # undef S_FORMAT_CLEAR
 }
