@@ -206,6 +206,11 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_Right, 		moveresize,	{.v = "0x 0y 25w 0h" } },
 	{ MODKEY|ShiftMask,	XK_Left,		moveresize,	{.v = "0x 0y -25w 0h" } },
 
+	/* 
+	  FIXME:
+	  moveresizeedge will crash dwm if used on a tag that has no window opened.
+	*/
+
 	// { MODKEY|ControlMask,	XK_Up,			moveresizeedge,	{.v = "t"} },
 	// { MODKEY|ControlMask,	XK_Down,		moveresizeedge,	{.v = "b"} },
 	// { MODKEY|ControlMask,	XK_Left,		moveresizeedge,	{.v = "l"} },
