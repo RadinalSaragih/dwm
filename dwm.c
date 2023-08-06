@@ -1612,14 +1612,15 @@ moveresize(const Arg *arg) {
 
 	XRaiseWindow(dpy, c->win);
 	Bool xqp =XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
-	resize(c, nx, ny, nw, nh, True);
+	resizeclient(c, nx, ny, nw, nh);
 
 	/* move cursor along with the window to avoid problems caused by the sloppy focus */
 	if (xqp && ox <= msx && (ox + ow) >= msx && oy <= msy && (oy + oh) >= msy)
 	{
 		nmx = c->x - ox + c->w - ow;
 		nmy = c->y - oy + c->h - oh;
-		XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
+		if ((msx + nmx) > c->x && (msy + nmy) > c->y)
+			XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
 	}
 }
 
@@ -1642,10 +1643,10 @@ moveresizeedge(const Arg *arg) {
 
 	starty = selmon->showbar && topbar ? bh : 0;
 	bp = selmon->showbar && !topbar ? bh : 0;
-
+	
 	if (!c || !arg)
 		return;
-	if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+	if (selmon->lt[selmon->sellt]->arrange || !c->isfloating)
 		return;
 	if(sscanf((char *)arg->v, "%c", &e) != 1)
 		return;
@@ -1696,13 +1697,14 @@ moveresizeedge(const Arg *arg) {
 
 	XRaiseWindow(dpy, c->win);
 	Bool xqp = XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
-	resize(c, nx, ny, nw, nh, True);
+	resizeclient(c, nx, ny, nw, nh);
 
 	/* move cursor along with the window to avoid problems caused by the sloppy focus */
 	if (xqp && ox <= msx && (ox + ow) >= msx && oy <= msy && (oy + oh) >= msy) {
 		nmx = c->x - ox + c->w - ow;
 		nmy = c->y - oy + c->h - oh;
-		XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
+		if ((msx + nmx) > c->x && (msy + nmy) > c->y)
+			XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
 	}
 }
 
