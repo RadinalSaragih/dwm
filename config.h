@@ -206,15 +206,15 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_Right, 		moveresize,	{.v = "0x 0y 25w 0h" } },
 	{ MODKEY|ShiftMask,	XK_Left,		moveresize,	{.v = "0x 0y -25w 0h" } },
 
-	{ MODKEY|ControlMask,	XK_Up,			moveresizeedge,	{.v = "t"} },
-	{ MODKEY|ControlMask,	XK_Down,		moveresizeedge,	{.v = "b"} },
-	{ MODKEY|ControlMask,	XK_Left,		moveresizeedge,	{.v = "l"} },
-	{ MODKEY|ControlMask,	XK_Right, 		moveresizeedge,	{.v = "r"} },
-
-	{ MODKEY|ControlMask|ShiftMask,	XK_Up,		moveresizeedge,	{.v = "T"} },
-	{ MODKEY|ControlMask|ShiftMask,	XK_Down,	moveresizeedge,	{.v = "B"} },
-	{ MODKEY|ControlMask|ShiftMask,	XK_Left,	moveresizeedge,	{.v = "L"} },
-	{ MODKEY|ControlMask|ShiftMask,	XK_Right, 	moveresizeedge,	{.v = "R"} },
+	// { MODKEY|ControlMask,	XK_Up,			moveresizeedge,	{.v = "t"} },
+	// { MODKEY|ControlMask,	XK_Down,		moveresizeedge,	{.v = "b"} },
+	// { MODKEY|ControlMask,	XK_Left,		moveresizeedge,	{.v = "l"} },
+	// { MODKEY|ControlMask,	XK_Right, 		moveresizeedge,	{.v = "r"} },
+	//
+	// { MODKEY|ControlMask|ShiftMask,	XK_Up,		moveresizeedge,	{.v = "T"} },
+	// { MODKEY|ControlMask|ShiftMask,	XK_Down,	moveresizeedge,	{.v = "B"} },
+	// { MODKEY|ControlMask|ShiftMask,	XK_Left,	moveresizeedge,	{.v = "L"} },
+	// { MODKEY|ControlMask|ShiftMask,	XK_Right, 	moveresizeedge,	{.v = "R"} },
 
 	{ MODKEY,		XK_n, 			focusmaster,	{0} },
 	{ MODKEY|ShiftMask,	XK_n,			zoom,		{0} },
