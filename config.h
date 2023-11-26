@@ -84,7 +84,7 @@ static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
 	/* first entry is default */
 	/* symbol 	arrange function */
-	{ "T",		tile	}, 
+	{ "T",		tile	},
 	{ "M",		monocle },
  	{ "[D]",	deck	},
 	{ "F",		NULL	},
@@ -124,7 +124,7 @@ static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; p
 static const char screenshot[]	= "dm-screenshot";
 static const char browser[]	= "qutebrowser";
 static const char xmouseless[]	= "xmouseless";
-static const char launch_tmux[]	= "st -e tmux-cmd -start";
+static const char launch_tmux[]	= "st -e tmux_start";
 static const char dunstctl_show_all[] = "dunstctl history-pop";
 static const char dunstctl_close_all[] = "dunstctl close-all";
 static const char dunstctl_close_top[] = "dunstctl close";
@@ -159,7 +159,7 @@ ResourcePref resources[] = {
 	{ "noborder", 			INTEGER, 	&noborder },
 	{ "gaps",			INTEGER,	&gappx },
 	{ "showtitle", 			INTEGER, 	&showtitle },
-	{ "swallowfloating", 		INTEGER, 	&swallowfloating }, 
+	{ "swallowfloating", 		INTEGER, 	&swallowfloating },
 };
 
 /* keybindings */
@@ -206,7 +206,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_Right, 		moveresize,	{.v = "0x 0y 25w 0h" } },
 	{ MODKEY|ShiftMask,	XK_Left,		moveresize,	{.v = "0x 0y -25w 0h" } },
 
-	/* 
+	/*
 	  FIXME:
 	  moveresizeedge will crash dwm if used on a tag that has no window opened.
 	*/
