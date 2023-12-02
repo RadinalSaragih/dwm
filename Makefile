@@ -27,7 +27,7 @@ dwm: ${OBJ}
 
 clean:
 	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
-	# rm -f ${XSESSIONS}/dwm.desktop
+	rm -f ${XSESSIONS}/dwm.desktop
 
 dist: clean
 	mkdir -p dwm-${VERSION}
@@ -44,8 +44,8 @@ install: all
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	# mkdir -p "${XSESSIONS}"
-	# cp -f dwm.desktop ${XSESSIONS}
+	mkdir -p "${XSESSIONS}"
+	cp -f dwm.desktop ${XSESSIONS}
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
