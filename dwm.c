@@ -1018,7 +1018,7 @@ drawbar(Monitor *m)
 
 			if (m->sel->isfloating || m->sel->issticky)
 				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-		
+
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
 			drw_rect(drw, x, 0, w, bh, 1, 1);
@@ -1238,7 +1238,7 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size)
 		return 0;
 	if (name.encoding == XA_STRING) {
 		strncpy(text, (char *)name.value, size - 1);
-	} else if (XmbTextPropertyToTextList(dpy, &name, &list, &n) >= Success && n > 0 && *list) { 
+	} else if (XmbTextPropertyToTextList(dpy, &name, &list, &n) >= Success && n > 0 && *list) {
 		strncpy(text, *list, size - 1);
 		XFreeStringList(list);
 	}
@@ -1636,6 +1636,13 @@ moveresizeedge(const Arg *arg) {
 	unsigned int dui;
 	Window dummy;
 
+	if (!c || !arg)
+		return;
+	if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+		return;
+	if(sscanf((char *)arg->v, "%c", &e) != 1)
+		return;
+
 	nx = c->x;
 	ny = c->y;
 	nw = c->w;
@@ -1643,13 +1650,6 @@ moveresizeedge(const Arg *arg) {
 
 	starty = selmon->showbar && topbar ? bh : 0;
 	bp = selmon->showbar && !topbar ? bh : 0;
-	
-	if (!c || !arg)
-		return;
-	if (selmon->lt[selmon->sellt]->arrange || !c->isfloating)
-		return;
-	if(sscanf((char *)arg->v, "%c", &e) != 1)
-		return;
 
 	if(e == 't')
 		ny = starty;
@@ -2726,7 +2726,7 @@ updategeom(void)
 				mons = createmon();
 		}
 		for (i = 0, m = mons; i < nn && m; m = m->next, i++)
-			if (i >= n 
+			if (i >= n
 			|| unique[i].x_org != m->mx || unique[i].y_org != m->my
 			|| unique[i].width != m->mw || unique[i].height != m->mh)
 			{
