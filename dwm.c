@@ -1611,7 +1611,7 @@ moveresize(const Arg *arg) {
 	}
 
 	// checks if a window is too small
-	if (nw <= 0 || nh <= 0 || nx <= 0 || ny <= 0) return;
+	if (nw <= 0 || nh <= 0) return;
 
 	ox = c->x;
 	oy = c->y;
@@ -1699,7 +1699,7 @@ moveresizeedge(const Arg *arg) {
 		nw = c->w + c->x + 2 * c->bw == selmon->mx + selmon->mw ? c->oldw : selmon->mx + selmon->mw - c->x - 2 * c->bw;
 
 	// checks if a window is too small
-	if (nw <= 0 || nh <= 0 || nx <= 0 || ny <= 0) return;
+	if (nw <= 0 || nh <= 0) return;
 
 	ox = c->x;
 	oy = c->y;
