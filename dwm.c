@@ -2487,7 +2487,7 @@ void
 togglescratch(const Arg *arg)
 {
 	Client *c;
-	unsigned int found = 0;
+	unsigned int found = FALSE;
 	unsigned int scratchtag = SPTAG(arg->ui);
 	Arg sparg = {.v = scratchpads[arg->ui].cmd};
 
@@ -3007,7 +3007,7 @@ updatewmhints(Client *c)
 		if (wmh->flags & InputHint)
 			c->neverfocus = !wmh->input;
 		else
-			c->neverfocus = 0;
+			c->neverfocus = FALSE;
 		XFree(wmh);
 	}
 }
