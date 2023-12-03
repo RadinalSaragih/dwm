@@ -70,6 +70,10 @@
 #define ColStickyBorder		3
 #define ColFloatBorder		4
 
+// boolean constant
+#define TRUE 1
+#define FALSE 0
+
 #define SYSTEM_TRAY_REQUEST_DOCK	0
 
 /* XEMBED messages */
@@ -389,8 +393,8 @@ applyrules(Client *c)
 	XClassHint ch = { NULL, NULL };
 
 	/* rule matching */
-	c->iscentered = 0;
-	c->isfloating = 0;
+	c->iscentered = FALSE;
+	c->isfloating = FALSE;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class = ch.res_class ? ch.res_class : broken;
@@ -719,7 +723,7 @@ clientmessage(XEvent *e)
 			c->h = c->oldh = wa.height;
 			c->oldbw = wa.border_width;
 			c->bw = 0;
-			c->isfloating = True;
+			c->isfloating = TRUE;
 			/* reuse tags field as mapped status */
 			c->tags = 1;
 			updatesizehints(c);
@@ -1239,6 +1243,7 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size)
 	if (name.encoding == XA_STRING) {
 		strncpy(text, (char *)name.value, size - 1);
 	} else if (XmbTextPropertyToTextList(dpy, &name, &list, &n) >= Success && n > 0 && *list) {
+
 		strncpy(text, *list, size - 1);
 		XFreeStringList(list);
 	}
@@ -2155,17 +2160,17 @@ setfullscreen(Client *c, int fullscreen)
 	if (fullscreen && !c->isfullscreen) {
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 				PropModeReplace, (unsigned char*)&netatom[NetWMFullscreen], 1);
-		c->isfullscreen = 1;
+		c->isfullscreen = TRUE;
 		c->oldstate = c->isfloating;
 		c->oldbw = c->bw;
 		c->bw = 0;
-		c->isfloating = 1;
+		c->isfloating = TRUE;
 		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 		XRaiseWindow(dpy, c->win);
 	} else if (!fullscreen && c->isfullscreen){
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 				PropModeReplace, (unsigned char*)0, 0);
-		c->isfullscreen = 0;
+		c->isfullscreen = FALSE;
 		c->isfloating = c->oldstate;
 		c->bw = c->oldbw;
 		c->x = c->oldx;
@@ -2977,8 +2982,8 @@ updatewindowtype(Client *c)
 	if (state == netatom[NetWMFullscreen])
 		setfullscreen(c, 1);
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
-		c->iscentered = 1;
-		c->isfloating = 1;
+		c->iscentered = TRUE;
+		c->isfloating = TRUE;
 	}
 }
 
