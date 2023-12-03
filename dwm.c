@@ -1556,10 +1556,7 @@ movemouse(const Arg *arg)
 Client *
 nexttagged(Client *c) {
 	Client *walked = c->mon->clients;
-	for(;
-			walked && (walked->isfloating || !ISVISIBLEONTAG(walked, c->tags));
-			walked = walked->next
-	);
+	while(walked && (walked->isfloating || !ISVISIBLEONTAG(walked, c->tags))) walked = walked->next;
 	return walked;
 }
 
