@@ -2112,7 +2112,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3, lo
 {
 	int n;
 	Atom *protocols, mt;
-	int exists = 0;
+	int exists = FALSE;
 	XEvent ev;
 
 	if (proto == wmatom[WMTakeFocus] || proto == wmatom[WMDelete]) {
@@ -2124,7 +2124,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3, lo
 		}
 	}
 	else {
-		exists = True;
+		exists = TRUE;
 		mt = proto;
 	}
 	if (exists) {
@@ -2997,7 +2997,7 @@ updatewmhints(Client *c)
 			wmh->flags &= ~XUrgencyHint;
 			XSetWMHints(dpy, c->win, wmh);
 		} else
-			c->isurgent = (wmh->flags & XUrgencyHint) ? 1 : 0;
+			c->isurgent = (wmh->flags & XUrgencyHint) ? TRUE : FALSE;
 		if (wmh->flags & InputHint)
 			c->neverfocus = !wmh->input;
 		else
