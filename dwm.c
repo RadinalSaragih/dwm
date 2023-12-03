@@ -2710,7 +2710,7 @@ updateclientlist()
 int
 updategeom(void)
 {
-	int dirty = 0;
+	int dirty = FALSE;
 
 #ifdef XINERAMA
 	if (XineramaIsActive(dpy)) {
@@ -2741,7 +2741,7 @@ updategeom(void)
 			|| unique[i].x_org != m->mx || unique[i].y_org != m->my
 			|| unique[i].width != m->mw || unique[i].height != m->mh)
 			{
-				dirty = 1;
+				dirty = TRUE;
 				m->num = i;
 				m->mx = m->wx = unique[i].x_org;
 				m->my = m->wy = unique[i].y_org;
@@ -2753,7 +2753,7 @@ updategeom(void)
 		for (i = nn; i < n; i++) {
 			for (m = mons; m && m->next; m = m->next);
 			while((c = m->clients)) {
-				dirty = 1;
+				dirty = TRUE;
 				m->clients = c->next;
 				detachstack(c);
 				c->mon = mons;
@@ -2771,7 +2771,7 @@ updategeom(void)
 		if (!mons)
 			mons = createmon();
 		if (mons->mw != sw || mons->mh != sh) {
-			dirty = 1;
+			dirty = TRUE;
 			mons->mw = mons->ww = sw;
 			mons->mh = mons->wh = sh;
 			updatebarpos(mons);
