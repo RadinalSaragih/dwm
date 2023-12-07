@@ -102,7 +102,7 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* mediakey's keycodes */
-/* #include <X11/XF86keysym.h> */
+#include <X11/XF86keysym.h>
 #include "powermenu.c"
 
 /* commands */
@@ -128,6 +128,8 @@ static const char launch_tmux[]	= "st -e tmux_start";
 static const char dunstctl_show_all[] = "dunstctl history-pop";
 static const char dunstctl_close_all[] = "dunstctl close-all";
 static const char dunstctl_close_top[] = "dunstctl close";
+static const char backlight_up[] = "brightnessctl -d \"intel_backlight\" set +1%";
+static const char backlight_down[] = "brightnessctl -d \"intel_backlight\" set 1%-";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -263,9 +265,17 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	XK_equal,		spawn, 		SHCMD(vol_inc) },
 	{ MODKEY|ShiftMask,	XK_BackSpace,		spawn, 		SHCMD(vol_mute) },
 
+	{ 0, 			XF86XK_AudioLowerVolume,spawn, 		SHCMD(vol_dec) },
+	{ 0, 			XF86XK_AudioRaiseVolume,spawn, 		SHCMD(vol_inc) },
+	{ 0, 			XF86XK_AudioMute,	spawn, 		SHCMD(vol_mute) },
+
 	{ MODKEY|ControlMask, 	XK_End, 		spawn, 		SHCMD(mic_decvol) },
 	{ MODKEY|ControlMask, 	XK_Home,		spawn, 		SHCMD(mic_incvol) },
 	{ MODKEY|ControlMask, 	XK_Delete,		spawn, 		SHCMD(mic_mute) },
+	{ 0,			XF86XK_AudioMicMute,	spawn, 		SHCMD(mic_mute) },
+
+	{ 0,			XF86XK_MonBrightnessUp,	spawn, 		SHCMD(backlight_up) },
+	{ 0,			XF86XK_MonBrightnessDown,spawn, 	SHCMD(backlight_down) },
 
 	{ MODKEY,		XK_F11,			spawn, 		SHCMD(dunstctl_show_all) },
 	{ MODKEY,		XK_F12,			spawn, 		SHCMD(dunstctl_close_top) },
