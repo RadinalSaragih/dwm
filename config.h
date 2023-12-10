@@ -58,23 +58,25 @@ static const Rule rules[] = {
 	/* xprop(1):
 	 * WM_CLASS(STRING) = instance, class
 	 * WM_NAME(STRING) = title */
-	/* class          instance      title 	tags mask   centered floating terminal noswallow monitor */
-	{ "Steam",        NULL, 	NULL, 	1 << 8,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
-	{ "Godot",        NULL, 	NULL, 	1 << 7,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
-	{ "Inkscape",     NULL, 	NULL, 	1 << 7,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
-	{ "Gimp",         NULL, 	NULL, 	1 << 7,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
-	{ "lmms",         NULL, 	NULL, 	1 << 7,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
-	{ "kdenlive",     NULL, 	NULL, 	1 << 7,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
-	{ "Firefox-esr",  NULL, 	NULL, 	1 << 4,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
-	{ "qutebrowser",  NULL, 	NULL, 	1 << 4,		FALSE, 	FALSE, 	FALSE, 	TRUE, 	-1 },
+	/* class           instance title  tags mask centered floating terminal noswallow monitor */
+	{ "firefox",   	   NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "Firefox-esr",   NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "Brave-browser", NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "qutebrowser",   NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "Godot",         NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "Inkscape",      NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "Gimp",          NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "lmms",          NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "kdenlive",      NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "Steam",         NULL,    NULL,  1 << 6,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
 
-	{ "st-256color", 	NULL, 	NULL, 		0, 	  FALSE, FALSE, TRUE,  FALSE, -1 },
-	{ NULL, 		NULL, 	"Event Tester", 0, 	  FALSE, FALSE, FALSE, TRUE,  -1 },
-	{ "Zathura",    	NULL, 	NULL, 		0, 	  FALSE, FALSE, FALSE, TRUE,  -1 },
-	{ NULL, 		"sp-0", NULL, 		SPTAG(0), TRUE,  TRUE,  TRUE,  FALSE, -1 },
-	{ NULL, 		"sp-1", NULL, 		SPTAG(1), TRUE,  TRUE,  TRUE,  FALSE, -1 },
-	{ NULL, 		"sp-2", NULL, 		SPTAG(2), TRUE,  TRUE,  TRUE,  FALSE, -1 },
-	{ NULL, 		"sp-3", NULL, 		SPTAG(3), TRUE,  TRUE,  TRUE,  FALSE, -1 },
+	{ "st-256color",   NULL,    NULL,  0, 	     FALSE,   FALSE,   TRUE,    FALSE,  -1 },
+	{ "Zathura",       NULL,    NULL,  0, 	     FALSE,   FALSE,   FALSE,   TRUE,   -1 },
+	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   NULL,    "Event Tester", 0,FALSE,  FALSE,   FALSE,   TRUE,   -1 },
 };
 
 /* layout(s) */
