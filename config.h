@@ -127,6 +127,7 @@ static const char screenshot[]	= "dm-screenshot";
 static const char browser[]	= "qutebrowser";
 static const char xmouseless[]	= "xmouseless";
 static const char launch_tmux[]	= "st -e tmux_start";
+static const char launch_dm_menu[] = "dm-menu";
 static const char dunstctl_show_all[] = "dunstctl history-pop";
 static const char dunstctl_close_all[] = "dunstctl close-all";
 static const char dunstctl_close_top[] = "dunstctl close";
@@ -275,6 +276,8 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask, 	XK_Home,		spawn, 		SHCMD(mic_incvol) },
 	{ MODKEY|ControlMask, 	XK_Delete,		spawn, 		SHCMD(mic_mute) },
 	{ 0,			XF86XK_AudioMicMute,	spawn, 		SHCMD(mic_mute) },
+
+	{ 0,			XF86XK_LaunchA,		spawn, 		SHCMD(launch_dm_menu) },
 
 	{ 0,			XF86XK_MonBrightnessUp,	spawn, 		SHCMD(backlight_up) },
 	{ 0,			XF86XK_MonBrightnessDown,spawn, 	SHCMD(backlight_down) },
