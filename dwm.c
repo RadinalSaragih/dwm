@@ -214,7 +214,6 @@ typedef struct {
 } ResourcePref;
 
 /* function declarations */
-static void applydefaultlayouts();
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
@@ -410,24 +409,6 @@ struct Pertag {
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
-
-/* function implementations */
-// TODO: INTEGRATE WITH PERTAG
-// void
-// applydefaultlayouts()
-// {
-// 	Monitor *m;
-// 	int i = 0;
-// 	for (m = mons; m; m = m->next) {
-// 		if (i < LENGTH(lpm)) {
-// 			int li = lpm[i] < LENGTH(layouts) ? lpm[i] : 0;
-// 			m->pertag->ltidxs[i][0] = m->lt[0] = &layouts[li];
-// 			m->pertag->ltidxs[i][1] = m->lt[1] = &layouts[li+1];
-// 			strncpy(m->ltsymbol, layouts[i].symbol, sizeof m->ltsymbol);
-// 		}
-// 		i++;
-// 	}
-// }
 
 void
 applyrules(Client *c)
@@ -3134,7 +3115,6 @@ updategeom(void)
 				selmon = mons;
 			cleanupmon(m);
 		}
-        	// applydefaultlayouts();
 		free(unique);
 	} else
 #endif /* XINERAMA */
