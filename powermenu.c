@@ -38,7 +38,7 @@ void powermenu ()
 			S_FORMAT (EXIT) "\n"
 			S_FORMAT (REBOOT) "\n"
 			S_FORMAT (SHUTDOWN)
-			"\" | dmenu -i -l 10 -p 'Power Menu':" 
+			"\" | dmenu -i -l 10 -p 'Power Menu':"
 		,
 		"r"
 	);
@@ -63,7 +63,7 @@ void powermenu ()
 	else if (strcmp (exit_action, S_LOAD_XRESOURCES) == 0){
 		system ("xrdb $HOME/.Xresources");
 		quit (& (const Arg) {1});
-	} 
+	}
 
 close_streams:
 	pclose (exit_menu);

@@ -7,7 +7,9 @@ VERSION = 6.4
 # PREFIX = ${HOME}/.local
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/share/man
-XSESSIONS = /usr/share/xsessions
+SHARE = /usr/share
+XSESSIONS = ${SHARE}/xsessions
+DWMSHARE = ${SHARE}/dwm
 
 X11INC = /usr/X11R6/include
 X11LIB = /usr/X11R6/lib

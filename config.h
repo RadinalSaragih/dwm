@@ -1,3 +1,6 @@
+/* max number of character that one block command can output */
+#define CMDLENGTH 100
+
 /* appearance */
 static unsigned int snap = 10; /* snap pixel */
 static unsigned int borderpx = 1; /* border pixel of windows */
@@ -17,6 +20,9 @@ static int showtitle = FALSE; /* 1 = hide the bar if only a single window is ope
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
 
+/* inverse the order of the blocks, comment to disable */
+static unsigned char block_inversed = FALSE;
+
 /* colors */
 static char normbg[]     = "#222222";
 static char normborder[] = "#444444";
@@ -26,13 +32,35 @@ static char selborder[]  = "#005577";
 static char selbg[]      = "#005577";
 static char normstickyborder[] = "#719611";
 static char selstickyborder[]  = "#aa4450";
-static char normfloatborder[] = "#719611";
-static char selfloatborder[]  = "#aa4450";
+static char normfloatborder[]  = "#719611";
+static char selfloatborder[]   = "#aa4450";
+
+static char statusbg[]   = "#222222";
+static char statusfg_1[] = "#005577";
+static char statusfg_2[] = "#005577";
+static char statusfg_3[] = "#005577";
+static char statusfg_4[] = "#005577";
+static char statusfg_5[] = "#005577";
+
 static char *colors[][5] = {
 	/* 		 fg	bg	border		sticky_border*/
 	[SchemeNorm] = { normfg, normbg, normborder, normstickyborder, normfloatborder },
 	[SchemeSel]  = { selfg,  selbg,  selborder,  selstickyborder, selfloatborder },
+	[SchemeStatus]={ normfg,  statusbg},
 };
+
+/* status bar */
+static const Block blocks[] = {
+	/* f           command	                        interval	signal */
+	{ statusfg_1, "date '+%a, %d %b %y - %I:%M%p'",	5,		1 },
+	{ statusfg_2, "dwm_status_memory_usage",	100,		2 },
+	{ statusfg_3, "dwm_status_volume_levels",	50,		3 },
+	{ statusfg_4, "dwm_status_battery_stat",	15,		4 },
+	{ statusfg_5, "dwm_status_cmus_status",		100,		5 },
+};
+
+/* delimeter between blocks commands. NULL character ('\0') means no delimeter. */
+static char delimiter[] = " | ";
 
 /* scratchpads */
 typedef struct {
@@ -108,21 +136,21 @@ static const Layout layouts[] = {
 #include "powermenu.c"
 
 /* commands */
-static const char *dmenucmd[]	= { "dmenu_run", "-i", "-p", ">", NULL };
+static const char *dmenucmd[]	= { "dmenu_run", "-g", "3", "-l", "15", "-i", "-p", "RUN:", NULL };
 static const char *termcmd[]	= { "st", NULL };
-static const char cmus_decvol[] = "cmus-remote -v -1%; pkill -RTMIN+5 dwmblocks";
-static const char cmus_incvol[] = "cmus-remote -v +1%; pkill -RTMIN+5 dwmblocks";
-static const char cmus_pause[]	= "cmus-remote -u; pkill -RTMIN+5 dwmblocks";
-static const char cmus_stop[]	= "cmus-remote -s; pkill -RTMIN+5 dwmblocks";
-static const char cmus_next[]	= "cmus-remote -n; pkill -RTMIN+5 dwmblocks";
-static const char cmus_prev[]	= "cmus-remote -r; pkill -RTMIN+5 dwmblocks";
-static const char cmus_repeat[] = "cmus-remote -R; pkill -RTMIN+5 dwmblocks";
-static const char vol_dec[]	= "pactl set-sink-volume @DEFAULT_SINK@ -1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_inc[]	= "pactl set-sink-volume @DEFAULT_SINK@ +1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; pkill -RTMIN+10 dwmblocks";
-static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+10 dwmblocks";
-static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+10 dwmblocks";
-static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+10 dwmblocks";
+static const char cmus_decvol[] = "cmus-remote -v -1%; kill -39 $(pidof dwm)";
+static const char cmus_incvol[] = "cmus-remote -v +1%; kill -39 $(pidof dwm)";
+static const char cmus_pause[]	= "cmus-remote -u; kill -39 $(pidof dwm)";
+static const char cmus_stop[]	= "cmus-remote -s; kill -39 $(pidof dwm)";
+static const char cmus_next[]	= "cmus-remote -n; kill -39 $(pidof dwm)";
+static const char cmus_prev[]	= "cmus-remote -r; kill -39 $(pidof dwm)";
+static const char cmus_repeat[] = "cmus-remote -R; kill -39 $(pidof dwm)";
+static const char vol_dec[]	= "pactl set-sink-volume @DEFAULT_SINK@ -1%; kill -37 $(pidof dwm)";
+static const char vol_inc[]	= "pactl set-sink-volume @DEFAULT_SINK@ +1%; kill -37 $(pidof dwm)";
+static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; kill -37 $(pidof dwm)";
+static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; kill -37 $(pidof dwm)";
+static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; kill -37 $(pidof dwm)";
+static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; kill -37 $(pidof dwm)";
 static const char screenshot[]	= "dm-screenshot";
 static const char browser[]	= "qutebrowser";
 static const char xmouseless[]	= "xmouseless";
@@ -165,6 +193,14 @@ ResourcePref resources[] = {
 	{ "gaps",			INTEGER,	&gappx },
 	{ "showtitle", 			INTEGER, 	&showtitle },
 	{ "swallowfloating", 		INTEGER, 	&swallowfloating },
+	{ "statusfg_1",			STRING,		&statusfg_1 },
+	{ "statusfg_2",			STRING,		&statusfg_2 },
+	{ "statusfg_3",			STRING,		&statusfg_3 },
+	{ "statusfg_4",			STRING,		&statusfg_4 },
+	{ "statusfg_5",			STRING,		&statusfg_5 },
+	{ "statusbg",			STRING,		&statusbg   },
+	{ "block_inversed",             INTEGER,        &block_inversed },
+	{ "block_delimiter",            STRING,        &delimiter },
 };
 
 /* keybindings */

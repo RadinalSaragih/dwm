@@ -50,6 +50,8 @@ install: all
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	mkdir -p "${XSESSIONS}"
 	cp -f dwm.desktop ${XSESSIONS}
+	cp -f status_modules/* ${DESTDIR}${PREFIX}/bin
+	chmod -R 755 ${DESTDIR}${PREFIX}/bin/dwm_status_*
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
