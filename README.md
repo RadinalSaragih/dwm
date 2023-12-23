@@ -1,38 +1,11 @@
 # dwm - dynamic window manager
-Patched build of Suckless's Dynamic Window Manager. "dwm" is an extremely fast, small, and dynamic window manager for X. 
+My Bloated build of Suckless's dwm window manager.
 
 ## Installation
 * A basic "make install" would do the job.
 ```sh
 sudo make install
 ```
-## Patches
-* actualfullscreen
-* attachaside
-* autostart
-* center
-* decorhints
-* deck
-* uselessgaps
-* exitmenu
-* focusonclick
-* focusmaster
-* leftstack
-* moveresize
-* noborderfloatingfix 
-* pertag 
-* preserveonrestart 
-* push_no_master
-* restartsig 
-* savefloats
-* scratchpads
-* sticky
-* swallow
-* systray
-* warp
-* xresources
-* view_adjacent
-
 ## Build Dependencies
 * Debian Based Distros
 ```sh
