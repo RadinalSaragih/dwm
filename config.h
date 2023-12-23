@@ -336,6 +336,14 @@ static const Button buttons[] = {
 	{ ClkClientWin,		MODKEY,			Button1,	movemouse,		{0} },
 	{ ClkClientWin,		MODKEY,			Button2,	togglefloating,		{0} },
 	{ ClkClientWin,		MODKEY|ShiftMask,	Button1,	resizemouse,		{0} },
+
+	{ ClkStatusText,        0,              Button1,        sendstatusbar,   {.i = 1 } },
+	{ ClkStatusText,        0,              Button2,        sendstatusbar,   {.i = 2 } },
+	{ ClkStatusText,        0,              Button3,        sendstatusbar,   {.i = 3 } },
+	{ ClkStatusText,        0,              Button4,        sendstatusbar,   {.i = 4 } },
+	{ ClkStatusText,        0,              Button5,        sendstatusbar,   {.i = 5 } },
+	{ ClkStatusText,        ShiftMask,      Button1,        sendstatusbar,   {.i = 6 } },
+
 	{ ClkTagBar,		0,			Button1,	view,			{0} },
 	{ ClkTagBar,		0,			Button3,	toggleview,		{0} },
 	{ ClkTagBar,		MODKEY,			Button1,	tag,			{0} },
