@@ -1,0 +1,19 @@
+#!/bin/sh
+
+battery="BAT1"
+
+battery_info="/sys/class/power_supply/$battery"
+
+[ ! -d "$battery_info" ] && exit 1
+
+battery_percent="$(cat "$battery_info/capacity")"
+battery_status="$(cat "$battery_info/status")"
+
+[ "$battery_status" = "Discharging" ] && battery_status="D"
+[ "$battery_status" = "Charging" ] && battery_status="C"
+[ "$battery_status" = "Not charging" ] && battery_status="N"
+
+battery="$(echo "$battery" | sed 's/BAT/B/g')"
+
+
+printf "%s" "$battery: $battery_percent% ($battery_status)"

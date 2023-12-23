@@ -1,0 +1,2 @@
+#!/usr/bin/env dash
+printf "%s" "TEMP: $(( $(cat /sys/class/thermal/thermal_zone*/temp | tail -1 ) / 1000 ))°C"

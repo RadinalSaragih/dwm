@@ -1,0 +1,4 @@
+#!/bin/sh
+strength=$(awk 'NR==3 {printf "%.0f", $3*10/7}' /proc/net/wireless)
+essid=$($(which iwgetid) wlan0 --raw 2>/dev/null) 
+[ -n "$essid" ] && printf '%s' "$essid $strength%" || exit 1

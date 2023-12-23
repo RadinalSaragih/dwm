@@ -1,0 +1,2 @@
+#!/usr/bin/env dash
+if [ "$(xset -q | grep 'Caps' | awk '{print $4}')" = "off" ] ; then exit 0 ; else printf "𝗖𝗔𝗣𝗦 𝗟𝗢𝗖𝗞" ; fi

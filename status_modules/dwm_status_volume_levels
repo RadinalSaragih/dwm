@@ -1,0 +1,24 @@
+#!/bin/sh
+
+[ ! "$(command -V "pactl")" ] && exit 1
+
+sink_index=$(( SINK + 1 ))
+is_mute="$(pactl list sinks | awk '/Mute/ {print $2}' | head -n "$sink_index" )"
+
+if [ "$is_mute" = "no" ]; then
+    sink="$(pactl list sinks | \
+        awk -F " = " '/device.profile.description/ {print $2}' | head -n "$sink_index" | \
+        sed 's/["(|)"]//g; s/Digital /D-/g; s/Analog /A-/g; s/Stereo/S/g; s/Surround/SR/g')"
+
+    [ -z "$sink" ] && sink="n/a"
+
+    vol="$(pactl list sinks | \
+        grep '^[[:space:]]Volume:' | head -n "$sink_index" | \
+        sed -e 's,.* \([0-9][0-9]*\)%.*,\1,' )"
+
+    [ -z "$vol" ] && vol="n/a"
+
+    printf '%s' "$sink: $vol%" || exit 1
+else
+    printf '%s' "Muted"
+fi
