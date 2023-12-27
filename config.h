@@ -1,5 +1,5 @@
 /* max number of character that one block command can output */
-#define CMDLENGTH 100
+#define CMDLENGTH 50
 
 /* appearance */
 static unsigned int snap = 10; /* snap pixel */
