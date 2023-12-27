@@ -200,7 +200,7 @@ ResourcePref resources[] = {
 	{ "statusfg_5",			STRING,		&statusfg_5 },
 	{ "statusbg",			STRING,		&statusbg   },
 	{ "block_inversed",             INTEGER,        &block_inversed },
-	{ "block_delimiter",            STRING,        &delimiter },
+	{ "block_delimiter",            CHAR,		&delimiter[1] },
 };
 
 /* keybindings */
