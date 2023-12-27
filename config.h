@@ -67,10 +67,10 @@ typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
-const char *spcmd0[] = { "st", "-T", "SP-0", "-n", "sp-0", NULL };
-const char *spcmd1[] = { "st", "-T", "SP-1", "-n", "sp-1", NULL };
-const char *spcmd2[] = { "st", "-T", "SP-2", "-n", "sp-2", NULL };
-const char *spcmd3[] = { "st", "-T", "SP-3", "-n", "sp-3", NULL };
+const char *spcmd0[] = { "st", "-g", "150x35", "-T", "SP-0", "-n", "sp-0", NULL };
+const char *spcmd1[] = { "st", "-g", "150x35", "-T", "SP-1", "-n", "sp-1", NULL };
+const char *spcmd2[] = { "st", "-g", "150x35", "-T", "SP-2", "-n", "sp-2", NULL };
+const char *spcmd3[] = { "st", "-g", "150x35", "-T", "SP-3", "-n", "sp-3", NULL };
 
 static Sp scratchpads[] = {
 	/* name 	cmd  */
