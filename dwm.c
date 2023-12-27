@@ -1337,7 +1337,7 @@ getstatus(int width)
 		/* draw delimiter */
 		if (*delimiter == '\0') /* ignore no delimiter */
 			continue;
-		drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_setscheme(drw, scheme[SchemeStatus]);
 		all -= delimlen;
 		drw_text(drw, all, 0, delimlen, bh, 0, delimiter, 0);
 	}
