@@ -1314,6 +1314,9 @@ getstatus(int width)
 {
 	int i, len, all = width, delimlen = TEXTW(delimiter) - lrpad;
 	char fgcol[8];
+
+	// make space for the systray
+	all -= (showsystray && !systrayonleft) ? getsystraywidth() : 0;
 				/* fg		bg */
 	char *cols[8] = 	{ fgcol, colors[SchemeStatus][ColBg] };
 
