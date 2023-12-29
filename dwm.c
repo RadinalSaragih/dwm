@@ -1028,10 +1028,12 @@ drawbar(Monitor *m)
 	Client *c;
 
 	if (!m->showbar){
-		return;}
+		return;
+	}
 
 	if(showsystray && m == systraytomon(m) && !systrayonleft){
-		stw = getsystraywidth();}
+		stw = getsystraywidth();
+	}
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) /* status is only drawn on selected monitor */
