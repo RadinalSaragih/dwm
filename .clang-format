@@ -1,0 +1,25 @@
+﻿---
+BasedOnStyle: Microsoft
+AlignConsecutiveMacros: 'true'
+AlignTrailingComments: 'true'
+AllowShortCaseLabelsOnASingleLine: 'false'
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: 'true'
+AlwaysBreakAfterDefinitionReturnType: TopLevel
+AlwaysBreakAfterReturnType: None
+BreakBeforeBraces: Linux
+ColumnLimit: '80'
+DerivePointerAlignment: 'true'
+FixNamespaceComments: 'true'
+IndentWidth: '8'
+NamespaceIndentation: All
+PointerAlignment: Left
+ReflowComments: 'true'
+SortIncludes: 'true'
+SortUsingDeclarations: 'true'
+Standard: Auto
+TabWidth: '8'
+UseTab: ForIndentation
+
+...
