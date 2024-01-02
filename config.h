@@ -1,3 +1,8 @@
+/* clang-format off */
+
+#define TRUE 1
+#define FALSE 0
+
 /* max number of character that one block command can output */
 #define CMDLENGTH 50
 
@@ -349,3 +354,4 @@ static const Button buttons[] = {
 	{ ClkTagBar,		MODKEY,			Button1,	tag,			{0} },
 	{ ClkTagBar,		MODKEY,			Button3,	toggletag,		{0} },
 };
+/* clang-format on */

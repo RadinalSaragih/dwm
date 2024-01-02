@@ -1,45 +1,77 @@
+/* clang-format off */
+
+#define TRUE 1
+#define FALSE 0
+
+/* max number of character that one block command can output */
+#define CMDLENGTH 50
+
 /* appearance */
 static unsigned int snap = 10; /* snap pixel */
 static unsigned int borderpx = 1; /* border pixel of windows */
-static unsigned int systraypinning = 0; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
+static unsigned int systraypinning = FALSE; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
 static unsigned int systrayspacing = 2; /* systray spacing */
-static unsigned int systrayonleft  = 0; /* systray on the left of status text */
-static int systraypinningfailfirst = 1; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
-static int swallowfloating = 0; /* 1 means swallow floating windows by default */
-static int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
-static int focusonwheel = 0;
-static int showsystray = 0; /* 0 = no systray */
-static int showbar = 1; /* 0 = no bar */
-static int topbar = 1; /* 0 = bottom bar */
-static int noborder = 1; /* 1 = hide the bar if only a single window is opened. */
-static int showtitle = 0; /* 1 = hide the bar if only a single window is opened. */
+static unsigned int systrayonleft  = FALSE; /* systray on the left of status text */
+static int systraypinningfailfirst = TRUE; /* 1: if pinning fails, display systray on the first monitor, FALSE: display systray on the last monitor */
+static int swallowfloating = FALSE; /* 1 means swallow floating windows by default */
+static int lockfullscreen = FALSE; /* 1 will force focus on the fullscreen window */
+static int focusonwheel = FALSE;
+static int showsystray = FALSE; /* 0 = no systray */
+static int showbar = TRUE; /* 0 = no bar */
+static int topbar = TRUE; /* 0 = bottom bar */
+static int gappx  = 5;  /* gaps between windows */
+static int noborder = TRUE; /* 1 = hide the bar if only a single window is opened. */
+static int showtitle = FALSE; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
 
+/* inverse the order of the blocks, comment to disable */
+static unsigned char block_inversed = FALSE;
+
 /* colors */
-static char normbgcolor[]     = "#222222";
-static char normbordercolor[] = "#444444";
-static char normfgcolor[]     = "#bbbbbb";
-static char selfgcolor[]      = "#eeeeee";
-static char selbordercolor[]  = "#005577";
-static char selbgcolor[]      = "#005577";
-static char normspcbordercolor[] = "#719611";
-static char selspcbordercolor[]  = "#aa4450";
-static char *colors[][4] = {
-	/* 		    fg 		bg 		border 		SPC_BORDER*/
-	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor, normspcbordercolor },
-	[SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor,  selspcbordercolor },
+static char normbg[]     = "#222222";
+static char normborder[] = "#444444";
+static char normfg[]     = "#bbbbbb";
+static char selfg[]      = "#eeeeee";
+static char selborder[]  = "#005577";
+static char selbg[]      = "#005577";
+static char normstickyborder[] = "#719611";
+static char selstickyborder[]  = "#aa4450";
+static char normfloatborder[]  = "#719611";
+static char selfloatborder[]   = "#aa4450";
+
+static char statusbg[]   = "#222222";
+static char statusfg_1[] = "#005577";
+static char statusfg_2[] = "#005577";
+static char statusfg_3[] = "#005577";
+static char statusfg_4[] = "#005577";
+static char statusfg_5[] = "#005577";
+
+static char *colors[][5] = {
+	/* 		 fg	bg	border		sticky_border*/
+	[SchemeNorm] = { normfg, normbg, normborder, normstickyborder, normfloatborder },
+	[SchemeSel]  = { selfg,  selbg,  selborder,  selstickyborder, selfloatborder },
+	[SchemeStatus]={ normfg,  statusbg},
 };
+
+/* status bar */
+static const Block blocks[] = {
+	/* f           command	                        interval	signal */
+	{ statusfg_1, "date '+%a, %d %b %y - %I:%M%p'",	5,		1 },
+};
+
+/* delimeter between blocks commands. NULL character ('\0') means no delimeter. */
+static char delimiter[] = " | ";
 
 /* scratchpads */
 typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
-const char *spcmd0[] = { "st", "-T", "SP-0", "-n", "sp-0", NULL };
-const char *spcmd1[] = { "st", "-T", "SP-1", "-n", "sp-1", NULL };
-const char *spcmd2[] = { "st", "-T", "SP-2", "-n", "sp-2", NULL };
-const char *spcmd3[] = { "st", "-T", "SP-3", "-n", "sp-3", NULL };
+const char *spcmd0[] = { "st", "-g", "150x35", "-T", "SP-0", "-n", "sp-0", NULL };
+const char *spcmd1[] = { "st", "-g", "150x35", "-T", "SP-1", "-n", "sp-1", NULL };
+const char *spcmd2[] = { "st", "-g", "150x35", "-T", "SP-2", "-n", "sp-2", NULL };
+const char *spcmd3[] = { "st", "-g", "150x35", "-T", "SP-3", "-n", "sp-3", NULL };
 
 static Sp scratchpads[] = {
 	/* name 	cmd  */
@@ -55,15 +87,13 @@ static const Rule rules[] = {
 	/* xprop(1):
 	 * WM_CLASS(STRING) = instance, class
 	 * WM_NAME(STRING) = title */
-	/* class          instance      title 	tags mask   centered floating terminal noswallow monitor */
-	{ "Firefox-esr",  NULL, 	NULL, 	1 << 4, 	0, 	0, 	0, 	1, 	-1 },
-	{ "st-256color", NULL, NULL, 0, 0, 0, 1, 0, -1 },
-
-	{ NULL, NULL, "Event Tester", 0, 0, 0, 0, 1, -1 },
-	{ NULL, "sp-0", NULL, SPTAG(0), 1, 1, 1, 0, -1 },
-	{ NULL, "sp-1", NULL, SPTAG(1), 1, 1, 1, 0, -1 },
-	{ NULL, "sp-2", NULL, SPTAG(2), 1, 1, 1, 0, -1 },
-	{ NULL, "sp-3", NULL, SPTAG(3), 1, 1, 1, 0, -1 },
+	/* class           instance title  tags mask centered floating terminal noswallow monitor */
+	{ "st-256color",   NULL,    NULL,  0, 	     FALSE,   FALSE,   TRUE,    FALSE,  -1 },
+	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
+	{ NULL, 	   NULL,    "Event Tester", 0,FALSE,  FALSE,   FALSE,   TRUE,   -1 },
 };
 
 /* layout(s) */
@@ -73,7 +103,7 @@ static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
 	/* first entry is default */
 	/* symbol 	arrange function */
-	{ "T",		tile	}, 
+	{ "T",		tile	},
 	{ "M",		monocle },
  	{ "[D]",	deck	},
 	{ "F",		NULL	},
@@ -92,32 +122,25 @@ static const Layout layouts[] = {
 
 /* mediakey's keycodes */
 /* #include <X11/XF86keysym.h> */
+#include "powermenu.c"
 
 /* commands */
-static const char *dmenucmd[]	= { "dmenu_run", "-i", "-p", ">", NULL };
+static const char *dmenucmd[]	= { "dmenu_run", "-g", "3", "-l", "15", "-i", "-p", "RUN:", NULL };
 static const char *termcmd[]	= { "st", NULL };
-static const char vol_dec[]	= "pactl set-sink-volume @DEFAULT_SINK@ -1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_inc[]	= "pactl set-sink-volume @DEFAULT_SINK@ +1%; pkill -RTMIN+10 dwmblocks";
-static const char vol_mute[]	= "pactl set-sink-mute @DEFAULT_SINK@ toggle; pkill -RTMIN+10 dwmblocks";
-static const char mic_decvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ -1%; pkill -RTMIN+10 dwmblocks";
-static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; pkill -RTMIN+10 dwmblocks";
-static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; pkill -RTMIN+10 dwmblocks";
-static const char powermenu[]	= "echo 'xsecurelock\n' 'pkill -15 Xorg\n' 'reboot\n' 'poweroff\n' | dmenu -m -1 | /bin/sh";
-static const char screenshot[]	= "maim -u -f png -m 1 $HOME/Pictures/Screenshot/screenshot-$(date '+%d-%m-%y@%h:%m:%s').png";
-static const char browser[]	= "qutebrowser";
-static const char xmouseless[]	= "xmouseless";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
-	{ "fonts", 			STRING, 	&font },
-	{ "normbgcolor", 		STRING, 	&normbgcolor },
-	{ "normbordercolor", 		STRING, 	&normbordercolor },
-	{ "normfgcolor",  		STRING, 	&normfgcolor },
-	{ "selbgcolor", 		STRING, 	&selbgcolor },
-	{ "selbordercolor", 		STRING, 	&selbordercolor },
-	{ "selfgcolor", 		STRING, 	&selfgcolor },
-	{ "selspcbordercolor", 		STRING, 	&selspcbordercolor },
-	{ "normspcbordercolor", 	STRING, 	&normspcbordercolor },
+	{ "font", 			STRING, 	&font },
+	{ "normbg",			STRING, 	&normbg },
+	{ "normborder", 		STRING, 	&normborder },
+	{ "normfg",			STRING, 	&normfg },
+	{ "selbg",			STRING,		&selbg },
+	{ "selborder",			STRING, 	&selborder },
+	{ "selfg",			STRING, 	&selfg },
+	{ "selstickyborder", 		STRING, 	&selstickyborder },
+	{ "normstickyborder",		STRING, 	&normstickyborder },
+	{ "selfloatborder", 		STRING, 	&selfloatborder },
+	{ "normfloatborder",		STRING, 	&normfloatborder },
 	{ "borderpx", 			INTEGER,	&borderpx },
 	{ "snap", 			INTEGER,	&snap },
 	{ "showbar", 			INTEGER,	&showbar },
@@ -133,8 +156,17 @@ ResourcePref resources[] = {
 	{ "systrayonleft", 		INTEGER, 	&systrayonleft },
 	{ "systraypinningfailfirst", 	INTEGER, 	&systraypinningfailfirst },
 	{ "noborder", 			INTEGER, 	&noborder },
+	{ "gaps",			INTEGER,	&gappx },
 	{ "showtitle", 			INTEGER, 	&showtitle },
-	{ "swallowfloating", 		INTEGER, 	&swallowfloating }, 
+	{ "swallowfloating", 		INTEGER, 	&swallowfloating },
+	{ "statusfg_1",			STRING,		&statusfg_1 },
+	{ "statusfg_2",			STRING,		&statusfg_2 },
+	{ "statusfg_3",			STRING,		&statusfg_3 },
+	{ "statusfg_4",			STRING,		&statusfg_4 },
+	{ "statusfg_5",			STRING,		&statusfg_5 },
+	{ "statusbg",			STRING,		&statusbg   },
+	{ "block_inversed",             INTEGER,        &block_inversed },
+	{ "block_delimiter",            CHAR,		&delimiter[1] },
 };
 
 /* keybindings */
@@ -221,18 +253,7 @@ static const Key keys[] = {
 
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
-
-	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
-	{ MODKEY|Mod1Mask, 	XK_Escape,	 	spawn, 	 	SHCMD(powermenu) },
-	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
-	{ MODKEY,		XK_F1, 	 		spawn, 	 	SHCMD(xmouseless) },
-
-	{ MODKEY|ControlMask, 	XK_Next,		spawn, 		SHCMD(vol_dec) },
-	{ MODKEY|ControlMask,	XK_Prior,		spawn, 		SHCMD(vol_inc) },
-	{ MODKEY|ControlMask,	XK_Insert,		spawn, 		SHCMD(vol_mute) },
-	{ MODKEY|ControlMask, 	XK_End, 		spawn, 		SHCMD(mic_decvol) },
-	{ MODKEY|ControlMask, 	XK_Home,		spawn, 		SHCMD(mic_incvol) },
-	{ MODKEY|ControlMask, 	XK_Delete,		spawn, 		SHCMD(mic_mute) },
+	{ MODKEY|Mod1Mask,	XK_Escape,		powermenu,	{0} },  // powermenu
 };
 
 /* button definitions */
@@ -246,8 +267,10 @@ static const Button buttons[] = {
 	{ ClkClientWin,		MODKEY,			Button1,	movemouse,		{0} },
 	{ ClkClientWin,		MODKEY,			Button2,	togglefloating,		{0} },
 	{ ClkClientWin,		MODKEY|ShiftMask,	Button1,	resizemouse,		{0} },
+	{ ClkStatusText,        0,			Button1,        sendstatusbar,		{.i = 1 } },
 	{ ClkTagBar,		0,			Button1,	view,			{0} },
 	{ ClkTagBar,		0,			Button3,	toggleview,		{0} },
 	{ ClkTagBar,		MODKEY,			Button1,	tag,			{0} },
 	{ ClkTagBar,		MODKEY,			Button3,	toggletag,		{0} },
 };
+/* clang-format on */

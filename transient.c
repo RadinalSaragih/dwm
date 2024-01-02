@@ -1,11 +1,13 @@
 /* cc transient.c -o transient -lX11 */
 
-#include <stdlib.h>
-#include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-int main(void) {
+int
+main(void)
+{
 	Display *d;
 	Window r, f, t = None;
 	XSizeHints h;
@@ -29,7 +31,8 @@ int main(void) {
 
 		if (t == None) {
 			sleep(5);
-			t = XCreateSimpleWindow(d, r, 50, 50, 100, 100, 0, 0, 0);
+			t = XCreateSimpleWindow(d, r, 50, 50, 100, 100, 0, 0,
+			                        0);
 			XSetTransientForHint(d, t, f);
 			XStoreName(d, t, "transient");
 			XMapWindow(d, t);

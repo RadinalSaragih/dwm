@@ -7,7 +7,7 @@
 #include "util.h"
 
 void
-die(const char *fmt, ...) 
+die(const char *fmt, ...)
 {
 	va_list ap;
 
@@ -15,7 +15,7 @@ die(const char *fmt, ...)
 	vfprintf(stderr, fmt, ap);
 	va_end(ap);
 
-	if (fmt[0] && fmt[strlen(fmt)-1] == ':') {
+	if (fmt[0] && fmt[strlen(fmt) - 1] == ':') {
 		fputc(' ', stderr);
 		perror(NULL);
 	} else {
