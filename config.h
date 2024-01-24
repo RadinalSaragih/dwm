@@ -1,8 +1,5 @@
 /* clang-format off */
 
-/* max number of character that one block command can output */
-#define CMDLENGTH 50
-
 /* appearance */
 static unsigned int snap = 10; /* snap pixel */
 static unsigned int borderpx = 1; /* border pixel of windows */
@@ -21,6 +18,9 @@ static bool noborder = true; /* 1 = hide the bar if only a single window is open
 static bool showtitle = false; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
+
+/* max number of character that one block command can output */
+#define CMDLENGTH 50
 
 /* inverse the order of the blocks */
 static bool block_inversed = false;
@@ -82,6 +82,9 @@ static Sp scratchpads[] = {
 	{ "sp-3", 	spcmd3 },
 };
 
+#define TAG(n) 1 << (n-1)
+#define ANYTAG 0
+
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 static const Rule rules[] = {
@@ -89,30 +92,33 @@ static const Rule rules[] = {
 	 * WM_CLASS(STRING) = instance, class
 	 * WM_NAME(STRING) = title */
 	/* class           instance title  tags mask centered floating terminal noswallow monitor */
-	{ "firefox",   	   NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
-	{ "Firefox-esr",   NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
-	{ "Brave-browser", NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
-	{ "qutebrowser",   NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
-	{ "Godot",         NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
-	{ "Inkscape",      NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
-	{ "Gimp",          NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
-	{ "lmms",          NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
-	{ "kdenlive",      NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
-	{ "Steam",         NULL,    NULL,  1 << 6,   false,   false,   false,   true, 	-1 },
+	{ "firefox",   	   NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
+	{ "Firefox-esr",   NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
+	{ "Brave-browser", NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
+	{ "qutebrowser",   NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
+	{ "Godot",         NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
+	{ "Inkscape",      NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
+	{ "Gimp",          NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
+	{ "lmms",          NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
+	{ "kdenlive",      NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
+	{ "Steam",         NULL,    NULL,  TAG(7),   false,   false,   false,   true, 	-1 },
 
-	{ "st-256color",   NULL,    NULL,  0, 	     false,   false,   true,    false,  -1 },
-	{ "Zathura",       NULL,    NULL,  0, 	     false,   false,   false,   true,   -1 },
+	{ "st-256color",   NULL,    NULL,  ANYTAG,   false,   false,   true,    false,	-1 },
+	{ "Zathura",       NULL,    NULL,  ANYTAG,   false,   false,   false,   true,   -1 },
 	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), true,    true,    true,    false,  -1 },
 	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), true,    true,    true,    false,  -1 },
 	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), true,    true,    true,    false,  -1 },
-	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), true,    true,    true,    false,  -1 },
-	{ NULL, 	   NULL,    "Event Tester", 0,false,  false,   false,   true,   -1 },
+	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), true,    true,    true,    false,	-1 },
+	{ NULL, 	   NULL,    "Event Tester", ANYTAG, false,  false,   false,   true, -1 },
 };
+
+#undef TAG
+#undef ANYTAG
 
 /* layout(s) */
 static float mfact = 0.50; /* factor of master area size [0.05..0.95] */
 static int nmaster = 1; /* number of clients in master area */
-static int resizehints = 0; /* 1 = respect size hints in tiled resizals */
+static bool resizehints = false; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
 	/* first entry is default */
 	/* symbol 	arrange function */
