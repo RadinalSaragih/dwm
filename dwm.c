@@ -2297,10 +2297,11 @@ resizemouse(const Arg *arg)
 
 	if (!(c = selmon->sel))
 		return;
-	if (c->isfullscreen) /* no support resizing fullscreen windows
-	                      * by mouse
-	                      */
+
+	/* no support resizing fullscreen windows by mouse */
+	if (c->isfullscreen)
 		return;
+
 	restack(selmon);
 	ocx = c->x;
 	ocy = c->y;
