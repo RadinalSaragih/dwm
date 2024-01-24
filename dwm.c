@@ -3996,6 +3996,7 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 			break;
 		case CHAR:
 			*cdst = ret.addr[0];
+			break;
 		}
 	}
 }
