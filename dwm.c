@@ -3985,7 +3985,7 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 	fullname[sizeof(fullname) - 1] = '\0';
 
 	XrmGetResource(db, fullname, "*", &type, &ret);
-	if (!(ret.addr == NULL || strncmp("String", type, 64))) {
+	if (!(ret.addr == NULL || strncmp("String", type, 64) != 0)) {
 		switch (rtype) {
 		case STRING:
 			strcpy(sdst, ret.addr);
