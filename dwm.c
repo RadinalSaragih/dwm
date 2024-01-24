@@ -1665,10 +1665,10 @@ manage(Window w, XWindowAttributes *wa)
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
 	/* XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel); */
 
-	if ((c->issticky) || (c->issticky && c->isfloating))
+	if ((c->isfloating && c->issticky) || (c->issticky))
 		XSetWindowBorder(dpy, w,
 		                 scheme[SchemeNorm][ColStickyBorder].pixel);
-	else if (c->isfloating)
+	else if (c->isfloating && !c->issticky)
 		XSetWindowBorder(dpy, w,
 		                 scheme[SchemeNorm][ColFloatBorder].pixel);
 	else
@@ -1719,13 +1719,6 @@ manage(Window w, XWindowAttributes *wa)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
 	if (c->isfloating)
 		XRaiseWindow(dpy, c->win);
-
-	if ((c->issticky) || (c->issticky && c->isfloating))
-		XSetWindowBorder(dpy, w,
-		                 scheme[SchemeNorm][ColStickyBorder].pixel);
-	else if (c->isfloating)
-		XSetWindowBorder(dpy, w,
-		                 scheme[SchemeNorm][ColFloatBorder].pixel);
 
 	attachaside(c);
 	attachstack(c);
