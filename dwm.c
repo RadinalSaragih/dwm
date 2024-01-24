@@ -2244,21 +2244,14 @@ resizeclient(Client *c, int x, int y, int w, int h)
 		nbc = nexttiled(nbc->next);
 	}
 
-	/* Do nothing if layout is floating */
+	gapoffset = gappx;
+	gapincr = 2 * gappx;
+
 	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL) {
-		gapincr = gapoffset = 0;
-	} else {
-		/* Remove border if layout is monocle or only one client,
-		 * but leave the gap as is, some window would draw outside
-		 * the display if not.
-		 */
-
-		gapoffset = gappx;
-		gapincr = 2 * gappx;
-
-		if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1) {
-			wc.border_width = 0;
-		}
+		gapincr = gapoffset = 0; /* no gaps for floating windows */
+	} else if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1) {
+		gapincr = gapoffset = 0; /* no gaps for tags with 1 client or in monocle layout */
+		wc.border_width = 0; /* no borders also */
 	}
 
 	c->oldx = c->x;
