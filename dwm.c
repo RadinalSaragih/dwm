@@ -1715,6 +1715,7 @@ manage(Window w, XWindowAttributes *wa)
 	             EnterWindowMask | FocusChangeMask | PropertyChangeMask |
 	                 StructureNotifyMask);
 	grabbuttons(c, 0);
+
 	if (!c->isfloating)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
 	if (c->isfloating)
@@ -2296,7 +2297,8 @@ resizemouse(const Arg *arg)
 
 	if (!(c = selmon->sel))
 		return;
-	if (c->isfullscreen) /* no support resizing fullscreen windows by mouse
+	if (c->isfullscreen) /* no support resizing fullscreen windows
+	                      * by mouse
 	                      */
 		return;
 	restack(selmon);
@@ -2436,9 +2438,9 @@ run(void)
 		}
 
 		if ((poll(fds, LENGTH(blocks) + 1, -1)) == -1) {
-			/* FIXME other than SIGALRM and the real time signals,
-			 * there seems to be a signal being que if using
-			 * 'xsetroot -name' sutff */
+			/* FIXME other than SIGALRM and the real time
+			 * signals, there seems to be a signal being que
+			 * if using 'xsetroot -name' sutff */
 			if (errno == EINTR) /* signal caught */
 				continue;
 			fprintf(stderr, "dwm: poll ");
@@ -2463,25 +2465,25 @@ run(void)
 		/* handle blocks */
 		for (i = 0; i < LENGTH(blocks); i++) {
 			if (fds[i + 1].revents & POLLIN) {
-				/* empty buffer with CMDLENGTH + 1 byte for the
-				 * null terminator */
+				/* empty buffer with CMDLENGTH + 1 byte
+				 * for the null terminator */
 				int bt = read(fds[i + 1].fd, blockoutput[i],
 				              CMDLENGTH);
 				/* remove lock for the current block */
 				execlock &= ~(1 << i);
 
 				if (bt == -1) { /* if read failed */
-					fprintf(
-					    stderr,
-					    "dwm: read failed in block %s\n",
-					    blocks[i].command);
+					fprintf(stderr,
+					        "dwm: read failed in "
+					        "block %s\n",
+					        blocks[i].command);
 					perror(" failed");
 					continue;
 				}
 
 				if (blockoutput[i][bt - 1] ==
-				    '\n') /* chop off ending new line, if one is
-				             present */
+				    '\n') /* chop off ending new line,
+				             if one is present */
 					blockoutput[i][bt - 1] = '\0';
 				else /* NULL terminate the string */
 					blockoutput[i][bt++] = '\0';
@@ -2515,8 +2517,9 @@ runautostart(void)
 		/* this is almost impossible */
 		return;
 
-	/* if $XDG_DATA_HOME is set and not empty, use $XDG_DATA_HOME/dwm,
-	 * otherwise use ~/.local/share/dwm as autostart script directory
+	/* if $XDG_DATA_HOME is set and not empty, use
+	 * $XDG_DATA_HOME/dwm, otherwise use ~/.local/share/dwm as
+	 * autostart script directory
 	 */
 	xdgdatahome = getenv("XDG_DATA_HOME");
 	if (xdgdatahome != NULL && *xdgdatahome != '\0') {
@@ -2541,8 +2544,8 @@ runautostart(void)
 
 	/* check if the autostart script directory exists */
 	if (!(stat(pathpfx, &sb) == 0 && S_ISDIR(sb.st_mode))) {
-		/* the XDG conformant path does not exist or is no directory
-		 * so we try ~/.dwm instead
+		/* the XDG conformant path does not exist or is no
+		 * directory so we try ~/.dwm instead
 		 */
 		char *pathpfx_new =
 		    realloc(pathpfx, strlen(home) + strlen(dwmdir) + 3);
@@ -2747,8 +2750,8 @@ setmfact(const Arg *arg)
 
 	if (!arg || !selmon->lt[selmon->sellt]->arrange)
 		return;
-	f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0;
-	if (f < 0.05 || f > 0.95)
+	f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0f;
+	if (f < 0.05f || f > 0.95f)
 		return;
 	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag] = f;
 	arrange(selmon);
@@ -3256,8 +3259,9 @@ unmapnotify(XEvent *e)
 		else
 			unmanage(c, 0);
 	} else if ((c = wintosystrayicon(ev->window))) {
-		/* KLUDGE! sometimes icons occasionally unmap their windows, but
-		 * do _not_ destroy them. We map those windows back */
+		/* KLUDGE! sometimes icons occasionally unmap their
+		 * windows, but do _not_ destroy them. We map those
+		 * windows back */
 		XMapRaised(dpy, c->win);
 		updatesystray();
 	}
@@ -3334,7 +3338,8 @@ updategeom(void)
 
 		for (n = 0, m = mons; m; m = m->next, n++)
 			;
-		/* only consider unique geometries as separate screens */
+		/* only consider unique geometries as separate screens
+		 */
 		unique = ecalloc(nn, sizeof(XineramaScreenInfo));
 		for (i = 0, j = 0; i < nn; i++)
 			if (isuniquegeom(unique, j, &info[i]))
@@ -3424,7 +3429,8 @@ updatesizehints(Client *c)
 	XSizeHints size;
 
 	if (!XGetWMNormalHints(dpy, c->win, &size, &msize))
-		/* size is uninitialized, ensure that size.flags aren't used */
+		/* size is uninitialized, ensure that size.flags aren't
+		 * used */
 		size.flags = PSize;
 	if (size.flags & PBaseSize) {
 		c->basew = size.base_width;
@@ -3481,7 +3487,8 @@ updatesystrayicongeom(Client *i, int w, int h)
 		else
 			i->w = (int)((float)bh * ((float)w / (float)h));
 		applysizehints(i, &(i->x), &(i->y), &(i->w), &(i->h), False);
-		/* force icons into the systray dimensions if they don't want to
+		/* force icons into the systray dimensions if they don't
+		 * want to
 		 */
 		if (i->h > bh) {
 			if (i->w == i->h)
@@ -3885,9 +3892,9 @@ wintomon(Window w)
 	return selmon;
 }
 
-/* There's no way to check accesses to destroyed windows, thus those cases are
- * ignored (especially on UnmapNotify's). Other types of errors call Xlibs
- * default error handler, which may call exit. */
+/* There's no way to check accesses to destroyed windows, thus those
+ * cases are ignored (especially on UnmapNotify's). Other types of
+ * errors call Xlibs default error handler, which may call exit. */
 int
 xerror(Display *dpy, XErrorEvent *ee)
 {
