@@ -2408,12 +2408,9 @@ run(void)
 	fds[0].fd = ConnectionNumber(dpy);
 	fds[0].events = POLLIN;
 
-#if INVERSED
-	for (i = LENGTH(blocks) - 1; i >= 0; i--)
-#else
-	for (i = 0; i < LENGTH(blocks); i++)
-#endif /* INVERSED */
-	{
+	i = (block_inversed == TRUE) ? LENGTH(blocks) - 1 : 0;
+	for (; (block_inversed == TRUE) ? i >= 0 : i < LENGTH(blocks);
+	     (block_inversed) ? i-- : i++) {
 		pipe(pipes[i]);
 		fds[i + 1].fd = pipes[i][0];
 		fds[i + 1].events = POLLIN;
