@@ -2246,15 +2246,16 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL) {
 		gapincr = gapoffset = 0;
 	} else {
-		/* Remove border and gap if layout is monocle or only one client
+		/* Remove border if layout is monocle or only one client,
+		 * but leave the gap as is, some window would draw outside
+		 * the display if not.
 		 */
+
+		gapoffset = gappx;
+		gapincr = 2 * gappx;
+
 		if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1) {
-			gapoffset = 0;
-			gapincr = -2 * borderpx;
 			wc.border_width = 0;
-		} else {
-			gapoffset = gappx;
-			gapincr = 2 * gappx;
 		}
 	}
 
