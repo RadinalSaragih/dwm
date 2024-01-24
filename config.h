@@ -1,32 +1,29 @@
 /* clang-format off */
 
-#define TRUE 1
-#define FALSE 0
-
 /* max number of character that one block command can output */
 #define CMDLENGTH 50
 
 /* appearance */
 static unsigned int snap = 10; /* snap pixel */
 static unsigned int borderpx = 1; /* border pixel of windows */
-static unsigned int systraypinning = FALSE; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
+static bool systraypinning = false; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
 static unsigned int systrayspacing = 2; /* systray spacing */
-static unsigned int systrayonleft  = FALSE; /* systray on the left of status text */
-static int systraypinningfailfirst = TRUE; /* 1: if pinning fails, display systray on the first monitor, FALSE: display systray on the last monitor */
-static int swallowfloating = FALSE; /* 1 means swallow floating windows by default */
-static int lockfullscreen = FALSE; /* 1 will force focus on the fullscreen window */
-static int focusonwheel = FALSE;
-static int showsystray = FALSE; /* 0 = no systray */
-static int showbar = TRUE; /* 0 = no bar */
-static int topbar = TRUE; /* 0 = bottom bar */
+static bool systrayonleft  = false; /* systray on the left of status text */
+static bool systraypinningfailfirst = true; /* 1: if pinning fails, display systray on the first monitor, false: display systray on the last monitor */
+static bool swallowfloating = false; /* 1 means swallow floating windows by default */
+static bool lockfullscreen = false; /* 1 will force focus on the fullscreen window */
+static bool focusonwheel = false;
+static bool showsystray = false; /* 0 = no systray */
+static bool showbar = true; /* 0 = no bar */
+static bool topbar = true; /* 0 = bottom bar */
 static int gappx  = 5;  /* gaps between windows */
-static int noborder = TRUE; /* 1 = hide the bar if only a single window is opened. */
-static int showtitle = FALSE; /* 1 = hide the bar if only a single window is opened. */
+static bool noborder = true; /* 1 = hide the bar if only a single window is opened. */
+static bool showtitle = false; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
 
-/* inverse the order of the blocks, comment to disable */
-static unsigned char block_inversed = FALSE;
+/* inverse the order of the blocks */
+static bool block_inversed = false;
 
 /* colors */
 static char normbg[]     = "#222222";
@@ -92,24 +89,24 @@ static const Rule rules[] = {
 	 * WM_CLASS(STRING) = instance, class
 	 * WM_NAME(STRING) = title */
 	/* class           instance title  tags mask centered floating terminal noswallow monitor */
-	{ "firefox",   	   NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "Firefox-esr",   NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "Brave-browser", NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "qutebrowser",   NULL,    NULL,  1 << 8,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "Godot",         NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "Inkscape",      NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "Gimp",          NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "lmms",          NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "kdenlive",      NULL,    NULL,  1 << 7,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
-	{ "Steam",         NULL,    NULL,  1 << 6,   FALSE,   FALSE,   FALSE,   TRUE, 	-1 },
+	{ "firefox",   	   NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
+	{ "Firefox-esr",   NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
+	{ "Brave-browser", NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
+	{ "qutebrowser",   NULL,    NULL,  1 << 8,   false,   false,   false,   true, 	-1 },
+	{ "Godot",         NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
+	{ "Inkscape",      NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
+	{ "Gimp",          NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
+	{ "lmms",          NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
+	{ "kdenlive",      NULL,    NULL,  1 << 7,   false,   false,   false,   true, 	-1 },
+	{ "Steam",         NULL,    NULL,  1 << 6,   false,   false,   false,   true, 	-1 },
 
-	{ "st-256color",   NULL,    NULL,  0, 	     FALSE,   FALSE,   TRUE,    FALSE,  -1 },
-	{ "Zathura",       NULL,    NULL,  0, 	     FALSE,   FALSE,   FALSE,   TRUE,   -1 },
-	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
-	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
-	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
-	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), TRUE,    TRUE,    TRUE,    FALSE,  -1 },
-	{ NULL, 	   NULL,    "Event Tester", 0,FALSE,  FALSE,   FALSE,   TRUE,   -1 },
+	{ "st-256color",   NULL,    NULL,  0, 	     false,   false,   true,    false,  -1 },
+	{ "Zathura",       NULL,    NULL,  0, 	     false,   false,   false,   true,   -1 },
+	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), true,    true,    true,    false,  -1 },
+	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), true,    true,    true,    false,  -1 },
+	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), true,    true,    true,    false,  -1 },
+	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), true,    true,    true,    false,  -1 },
+	{ NULL, 	   NULL,    "Event Tester", 0,false,  false,   false,   true,   -1 },
 };
 
 /* layout(s) */

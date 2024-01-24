@@ -78,8 +78,9 @@
 #define ColFloatBorder  4
 
 // boolean constant
-#define TRUE  1
-#define FALSE 0
+typedef unsigned int bool;
+#define true  1
+#define false 0
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 
@@ -175,7 +176,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
 	int bw, oldbw;
 	unsigned int tags;
-	int isfixed, iscentered, isfloating, isurgent, neverfocus, oldstate,
+	bool isfixed, iscentered, isfloating, isurgent, neverfocus, oldstate,
 	    isfullscreen, issticky, isterminal, noswallow, needresize;
 	pid_t pid;
 	Client *next;
@@ -209,8 +210,8 @@ struct Monitor {
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
-	int showbar;
-	int topbar;
+	bool showbar;
+	bool topbar;
 	Client *clients;
 	Client *sel;
 	Client *stack;
@@ -226,10 +227,10 @@ typedef struct {
 	const char *instance;
 	const char *title;
 	unsigned int tags;
-	int iscentered;
-	int isfloating;
-	int isterminal;
-	int noswallow;
+	bool iscentered;
+	bool isfloating;
+	bool isterminal;
+	bool noswallow;
 	int monitor;
 } Rule;
 
@@ -454,8 +455,8 @@ struct Pertag {
 	float mfacts[LENGTH(tags) + 1]; /* mfacts per tag */
 	unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */
 	const Layout *ltidxs[LENGTH(tags) + 1]
-	                    [2];        /* matrix of tags and layouts indexes */
-	int showbars[LENGTH(tags) + 1]; /* display bar for the current tag */
+	                    [2]; /* matrix of tags and layouts indexes */
+	bool showbars[LENGTH(tags) + 1]; /* display bar for the current tag */
 };
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
@@ -473,8 +474,8 @@ applyrules(Client *c)
 	XClassHint ch = {NULL, NULL};
 
 	/* rule matching */
-	c->iscentered = FALSE;
-	c->isfloating = FALSE;
+	c->iscentered = false;
+	c->isfloating = false;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class = ch.res_class ? ch.res_class : broken;
@@ -707,10 +708,10 @@ buttonpress(XEvent *e)
 			click = ClkStatusText;
 
 			int len, i;
-			i = ((block_inversed == TRUE) ? LENGTH(blocks) : 0);
-			for (; ((block_inversed == TRUE) ? i >= 0
+			i = ((block_inversed == true) ? LENGTH(blocks) : 0);
+			for (; ((block_inversed == true) ? i >= 0
 			                                 : i < LENGTH(blocks));
-			     ((block_inversed == TRUE) ? i-- : i++)) {
+			     ((block_inversed == true) ? i-- : i++)) {
 				if (*blockoutput[i] ==
 				    '\0') /* ignore command that output NULL or
 				             '\0' */
@@ -836,7 +837,7 @@ clientmessage(XEvent *e)
 			c->h = c->oldh = wa.height;
 			c->oldbw = wa.border_width;
 			c->bw = 0;
-			c->isfloating = TRUE;
+			c->isfloating = true;
 			/* reuse tags field as mapped status */
 			c->tags = 1;
 			updatesizehints(c);
@@ -980,7 +981,7 @@ configurerequest(XEvent *e)
 				XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w,
 				                  c->h);
 			else
-				c->needresize = 1;
+				c->needresize = true;
 		} else
 			configure(c);
 	} else {
@@ -1448,9 +1449,9 @@ getstatus(int width)
 	// uncomment to inverse the colors
 	// const char *cols[8] = 	{ colors[SchemeStatus][ColBg], fgcol };
 
-	i = ((block_inversed == TRUE) ? 0 : LENGTH(blocks));
-	for (; ((block_inversed == TRUE) ? i < LENGTH(blocks) : i >= 0);
-	     ((block_inversed == TRUE) ? i++ : i--)) {
+	i = ((block_inversed == true) ? 0 : LENGTH(blocks));
+	for (; ((block_inversed == true) ? i < LENGTH(blocks) : i >= 0);
+	     ((block_inversed == true) ? i++ : i--)) {
 		if (*blockoutput[i] ==
 		    '\0') /* ignore command that output NULL or '\0' */
 			continue;
@@ -1566,7 +1567,7 @@ grabkeys(void)
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabKey(dpy, code,
 					         keys[i].mod | modifiers[j],
-					         root, True, GrabModeAsync,
+					         root, true, GrabModeAsync,
 					         GrabModeAsync);
 	}
 }
@@ -2409,8 +2410,8 @@ run(void)
 	fds[0].fd = ConnectionNumber(dpy);
 	fds[0].events = POLLIN;
 
-	i = (block_inversed == TRUE) ? LENGTH(blocks) - 1 : 0;
-	for (; (block_inversed == TRUE) ? i >= 0 : i < LENGTH(blocks);
+	i = (block_inversed == true) ? LENGTH(blocks) - 1 : 0;
+	for (; (block_inversed == true) ? i >= 0 : i < LENGTH(blocks);
 	     (block_inversed) ? i-- : i++) {
 		pipe(pipes[i]);
 		fds[i + 1].fd = pipes[i][0];
@@ -2651,7 +2652,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3,
 {
 	int n;
 	Atom *protocols, mt;
-	int exists = FALSE;
+	int exists = false;
 	XEvent ev;
 
 	if (proto == wmatom[WMTakeFocus] || proto == wmatom[WMDelete]) {
@@ -2661,7 +2662,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3,
 			XFree(protocols);
 		}
 	} else {
-		exists = TRUE;
+		exists = true;
 		mt = proto;
 	}
 	if (exists) {
@@ -2699,17 +2700,17 @@ setfullscreen(Client *c, int fullscreen)
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 		                PropModeReplace,
 		                (unsigned char *)&netatom[NetWMFullscreen], 1);
-		c->isfullscreen = TRUE;
+		c->isfullscreen = true;
 		c->oldstate = c->isfloating;
 		c->oldbw = c->bw;
 		c->bw = 0;
-		c->isfloating = TRUE;
+		c->isfloating = true;
 		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 		XRaiseWindow(dpy, c->win);
 	} else if (!fullscreen && c->isfullscreen) {
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 		                PropModeReplace, (unsigned char *)0, 0);
-		c->isfullscreen = FALSE;
+		c->isfullscreen = false;
 		c->isfloating = c->oldstate;
 		c->bw = c->oldbw;
 		c->x = c->oldx;
@@ -2903,7 +2904,7 @@ showhide(Client *c)
 		/* show clients top down */
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if (c->needresize) {
-			c->needresize = 0;
+			c->needresize = false;
 			XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
 		} else {
 			XMoveWindow(dpy, c->win, c->x, c->y);
@@ -3085,7 +3086,7 @@ void
 togglescratch(const Arg *arg)
 {
 	Client *c;
-	unsigned int found = FALSE;
+	unsigned int found = false;
 	unsigned int scratchtag = SPTAG(arg->ui);
 	Arg sparg = {.v = scratchpads[arg->ui].cmd};
 
@@ -3270,7 +3271,7 @@ updatebars(void)
 {
 	unsigned int w;
 	Monitor *m;
-	XSetWindowAttributes wa = {.override_redirect = True,
+	XSetWindowAttributes wa = {.override_redirect = true,
 	                           .background_pixmap = ParentRelative,
 	                           .event_mask =
 	                               ButtonPressMask | ExposureMask};
@@ -3324,7 +3325,7 @@ updateclientlist()
 int
 updategeom(void)
 {
-	int dirty = FALSE;
+	int dirty = false;
 
 #ifdef XINERAMA
 	if (XineramaIsActive(dpy)) {
@@ -3359,7 +3360,7 @@ updategeom(void)
 			    unique[i].y_org != m->my ||
 			    unique[i].width != m->mw ||
 			    unique[i].height != m->mh) {
-				dirty = TRUE;
+				dirty = true;
 				m->num = i;
 				m->mx = m->wx = unique[i].x_org;
 				m->my = m->wy = unique[i].y_org;
@@ -3372,7 +3373,7 @@ updategeom(void)
 			for (m = mons; m && m->next; m = m->next)
 				;
 			while ((c = m->clients)) {
-				dirty = TRUE;
+				dirty = true;
 				m->clients = c->next;
 				detachstack(c);
 				c->mon = mons;
@@ -3390,7 +3391,7 @@ updategeom(void)
 		if (!mons)
 			mons = createmon();
 		if (mons->mw != sw || mons->mh != sh) {
-			dirty = TRUE;
+			dirty = true;
 			mons->mw = mons->ww = sw;
 			mons->mh = mons->wh = sh;
 			updatebarpos(mons);
@@ -3549,7 +3550,7 @@ updatesystray(void)
 		    XCreateSimpleWindow(dpy, root, x, m->by, w, bh, 0, 0,
 		                        scheme[SchemeSel][ColBg].pixel);
 		wa.event_mask = ButtonPressMask | ExposureMask;
-		wa.override_redirect = True;
+		wa.override_redirect = true;
 		wa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
 		XSelectInput(dpy, systray->win, SubstructureNotifyMask);
 		XChangeProperty(
@@ -3625,8 +3626,8 @@ updatewindowtype(Client *c)
 	if (state == netatom[NetWMFullscreen])
 		setfullscreen(c, 1);
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
-		c->iscentered = TRUE;
-		c->isfloating = TRUE;
+		c->iscentered = true;
+		c->isfloating = true;
 	}
 }
 
@@ -3641,11 +3642,11 @@ updatewmhints(Client *c)
 			XSetWMHints(dpy, c->win, wmh);
 		} else
 			c->isurgent =
-			    (wmh->flags & XUrgencyHint) ? TRUE : FALSE;
+			    (wmh->flags & XUrgencyHint) ? true : false;
 		if (wmh->flags & InputHint)
 			c->neverfocus = !wmh->input;
 		else
-			c->neverfocus = FALSE;
+			c->neverfocus = false;
 		XFree(wmh);
 	}
 }
