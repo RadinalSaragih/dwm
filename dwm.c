@@ -2239,9 +2239,9 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	wc.border_width = c->bw;
 
 	/* Get number of clients for the client's monitor */
-	for (n = 0, nbc = nexttiled(c->mon->clients); nbc;
-	     nbc = nexttiled(nbc->next), n++)
-		;
+	for (n = 0, nbc = nexttiled(c->mon->clients); nbc; n++) {
+		nbc = nexttiled(nbc->next);
+	}
 
 	/* Do nothing if layout is floating */
 	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL) {
