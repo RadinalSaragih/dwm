@@ -4019,7 +4019,8 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 		case INTEGER: {
 			unsigned int tmp;
 			tmp = strtoul(ret.addr, NULL, 10);
-			if (tmp <= INT_MAX && rtype == INTEGER)
+			if (tmp <= INT_MAX && tmp >= INT_MIN &&
+			    rtype == INTEGER)
 				*idst = (int)tmp;
 			else if (rtype == BOOLEAN) {
 				*bdst = (tmp) ? true : false;
