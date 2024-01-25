@@ -3972,7 +3972,8 @@ color_code_valid(char *color_code)
 	if (c == NULL || *(c + 0) != '#' || strlen(c) != 7)
 		return false;
 	++c;
-	for (; *c != '\0'; c++, *c = (char)tolower(*c)) {
+	for (; *c != '\0'; c++) {
+		*c = (char)tolower(*c);
 		if ((*c <= '9' && *c >= '0') || (*c <= 'f' && *c >= 'a'))
 			continue;
 		return false;
