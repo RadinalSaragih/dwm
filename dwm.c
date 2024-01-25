@@ -2256,7 +2256,8 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL) {
 		gapincr = gapoffset = 0; /* no gaps for floating windows */
 	} else if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1) {
-		gapincr = gapoffset = 0; /* no gaps for tags with 1 client or in monocle layout */
+		/* no gaps for tags with 1 client or in monocle layout */
+		gapincr = gapoffset = 0;
 		wc.border_width = 0; /* no borders also */
 	}
 
