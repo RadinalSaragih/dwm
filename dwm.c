@@ -27,6 +27,7 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
+#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <locale.h>
@@ -256,6 +257,7 @@ enum resource_type {
 	FLOAT,
 	CHAR,
 	BOOLEAN,
+	COLORCODE,
 };
 
 typedef struct {
@@ -392,6 +394,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+bool color_code_valid(char *color_code);
 static void load_xresources(void);
 static void resource_load(XrmDatabase db, char *name, enum resource_type rtype,
                           void *dst);
@@ -3958,6 +3961,23 @@ zoom(const Arg *arg)
 	if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))
 		return;
 	pop(c);
+}
+
+bool
+color_code_valid(char *color_code)
+{
+	char *c = color_code;
+
+	if (c == NULL || *(c + 0) != '#' || strlen(c) != 7)
+		return false;
+	++c;
+	for (; *c != '\0'; c++, *c = (char)tolower(*c)) {
+		if ((*c <= '9' && *c >= '0') || (*c <= 'f' && *c >= 'a'))
+			continue;
+		return false;
+	}
+
+	return true;
 }
 
 void
