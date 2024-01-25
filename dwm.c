@@ -28,10 +28,12 @@
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <errno.h>
+#include <limits.h>
 #include <locale.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -249,10 +251,11 @@ struct Systray {
 
 /* Xresources preferences */
 enum resource_type {
-	STRING = 0,
-	INTEGER = 1,
-	FLOAT = 2,
-	CHAR = 3,
+	STRING,
+	INTEGER,
+	FLOAT,
+	CHAR,
+	BOOLEAN,
 };
 
 typedef struct {
@@ -3964,11 +3967,13 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 	int *idst = NULL;
 	float *fdst = NULL;
 	char *cdst = NULL;
+	bool *bdst = NULL;
 
 	sdst = dst;
 	idst = dst;
 	fdst = dst;
 	cdst = dst;
+	bdst = dst;
 
 	char fullname[256];
 	char *type;
@@ -3983,9 +3988,16 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 		case STRING:
 			strcpy(sdst, ret.addr);
 			break;
-		case INTEGER:
-			*idst = strtoul(ret.addr, NULL, 10);
-			break;
+		case BOOLEAN:
+		case INTEGER: {
+			unsigned int tmp;
+			tmp = strtoul(ret.addr, NULL, 10);
+			if (tmp <= INT_MAX && rtype == INTEGER)
+				*idst = (int)tmp;
+			else if (rtype == BOOLEAN) {
+				*bdst = (tmp) ? true : false;
+			}
+		} break;
 		case FLOAT:
 			*fdst = strtof(ret.addr, NULL);
 			break;
