@@ -3968,7 +3968,9 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 	float *fdst = NULL;
 	char *cdst = NULL;
 	bool *bdst = NULL;
+	char *colordst = NULL;
 
+	colordst = dst;
 	sdst = dst;
 	idst = dst;
 	fdst = dst;
@@ -3985,6 +3987,10 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 	XrmGetResource(db, fullname, "*", &type, &ret);
 	if (!(ret.addr == NULL || strncmp("String", type, 64) != 0)) {
 		switch (rtype) {
+		case COLORCODE: {
+			if (color_code_valid(ret.addr))
+				strcpy(colordst, ret.addr);
+		} break;
 		case STRING:
 			strcpy(sdst, ret.addr);
 			break;
