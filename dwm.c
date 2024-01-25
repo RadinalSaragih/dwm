@@ -4017,15 +4017,13 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 			strcpy(sdst, ret.addr);
 			break;
 		case BOOLEAN:
+			*bdst = (strtoul(ret.addr, NULL, 10)) ? true : false;
+			break;
 		case INTEGER: {
-			unsigned int tmp;
+			unsigned long tmp;
 			tmp = strtoul(ret.addr, NULL, 10);
-			if (tmp <= INT_MAX && tmp >= INT_MIN &&
-			    rtype == INTEGER)
+			if (tmp >= 0 && tmp <= INT_MAX)
 				*idst = (int)tmp;
-			else if (rtype == BOOLEAN) {
-				*bdst = (tmp) ? true : false;
-			}
 		} break;
 		case FLOAT:
 			*fdst = strtof(ret.addr, NULL);
