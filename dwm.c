@@ -115,6 +115,7 @@ enum {
 	NetSupported,
 	NetWMName,
 	NetWMState,
+	NetWMStateSticky,
 	NetWMCheck,
 	NetSystemTray,
 	NetSystemTrayOP,
@@ -1227,7 +1228,8 @@ focus(Client *c)
 		/* XSetWindowBorder(dpy, c->win,
 		 * scheme[SchemeSel][ColBorder].pixel); */
 
-		if ((c->issticky) || (c->issticky && c->isfloating))
+		if ((c->issticky && !c->isfloating) ||
+		    (c->issticky && c->isfloating))
 			XSetWindowBorder(
 			    dpy, c->win,
 			    scheme[SchemeSel][ColStickyBorder].pixel);
@@ -2252,7 +2254,8 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	gapoffset = gappx;
 	gapincr = 2 * gappx;
 
-	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL) {
+	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL ||
+	    (c->issticky && n == 1)) {
 		gapincr = gapoffset = 0; /* no gaps for floating windows */
 	} else if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1) {
 		/* no gaps for tags with 1 client or in monocle layout */
@@ -2809,6 +2812,8 @@ setup(void)
 	    XInternAtom(dpy, "_NET_SYSTEM_TRAY_ORIENTATION_HORZ", False);
 	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
 	netatom[NetWMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
+	netatom[NetWMStateSticky] =
+	    XInternAtom(dpy, "_NET_WM_STATE_STICKY", False);
 	netatom[NetWMCheck] =
 	    XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", False);
 	netatom[NetWMFullscreen] =
@@ -3124,10 +3129,13 @@ togglesticky(const Arg *arg)
 	if (!selmon->sel)
 		return;
 	selmon->sel->issticky = !selmon->sel->issticky;
-	if (selmon->sel->issticky)
+	if (selmon->sel->issticky) {
 		XSetWindowBorder(dpy, selmon->sel->win,
 		                 scheme[SchemeSel][ColStickyBorder].pixel);
-	else if (selmon->sel->isfloating)
+		XChangeProperty(dpy, selmon->sel->win, netatom[NetWMState],
+		                XA_ATOM, 32, PropModeReplace,
+		                (unsigned char *)&netatom[NetWMStateSticky], 1);
+	} else if (selmon->sel->isfloating)
 		XSetWindowBorder(dpy, selmon->sel->win,
 		                 scheme[SchemeSel][ColFloatBorder].pixel);
 	else
@@ -3635,6 +3643,9 @@ updatewindowtype(Client *c)
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
 		c->iscentered = True;
 		c->isfloating = True;
+	}
+	if (state == netatom[NetWMStateSticky]) {
+		c->issticky = 1;
 	}
 }
 
