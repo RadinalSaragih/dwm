@@ -882,10 +882,21 @@ clientmessage(XEvent *e)
 		    cme->data.l[2] == netatom[NetWMFullscreen])
 			setfullscreen(
 			    c,
-			    (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD */
-			     ||
+			    (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD */ ||
 			     (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ &&
 			      !c->isfullscreen)));
+		else if ((cme->data.l[0] == netatom[NetWMStateSticky] ||
+		          cme->data.l[1] == netatom[NetWMStateSticky]) &&
+		         !c->issticky) {
+			XSetWindowBorder(
+			    dpy, selmon->sel->win,
+			    scheme[SchemeSel][ColStickyBorder].pixel);
+			XChangeProperty(
+			    dpy, selmon->sel->win, netatom[NetWMState], XA_ATOM,
+			    32, PropModeReplace,
+			    (unsigned char *)&netatom[NetWMStateSticky], 1);
+			c->issticky = 1;
+		}
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
 		if (c != selmon->sel && !c->isurgent)
 			seturgent(c, 1);
@@ -3644,12 +3655,11 @@ updatewindowtype(Client *c)
 
 	if (state == netatom[NetWMFullscreen])
 		setfullscreen(c, 1);
+	if (state == netatom[NetWMStateSticky])
+		c->issticky = 1;
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
 		c->iscentered = True;
 		c->isfloating = True;
-	}
-	if (state == netatom[NetWMStateSticky]) {
-		c->issticky = 1;
 	}
 }
 
