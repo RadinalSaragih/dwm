@@ -885,9 +885,9 @@ clientmessage(XEvent *e)
 			    (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD */ ||
 			     (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ &&
 			      !c->isfullscreen)));
-		else if ((cme->data.l[0] == netatom[NetWMStateSticky] ||
-		          cme->data.l[1] == netatom[NetWMStateSticky]) &&
-		         !c->issticky) {
+		if ((cme->data.l[0] == netatom[NetWMStateSticky] ||
+		     cme->data.l[1] == netatom[NetWMStateSticky]) &&
+		    !c->issticky) {
 			XSetWindowBorder(
 			    dpy, selmon->sel->win,
 			    scheme[SchemeSel][ColStickyBorder].pixel);
