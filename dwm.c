@@ -718,9 +718,8 @@ buttonpress(XEvent *e)
 			for (; ((block_inversed == true) ? i >= 0
 			                                 : i < LENGTH(blocks));
 			     ((block_inversed == true) ? i-- : i++)) {
-				if (*blockoutput[i] ==
-				    '\0') /* ignore command that output NULL or
-				             '\0' */
+				/* ignore command that output NULL or '\0' */
+				if (*blockoutput[i] == '\0')
 					continue;
 				len = TEXTW(blockoutput[i]) - lrpad +
 				      TEXTW(delimiter) - lrpad;
@@ -1458,8 +1457,8 @@ getstatus(int width)
 	i = ((block_inversed == true) ? 0 : LENGTH(blocks));
 	for (; ((block_inversed == true) ? i < LENGTH(blocks) : i >= 0);
 	     ((block_inversed == true) ? i++ : i--)) {
-		if (*blockoutput[i] ==
-		    '\0') /* ignore command that output NULL or '\0' */
+		/* ignore command that output NULL or '\0' */
+		if (*blockoutput[i] == '\0')
 			continue;
 		strncpy(fgcol, blocks[i].color, 8);
 		/* re-load the scheme with the new colors */
