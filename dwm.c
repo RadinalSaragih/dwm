@@ -3141,6 +3141,10 @@ togglesticky(const Arg *arg)
 	else
 		XSetWindowBorder(dpy, selmon->sel->win,
 		                 scheme[SchemeSel][ColBorder].pixel);
+	if (!selmon->sel->issticky)
+		XChangeProperty(dpy, selmon->sel->win, netatom[NetWMState],
+		                XA_ATOM, 32, PropModeReplace,
+		                (unsigned char *)0, 0);
 	arrange(selmon);
 }
 
