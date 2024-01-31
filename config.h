@@ -3,27 +3,27 @@
 /* appearance */
 static unsigned int snap = 10; /* snap pixel */
 static unsigned int borderpx = 1; /* border pixel of windows */
-static bool systraypinning = false; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
+static bool systraypinning = False; /* 0: sloppy systray follows selected monitor,  >0: pin systray to monitor X */
 static unsigned int systrayspacing = 2; /* systray spacing */
-static bool systrayonleft  = false; /* systray on the left of status text */
-static bool systraypinningfailfirst = true; /* 1: if pinning fails, display systray on the first monitor, false: display systray on the last monitor */
-static bool swallowfloating = false; /* 1 means swallow floating windows by default */
-static bool lockfullscreen = false; /* 1 will force focus on the fullscreen window */
-static bool focusonwheel = false;
-static bool showsystray = false; /* 0 = no systray */
-static bool showbar = true; /* 0 = no bar */
-static bool topbar = true; /* 0 = bottom bar */
+static bool systrayonleft  = False; /* systray on the left of status text */
+static bool systraypinningfailfirst = True; /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor */
+static bool swallowfloating = False; /* 1 means swallow floating windows by default */
+static bool lockfullscreen = False; /* 1 will force focus on the fullscreen window */
+static bool focusonwheel = False;
+static bool showsystray = False; /* 0 = no systray */
+static bool showbar = True; /* 0 = no bar */
+static bool topbar = True; /* 0 = bottom bar */
 static int gappx  = 5;  /* gaps between windows */
-static bool noborder = true; /* 1 = hide the bar if only a single window is opened. */
-static bool showtitle = false; /* 1 = hide the bar if only a single window is opened. */
+static bool noborder = True; /* 1 = hide the bar if only a single window is opened. */
+static bool showtitle = False; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
 static const char *fonts[] = { font };
 
 /* max number of character that one block command can output */
-#define CMDLENGTH 50
+#define CMDLENGTH 80
 
 /* inverse the order of the blocks */
-static bool block_inversed = false;
+static bool block_inversed = False;
 
 /* colors */
 static char normbg[]     = "#222222";
@@ -92,24 +92,24 @@ static const Rule rules[] = {
 	 * WM_CLASS(STRING) = instance, class
 	 * WM_NAME(STRING) = title */
 	/* class           instance title  tags mask centered floating terminal noswallow monitor */
-	{ "firefox",   	   NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
-	{ "Firefox-esr",   NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
-	{ "Brave-browser", NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
-	{ "qutebrowser",   NULL,    NULL,  TAG(9),   false,   false,   false,   true, 	-1 },
-	{ "Godot",         NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
-	{ "Inkscape",      NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
-	{ "Gimp",          NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
-	{ "lmms",          NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
-	{ "kdenlive",      NULL,    NULL,  TAG(8),   false,   false,   false,   true, 	-1 },
-	{ "Steam",         NULL,    NULL,  TAG(7),   false,   false,   false,   true, 	-1 },
+	{ "firefox",   	   NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
+	{ "Firefox-esr",   NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
+	{ "Brave-browser", NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
+	{ "qutebrowser",   NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
+	{ "Godot",         NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
+	{ "Inkscape",      NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
+	{ "Gimp",          NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
+	{ "lmms",          NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
+	{ "kdenlive",      NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
+	{ "Steam",         NULL,    NULL,  TAG(7),   False,   False,   False,   True, 	-1 },
 
-	{ "st-256color",   NULL,    NULL,  ANYTAG,   false,   false,   true,    false,	-1 },
-	{ "Zathura",       NULL,    NULL,  ANYTAG,   false,   false,   false,   true,   -1 },
-	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), true,    true,    true,    false,  -1 },
-	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), true,    true,    true,    false,  -1 },
-	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), true,    true,    true,    false,  -1 },
-	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), true,    true,    true,    false,	-1 },
-	{ NULL, 	   NULL,    "Event Tester", ANYTAG, false,  false,   false,   true, -1 },
+	{ "st-256color",   NULL,    NULL,  ANYTAG,   False,   False,   True,    False,	-1 },
+	{ "Zathura",       NULL,    NULL,  ANYTAG,   False,   False,   False,   True,   -1 },
+	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), True,    True,    True,    False,  -1 },
+	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), True,    True,    True,    False,  -1 },
+	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), True,    True,    True,    False,  -1 },
+	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), True,    True,    True,    False,	-1 },
+	{ NULL, 	   NULL,    "Event Tester", ANYTAG, False,  False,   False,   True, -1 },
 };
 
 #undef TAG
@@ -118,7 +118,7 @@ static const Rule rules[] = {
 /* layout(s) */
 static float mfact = 0.50; /* factor of master area size [0.05..0.95] */
 static int nmaster = 1; /* number of clients in master area */
-static bool resizehints = false; /* 1 = respect size hints in tiled resizals */
+static bool resizehints = False; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
 	/* first entry is default */
 	/* symbol 	arrange function */
@@ -141,7 +141,6 @@ static const Layout layouts[] = {
 
 /* mediakey's keycodes */
 #include <X11/XF86keysym.h>
-#include "powermenu.c"
 
 /* commands */
 static const char *dmenucmd[]	= { "dmenu_run", "-g", "3", "-l", "15", "-i", "-p", "RUN:", NULL };
@@ -161,6 +160,7 @@ static const char mic_incvol[]	= "pactl set-source-volume @DEFAULT_SOURCE@ +1%; 
 static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; kill -37 $(pidof dwm)";
 static const char screenshot[]	= "dm-screenshot";
 static const char browser[]	= "qutebrowser";
+static const char powermenu[]	= "dm-power";
 static const char xmouseless[]	= "xmouseless";
 static const char launch_tmux[]	= "st -e tmux_start";
 static const char launch_dm_menu[] = "dm-menu";
@@ -295,7 +295,7 @@ static const Key keys[] = {
 
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
-	{ MODKEY|Mod1Mask,	XK_Escape,		powermenu,	{0} },  // powermenu
+	{ MODKEY|Mod1Mask,	XK_Escape,		spawn, 	 	SHCMD(powermenu) }, // powermenu
 
 	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
