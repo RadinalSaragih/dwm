@@ -276,6 +276,7 @@ static void attachaside(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
+static unsigned int countclients(Monitor *m);
 static void cleanup(void);
 static void cleanupmon(Monitor *mon);
 static void clientmessage(XEvent *e);
@@ -351,6 +352,7 @@ static void setmfact(const Arg *arg);
 static void setup(void);
 static void setsignal(int sig, void (*handler)(int sig));
 static void seturgent(Client *c, int urg);
+static void setsticky(Client *c, int sticky);
 static void showhide(Client *c);
 static void sigalrm(int unused);
 static void sigchld(int unused);
@@ -763,6 +765,17 @@ checkotherwm(void)
 	XSync(dpy, False);
 }
 
+unsigned int
+countclients(Monitor *m)
+{
+	unsigned int n;
+	Client *nbc;
+	for (n = 0, nbc = nexttiled(m->clients); nbc; n++) {
+		nbc = nexttiled(nbc->next);
+	}
+	return n;
+}
+
 void
 cleanup(void)
 {
@@ -887,16 +900,10 @@ clientmessage(XEvent *e)
 			      !c->isfullscreen)));
 		if ((cme->data.l[0] == netatom[NetWMStateSticky] ||
 		     cme->data.l[1] == netatom[NetWMStateSticky]) &&
-		    !c->issticky) {
-			XSetWindowBorder(
-			    dpy, selmon->sel->win,
-			    scheme[SchemeSel][ColStickyBorder].pixel);
-			XChangeProperty(
-			    dpy, selmon->sel->win, netatom[NetWMState], XA_ATOM,
-			    32, PropModeReplace,
-			    (unsigned char *)&netatom[NetWMStateSticky], 1);
-			c->issticky = 1;
-		}
+		    !c->issticky)
+			setsticky(
+			    c, ((cme->data.l[0] == 1 || cme->data.l[0] == 2) &&
+			        !c->issticky));
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
 		if (c != selmon->sel && !c->isurgent)
 			seturgent(c, 1);
@@ -2253,14 +2260,11 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	unsigned int n;
 	unsigned int gapoffset;
 	unsigned int gapincr;
-	Client *nbc;
 
 	wc.border_width = c->bw;
 
 	/* Get number of clients for the client's monitor */
-	for (n = 0, nbc = nexttiled(c->mon->clients); nbc; n++) {
-		nbc = nexttiled(nbc->next);
-	}
+	n = countclients(c->mon);
 
 	gapoffset = gappx;
 	gapincr = 2 * gappx;
@@ -2770,6 +2774,23 @@ setmfact(const Arg *arg)
 }
 
 void
+setsticky(Client *c, int sticky)
+{
+	if (sticky && !c->issticky) {
+		XSetWindowBorder(dpy, c->win,
+		                 scheme[SchemeSel][ColStickyBorder].pixel);
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+		                PropModeReplace,
+		                (unsigned char *)&netatom[NetWMStateSticky], 1);
+		c->issticky = 1;
+	} else if (!sticky && c->issticky) {
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+		                PropModeReplace, (unsigned char *)0, 0);
+		c->issticky = 0;
+	}
+}
+
+void
 setup(void)
 {
 	int i;
@@ -3137,25 +3158,22 @@ togglescratch(const Arg *arg)
 void
 togglesticky(const Arg *arg)
 {
-	if (!selmon->sel)
-		return;
-	selmon->sel->issticky = !selmon->sel->issticky;
-	if (selmon->sel->issticky) {
-		XSetWindowBorder(dpy, selmon->sel->win,
-		                 scheme[SchemeSel][ColStickyBorder].pixel);
-		XChangeProperty(dpy, selmon->sel->win, netatom[NetWMState],
-		                XA_ATOM, 32, PropModeReplace,
-		                (unsigned char *)&netatom[NetWMStateSticky], 1);
-	} else if (selmon->sel->isfloating)
-		XSetWindowBorder(dpy, selmon->sel->win,
-		                 scheme[SchemeSel][ColFloatBorder].pixel);
-	else
-		XSetWindowBorder(dpy, selmon->sel->win,
-		                 scheme[SchemeSel][ColBorder].pixel);
-	if (!selmon->sel->issticky)
-		XChangeProperty(dpy, selmon->sel->win, netatom[NetWMState],
-		                XA_ATOM, 32, PropModeReplace,
-		                (unsigned char *)0, 0);
+	if (selmon->sel) {
+		setsticky(selmon->sel, !selmon->sel->issticky);
+		arrange(selmon);
+	}
+	if (!selmon->sel->issticky) {
+		if (selmon->sel->isfloating)
+			XSetWindowBorder(
+			    dpy, selmon->sel->win,
+			    scheme[SchemeSel][ColFloatBorder].pixel);
+		else
+			XSetWindowBorder(dpy, selmon->sel->win,
+			                 scheme[SchemeSel][ColBorder].pixel);
+
+		resizeclient(selmon->sel, selmon->sel->x, selmon->sel->y,
+		             selmon->sel->w, selmon->sel->h);
+	}
 	arrange(selmon);
 }
 
@@ -3656,7 +3674,7 @@ updatewindowtype(Client *c)
 	if (state == netatom[NetWMFullscreen])
 		setfullscreen(c, 1);
 	if (state == netatom[NetWMStateSticky])
-		c->issticky = 1;
+		setsticky(c, 1);
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
 		c->iscentered = True;
 		c->isfloating = True;
