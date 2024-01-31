@@ -721,6 +721,7 @@ buttonpress(XEvent *e)
 				/* ignore command that output NULL or '\0' */
 				if (*blockoutput[i] == '\0')
 					continue;
+
 				len = TEXTW(blockoutput[i]) - lrpad +
 				      TEXTW(delimiter) - lrpad;
 				x += len;
@@ -1442,11 +1443,12 @@ getsigcmds(int signal)
 int
 getstatus(int width)
 {
-	int i, len, all = width, delimlen = TEXTW(delimiter) - lrpad;
+	int stw, i, len, all = width, delimlen = TEXTW(delimiter) - lrpad;
 	char fgcol[8];
 
 	// make space for the systray
-	all -= (showsystray && !systrayonleft) ? getsystraywidth() : 0;
+	stw = (showsystray && !systrayonleft) ? getsystraywidth() : 0;
+
 	/* fg		bg */
 	char *cols[8] = {fgcol, colors[SchemeStatus][ColBg]};
 
@@ -1467,13 +1469,13 @@ getstatus(int width)
 		              scheme[SchemeStatus]); /* 're-set' the scheme */
 		len = TEXTW(blockoutput[i]) - lrpad;
 		all -= len;
-		drw_text(drw, all, 0, len, bh, 0, blockoutput[i], 0);
+		drw_text(drw, all - stw, 0, len, bh, 0, blockoutput[i], 0);
 		/* draw delimiter */
 		if (*delimiter == '\0') /* ignore no delimiter */
 			continue;
 		drw_setscheme(drw, scheme[SchemeStatus]);
 		all -= delimlen;
-		drw_text(drw, all, 0, delimlen, bh, 0, delimiter, 0);
+		drw_text(drw, all - stw, 0, delimlen, bh, 0, delimiter, 0);
 	}
 
 	return stsw = width - all;
