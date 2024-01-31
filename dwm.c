@@ -82,8 +82,6 @@
 
 // boolean constant
 typedef unsigned int bool;
-#define true  1
-#define false 0
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 
@@ -480,8 +478,8 @@ applyrules(Client *c)
 	XClassHint ch = {NULL, NULL};
 
 	/* rule matching */
-	c->iscentered = false;
-	c->isfloating = false;
+	c->iscentered = False;
+	c->isfloating = False;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class = ch.res_class ? ch.res_class : broken;
@@ -714,10 +712,10 @@ buttonpress(XEvent *e)
 			click = ClkStatusText;
 
 			int len, i;
-			i = ((block_inversed == true) ? LENGTH(blocks) : 0);
-			for (; ((block_inversed == true) ? i >= 0
+			i = ((block_inversed == True) ? LENGTH(blocks) : 0);
+			for (; ((block_inversed == True) ? i >= 0
 			                                 : i < LENGTH(blocks));
-			     ((block_inversed == true) ? i-- : i++)) {
+			     ((block_inversed == True) ? i-- : i++)) {
 				/* ignore command that output NULL or '\0' */
 				if (*blockoutput[i] == '\0')
 					continue;
@@ -843,7 +841,7 @@ clientmessage(XEvent *e)
 			c->h = c->oldh = wa.height;
 			c->oldbw = wa.border_width;
 			c->bw = 0;
-			c->isfloating = true;
+			c->isfloating = True;
 			/* reuse tags field as mapped status */
 			c->tags = 1;
 			updatesizehints(c);
@@ -987,7 +985,7 @@ configurerequest(XEvent *e)
 				XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w,
 				                  c->h);
 			else
-				c->needresize = true;
+				c->needresize = True;
 		} else
 			configure(c);
 	} else {
@@ -1456,9 +1454,9 @@ getstatus(int width)
 	// uncomment to inverse the colors
 	// const char *cols[8] = 	{ colors[SchemeStatus][ColBg], fgcol };
 
-	i = ((block_inversed == true) ? 0 : LENGTH(blocks));
-	for (; ((block_inversed == true) ? i < LENGTH(blocks) : i >= 0);
-	     ((block_inversed == true) ? i++ : i--)) {
+	i = ((block_inversed == True) ? 0 : LENGTH(blocks));
+	for (; ((block_inversed == True) ? i < LENGTH(blocks) : i >= 0);
+	     ((block_inversed == True) ? i++ : i--)) {
 		/* ignore command that output NULL or '\0' */
 		if (*blockoutput[i] == '\0')
 			continue;
@@ -1574,7 +1572,7 @@ grabkeys(void)
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabKey(dpy, code,
 					         keys[i].mod | modifiers[j],
-					         root, true, GrabModeAsync,
+					         root, True, GrabModeAsync,
 					         GrabModeAsync);
 	}
 }
@@ -2411,8 +2409,8 @@ run(void)
 	fds[0].fd = ConnectionNumber(dpy);
 	fds[0].events = POLLIN;
 
-	i = (block_inversed == true) ? LENGTH(blocks) - 1 : 0;
-	for (; (block_inversed == true) ? i >= 0 : i < LENGTH(blocks);
+	i = (block_inversed == True) ? LENGTH(blocks) - 1 : 0;
+	for (; (block_inversed == True) ? i >= 0 : i < LENGTH(blocks);
 	     (block_inversed) ? i-- : i++) {
 		pipe(pipes[i]);
 		fds[i + 1].fd = pipes[i][0];
@@ -2653,7 +2651,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3,
 {
 	int n;
 	Atom *protocols, mt;
-	int exists = false;
+	int exists = False;
 	XEvent ev;
 
 	if (proto == wmatom[WMTakeFocus] || proto == wmatom[WMDelete]) {
@@ -2663,7 +2661,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3,
 			XFree(protocols);
 		}
 	} else {
-		exists = true;
+		exists = True;
 		mt = proto;
 	}
 	if (exists) {
@@ -2701,17 +2699,17 @@ setfullscreen(Client *c, int fullscreen)
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 		                PropModeReplace,
 		                (unsigned char *)&netatom[NetWMFullscreen], 1);
-		c->isfullscreen = true;
+		c->isfullscreen = True;
 		c->oldstate = c->isfloating;
 		c->oldbw = c->bw;
 		c->bw = 0;
-		c->isfloating = true;
+		c->isfloating = True;
 		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 		XRaiseWindow(dpy, c->win);
 	} else if (!fullscreen && c->isfullscreen) {
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 		                PropModeReplace, (unsigned char *)0, 0);
-		c->isfullscreen = false;
+		c->isfullscreen = False;
 		c->isfloating = c->oldstate;
 		c->bw = c->oldbw;
 		c->x = c->oldx;
@@ -2905,7 +2903,7 @@ showhide(Client *c)
 		/* show clients top down */
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if (c->needresize) {
-			c->needresize = false;
+			c->needresize = False;
 			XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
 		} else {
 			XMoveWindow(dpy, c->win, c->x, c->y);
@@ -3095,7 +3093,7 @@ void
 togglescratch(const Arg *arg)
 {
 	Client *c;
-	unsigned int found = false;
+	unsigned int found = False;
 	unsigned int scratchtag = SPTAG(arg->ui);
 	Arg sparg = {.v = scratchpads[arg->ui].cmd};
 
@@ -3280,7 +3278,7 @@ updatebars(void)
 {
 	unsigned int w;
 	Monitor *m;
-	XSetWindowAttributes wa = {.override_redirect = true,
+	XSetWindowAttributes wa = {.override_redirect = True,
 	                           .background_pixmap = ParentRelative,
 	                           .event_mask =
 	                               ButtonPressMask | ExposureMask};
@@ -3334,7 +3332,7 @@ updateclientlist()
 int
 updategeom(void)
 {
-	int dirty = false;
+	int dirty = False;
 
 #ifdef XINERAMA
 	if (XineramaIsActive(dpy)) {
@@ -3369,7 +3367,7 @@ updategeom(void)
 			    unique[i].y_org != m->my ||
 			    unique[i].width != m->mw ||
 			    unique[i].height != m->mh) {
-				dirty = true;
+				dirty = True;
 				m->num = i;
 				m->mx = m->wx = unique[i].x_org;
 				m->my = m->wy = unique[i].y_org;
@@ -3382,7 +3380,7 @@ updategeom(void)
 			for (m = mons; m && m->next; m = m->next)
 				;
 			while ((c = m->clients)) {
-				dirty = true;
+				dirty = True;
 				m->clients = c->next;
 				detachstack(c);
 				c->mon = mons;
@@ -3400,7 +3398,7 @@ updategeom(void)
 		if (!mons)
 			mons = createmon();
 		if (mons->mw != sw || mons->mh != sh) {
-			dirty = true;
+			dirty = True;
 			mons->mw = mons->ww = sw;
 			mons->mh = mons->wh = sh;
 			updatebarpos(mons);
@@ -3559,7 +3557,7 @@ updatesystray(void)
 		    XCreateSimpleWindow(dpy, root, x, m->by, w, bh, 0, 0,
 		                        scheme[SchemeSel][ColBg].pixel);
 		wa.event_mask = ButtonPressMask | ExposureMask;
-		wa.override_redirect = true;
+		wa.override_redirect = True;
 		wa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
 		XSelectInput(dpy, systray->win, SubstructureNotifyMask);
 		XChangeProperty(
@@ -3635,8 +3633,8 @@ updatewindowtype(Client *c)
 	if (state == netatom[NetWMFullscreen])
 		setfullscreen(c, 1);
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
-		c->iscentered = true;
-		c->isfloating = true;
+		c->iscentered = True;
+		c->isfloating = True;
 	}
 }
 
@@ -3651,11 +3649,11 @@ updatewmhints(Client *c)
 			XSetWMHints(dpy, c->win, wmh);
 		} else
 			c->isurgent =
-			    (wmh->flags & XUrgencyHint) ? true : false;
+			    (wmh->flags & XUrgencyHint) ? True : False;
 		if (wmh->flags & InputHint)
 			c->neverfocus = !wmh->input;
 		else
-			c->neverfocus = false;
+			c->neverfocus = False;
 		XFree(wmh);
 	}
 }
@@ -3979,16 +3977,16 @@ color_code_valid(char *color_code)
 	char *c = color_code;
 
 	if (c == NULL || *(c + 0) != '#' || strlen(c) != 7)
-		return false;
+		return False;
 	++c;
 	for (; *c != '\0'; c++) {
 		*c = (char)tolower(*c);
 		if ((*c <= '9' && *c >= '0') || (*c <= 'f' && *c >= 'a'))
 			continue;
-		return false;
+		return False;
 	}
 
-	return true;
+	return True;
 }
 
 void
@@ -4026,7 +4024,7 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 			strcpy(sdst, ret.addr);
 			break;
 		case BOOLEAN:
-			*bdst = (strtoul(ret.addr, NULL, 10)) ? true : false;
+			*bdst = (strtoul(ret.addr, NULL, 10)) ? True : False;
 			break;
 		case INTEGER: {
 			unsigned long tmp;
