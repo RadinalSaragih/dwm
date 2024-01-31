@@ -1,8 +1,9 @@
 #!/bin/sh
 
-battery="BAT1"
+battery_num=1
+battery_low_min=5
 
-battery_info="/sys/class/power_supply/$battery"
+battery_info="/sys/class/power_supply/BAT$battery_num"
 
 [ ! -d "$battery_info" ] && exit 1
 
@@ -13,7 +14,8 @@ battery_status="$(cat "$battery_info/status")"
 [ "$battery_status" = "Charging" ] && battery_status="C"
 [ "$battery_status" = "Not charging" ] && battery_status="N"
 
-battery="$(echo "$battery" | sed 's/BAT/B/g')"
+[ "$battery_status" = "D" ] && [ "$battery_percent" -lt "$battery_low_min" ] && \
+    notify-send -u critical "Battery Status" \
+    "Warning: Low Battery! Currently at $battery_low_min%"
 
-
-printf "%s" "$battery: $battery_percent% ($battery_status)"
+printf "%s" "B$battery_num: $battery_percent% ($battery_status)"
