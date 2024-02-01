@@ -83,6 +83,14 @@
 // boolean constant
 typedef unsigned int bool;
 
+#ifndef False
+#define False 0
+#endif /* ifndef False */
+
+#ifndef True
+#define True 1
+#endif /* ifndef False */
+
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 
 /* XEMBED messages */
