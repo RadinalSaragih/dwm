@@ -89,7 +89,7 @@ typedef unsigned int bool;
 
 #ifndef True
 #define True 1
-#endif /* ifndef False */
+#endif /* ifndef True */
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 
