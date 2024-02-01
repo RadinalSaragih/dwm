@@ -13,6 +13,7 @@ static bool focusonwheel = False;
 static bool showsystray = False; /* 0 = no systray */
 static bool showbar = True; /* 0 = no bar */
 static bool topbar = True; /* 0 = bottom bar */
+static bool inverse_statusbar = False;
 static int gappx  = 5;  /* gaps between windows */
 static bool noborder = True; /* 1 = hide the bar if only a single window is opened. */
 static bool showtitle = False; /* 1 = hide the bar if only a single window is opened. */
@@ -48,7 +49,7 @@ static char *colors[][5] = {
 	/* 		 fg	bg	border		sticky_border*/
 	[SchemeNorm] = { normfg, normbg, normborder, normstickyborder, normfloatborder },
 	[SchemeSel]  = { selfg,  selbg,  selborder,  selstickyborder, selfloatborder },
-	[SchemeStatus]={ normfg,  statusbg},
+	[SchemeStatus]={ normfg,  statusbg },
 };
 
 /* status bar */
@@ -207,6 +208,7 @@ ResourcePref resources[] = {
 	{ "showtitle", 			BOOLEAN, 	&showtitle },
 	{ "swallowfloating", 		BOOLEAN, 	&swallowfloating },
 	{ "block_inversed",             BOOLEAN,        &block_inversed },
+	{ "status_color_inversed",	BOOLEAN,	&inverse_statusbar},
 	{ "mfact", 			FLOAT,		&mfact },
 	{ "block_delimiter",            CHAR,		&delimiter[1] },
 };

@@ -1459,16 +1459,20 @@ getstatus(int width)
 {
 	int stw, i, len, all = width, delimlen = TEXTW(delimiter) - lrpad;
 	char fgcol[8];
+	char *fg, *bg;
 
 	// make space for the systray
 	stw = (showsystray && !systrayonleft) ? getsystraywidth() : 0;
 
-	/* fg		bg */
-	char *cols[8] = {fgcol, colors[SchemeStatus][ColBg]};
+	if (inverse_statusbar) {
+		fg = colors[SchemeStatus][ColFg];
+		bg = fgcol;
+	} else {
+		fg = fgcol;
+		bg = colors[SchemeStatus][ColBg];
+	}
 
-	// TODO: do something with this
-	// uncomment to inverse the colors
-	// const char *cols[8] = 	{ colors[SchemeStatus][ColBg], fgcol };
+	char *cols[8] = {fg, bg};
 
 	i = ((block_inversed == True) ? 0 : LENGTH(blocks));
 	for (; ((block_inversed == True) ? i < LENGTH(blocks) : i >= 0);
