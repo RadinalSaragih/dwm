@@ -276,7 +276,6 @@ static void attachaside(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
-static unsigned int countclients(Monitor *m);
 static void cleanup(void);
 static void cleanupmon(Monitor *mon);
 static void clientmessage(XEvent *e);
@@ -763,17 +762,6 @@ checkotherwm(void)
 	XSync(dpy, False);
 	XSetErrorHandler(xerror);
 	XSync(dpy, False);
-}
-
-unsigned int
-countclients(Monitor *m)
-{
-	unsigned int n;
-	Client *nbc;
-	for (n = 0, nbc = nexttiled(m->clients); nbc; n++) {
-		nbc = nexttiled(nbc->next);
-	}
-	return n;
 }
 
 void
@@ -2260,11 +2248,14 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	unsigned int n;
 	unsigned int gapoffset;
 	unsigned int gapincr;
+	Client *nbc;
 
 	wc.border_width = c->bw;
 
 	/* Get number of clients for the client's monitor */
-	n = countclients(c->mon);
+	for (n = 0, nbc = nexttiled(c->mon->clients); nbc;
+	     nbc = nexttiled(nbc->next), n++)
+		;
 
 	gapoffset = gappx;
 	gapincr = 2 * gappx;
