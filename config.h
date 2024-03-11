@@ -1,3 +1,4 @@
+// vim: set ft=c;
 /* clang-format off */
 
 /* appearance */
@@ -87,7 +88,7 @@ static Sp scratchpads[] = {
 #define ANYTAG 0
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
 static const Rule rules[] = {
 	/* xprop(1):
 	 * WM_CLASS(STRING) = instance, class
@@ -117,7 +118,7 @@ static const Rule rules[] = {
 #undef ANYTAG
 
 /* layout(s) */
-static float mfact = 0.50; /* factor of master area size [0.05..0.95] */
+static float mfact = 0.50f; /* factor of master area size [0.05..0.95] */
 static int nmaster = 1; /* number of clients in master area */
 static bool resizehints = False; /* 1 = respect size hints in tiled resizals */
 static const Layout layouts[] = {
@@ -168,8 +169,8 @@ static const char launch_dm_menu[] = "dm-menu";
 static const char dunstctl_show_all[] = "dunstctl history-pop";
 static const char dunstctl_close_all[] = "dunstctl close-all";
 static const char dunstctl_close_top[] = "dunstctl close";
-static const char backlight_up[] = "brightnessctl -d \"intel_backlight\" set +1%";
-static const char backlight_down[] = "brightnessctl -d \"intel_backlight\" set 1%-";
+static const char backlight_up[] = "brightnessctl set +1%";
+static const char backlight_down[] = "brightnessctl set 1-%";
 
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
@@ -324,7 +325,10 @@ static const Key keys[] = {
 	{ 0,			XF86XK_AudioMicMute,	spawn, 		SHCMD(mic_mute) },
 
 	{ 0,			XF86XK_LaunchA,		spawn, 		SHCMD(launch_dm_menu) },
+	{ MODKEY|ShiftMask,	XK_F11,			spawn, 		SHCMD(launch_dm_menu) },
 
+	{ MODKEY|ShiftMask,	XK_F6,			spawn, 		SHCMD(backlight_up) },
+	{ MODKEY|ShiftMask,	XK_F5,			spawn,		SHCMD(backlight_down) },
 	{ 0,			XF86XK_MonBrightnessUp,	spawn, 		SHCMD(backlight_up) },
 	{ 0,			XF86XK_MonBrightnessDown,spawn, 	SHCMD(backlight_down) },
 
