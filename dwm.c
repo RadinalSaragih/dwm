@@ -3161,10 +3161,10 @@ togglescratch(const Arg *arg)
 void
 togglesticky(const Arg *arg)
 {
-	if (selmon->sel) {
-		setsticky(selmon->sel, !selmon->sel->issticky);
-		arrange(selmon);
-	}
+	if (!selmon->sel)
+		return;
+	setsticky(selmon->sel, !selmon->sel->issticky);
+	arrange(selmon);
 	if (!selmon->sel->issticky) {
 		if (selmon->sel->isfloating)
 			XSetWindowBorder(
