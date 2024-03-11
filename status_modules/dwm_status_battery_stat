@@ -14,8 +14,15 @@ battery_status="$(cat "$battery_info/status")"
 [ "$battery_status" = "Charging" ] && battery_status="C"
 [ "$battery_status" = "Not charging" ] && battery_status="N"
 
-[ "$battery_status" = "D" ] && [ "$battery_percent" -lt "$battery_low_min" ] && \
-    notify-send -u critical "Battery Status" \
-    "Warning: Low Battery! Currently at $battery_low_min%"
 
-printf "%s" "B$battery_num: $battery_percent% ($battery_status)"
+if [ "$battery_status" = "D" ] && [ "$battery_percent" -lt "$battery_low_min" ]; then
+    notify-send -u critical \
+        "Battery Status" "Warning: Low Battery! Currently at $battery_low_min%" >/dev/null &
+    [ "$(brightnessctl g)" -gt 10 ] && brightnessctl s 10 >/dev/null &
+fi
+
+powerdraw=""
+[ "$battery_status" = "D" ] \
+    && powerdraw=" [$(awk '{print $1*10^-6 "W"}' /sys/class/power_supply/BAT1/power_now)]"
+
+printf "%s" "B$battery_num: $battery_percent% ($battery_status)$powerdraw"
