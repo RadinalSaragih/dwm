@@ -19,6 +19,7 @@ static int gappx  = 5;  /* gaps between windows */
 static bool noborder = True; /* 1 = hide the bar if only a single window is opened. */
 static bool showtitle = False; /* 1 = hide the bar if only a single window is opened. */
 static char font[] = "Liberation Mono:style=Regular:pixelsize=10";
+static char wmname[] = "dwm";
 static const char *fonts[] = { font };
 
 /* max number of character that one block command can output */
@@ -175,6 +176,7 @@ static const char backlight_down[] = "brightnessctl set 1-%";
 /* Xresources preferences to load at startup */
 ResourcePref resources[] = {
 	{ "font", 			STRING, 	&font },
+	{ "wmname", 			STRING, 	&wmname },
 	{ "normbg",			COLORCODE, 	&normbg },
 	{ "normborder", 		COLORCODE, 	&normborder },
 	{ "normfg",			COLORCODE, 	&normfg },
