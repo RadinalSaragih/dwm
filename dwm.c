@@ -322,7 +322,7 @@ static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
-static void makefloat(Client *c);
+static void setfloating(Client *c);
 static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void moveresize(const Arg *arg);
@@ -1786,43 +1786,21 @@ mappingnotify(XEvent *e)
 }
 
 void
-makefloat(Client *c)
+setfloating(Client *c)
 {
 	if (c->isfullscreen) /* no support for fullscreen windows */
 		return;
-	c->isfloating = !c->isfloating || c->isfixed;
 
-	if (c->isfloating) {
-		XSetWindowBorder(dpy, c->win,
-		                 scheme[SchemeSel][ColFloatBorder].pixel);
-		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
-		                PropModeReplace,
-		                (unsigned char *)&netatom[EWStateFloat], 1);
-	} else {
-		XSetWindowBorder(dpy, c->win,
-		                 scheme[SchemeSel][ColBorder].pixel);
-		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
-		                PropModeReplace, (unsigned char *)0, 0);
-	}
+	if (!c->isfloating)
+		return;
 
-	if (c->isfloating) {
-		/* restore last known float dimensions */
-		if (c->sfw <= 10 || c->sfh <= 10) {
-			c->sfw = c->w;
-			c->sfh = c->h;
-		}
-		if (c->sfx <= 10 || c->sfx <= 10) {
-			c->sfx = c->x;
-			c->sfy = c->y;
-		}
-		resize(c, c->sfx, c->sfy, c->sfw, c->sfh, False);
-	} else {
-		/* save last known float dimensions */
-		c->sfx = c->x;
-		c->sfy = c->y;
-		c->sfw = c->w;
-		c->sfh = c->h;
-	}
+	XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloatBorder].pixel);
+	XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+	                PropModeReplace,
+	                (unsigned char *)&netatom[EWStateFloat], 1);
+
+	resize(c, c->sfx, c->sfy, c->sfw, c->sfh, False);
+
 	arrange(selmon);
 }
 
@@ -3150,7 +3128,27 @@ togglefloating(const Arg *arg)
 {
 	if (!selmon->sel)
 		return;
-	makefloat(selmon->sel);
+
+	selmon->sel->isfloating =
+	    !selmon->sel->isfloating || selmon->sel->isfixed;
+
+	if (!selmon->sel->isfloating) {
+		XSetWindowBorder(dpy, selmon->sel->win,
+		                 scheme[SchemeSel][ColBorder].pixel);
+
+		XChangeProperty(dpy, selmon->sel->win, netatom[NetWMState],
+		                XA_ATOM, 32, PropModeReplace,
+		                (unsigned char *)0, 0);
+
+		/* save last known float dimensions */
+		selmon->sel->sfx = selmon->sel->x;
+		selmon->sel->sfy = selmon->sel->y;
+		selmon->sel->sfw = selmon->sel->w;
+		selmon->sel->sfh = selmon->sel->h;
+		arrange(selmon);
+	} else {
+		setfloating(selmon->sel);
+	}
 }
 
 void
@@ -3709,11 +3707,32 @@ updatewindowtype(Client *c)
 		setfullscreen(c, 1);
 	if (state == netatom[NetWMStateSticky])
 		setsticky(c, 1);
-	if (state == netatom[EWStateFloat])
-		makefloat(c);
+
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
 		c->iscentered = True;
 		c->isfloating = True;
+	}
+
+	if (state == netatom[EWStateFloat]) {
+		c->isfloating = True;
+
+		/*
+		 * no way to actually restore the windows sizes after
+		 * reset. assume every window after reset is less than
+		 * 10px by 10 px.
+		 *
+		 * since sfw,sfh, sfx, sfy will be garbage values after
+		 * reset there is no way to check either, and it's
+		 * probably fine to use the client w,h,x,y values
+		 * instead.
+		 */
+
+		c->sfw = c->w;
+		c->sfh = c->h;
+		c->sfx = c->x;
+		c->sfy = c->y;
+
+		setfloating(c);
 	}
 }
 
