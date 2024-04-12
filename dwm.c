@@ -1931,7 +1931,8 @@ moveresize(const Arg *arg)
 
 	if (!c || !arg)
 		return;
-	if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+	if ((selmon->lt[selmon->sellt]->arrange && !c->isfloating) ||
+	    c->isfullscreen)
 		return;
 	if (sscanf((char *)arg->v, "%d%c %d%c %d%c %d%c", &x, &xAbs, &y, &yAbs,
 	           &w, &wAbs, &h, &hAbs) != 8)
@@ -2007,7 +2008,8 @@ moveresizeedge(const Arg *arg)
 
 	if (!c || !arg)
 		return;
-	if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
+	if ((selmon->lt[selmon->sellt]->arrange && !c->isfloating) ||
+	    c->isfullscreen)
 		return;
 	if (sscanf((char *)arg->v, "%c", &e) != 1)
 		return;
@@ -2305,7 +2307,8 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL ||
 	    (c->issticky && n == 1)) {
 		gapincr = gapoffset = 0; /* no gaps for floating windows */
-	} else if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1) {
+	} else if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1 ||
+	           c->isfullscreen) {
 		/* no gaps for tags with 1 client or in monocle layout */
 		gapincr = gapoffset = 0;
 		wc.border_width = 0; /* no borders also */
@@ -3127,6 +3130,9 @@ void
 togglefloating(const Arg *arg)
 {
 	if (!selmon->sel)
+		return;
+
+	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
 		return;
 
 	selmon->sel->isfloating =
