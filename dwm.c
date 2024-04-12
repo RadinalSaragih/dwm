@@ -120,6 +120,7 @@ enum {
 	SchemeStatus
 }; /* color schemes */
 enum {
+	EWStateFloat,
 	NetSupported,
 	NetWMName,
 	NetWMState,
@@ -321,6 +322,7 @@ static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
+static void makefloat(Client *c);
 static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void moveresize(const Arg *arg);
@@ -1775,6 +1777,47 @@ mappingnotify(XEvent *e)
 }
 
 void
+makefloat(Client *c)
+{
+	if (c->isfullscreen) /* no support for fullscreen windows */
+		return;
+	c->isfloating = !c->isfloating || c->isfixed;
+
+	if (c->isfloating) {
+		XSetWindowBorder(dpy, c->win,
+		                 scheme[SchemeSel][ColFloatBorder].pixel);
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+		                PropModeReplace,
+		                (unsigned char *)&netatom[EWStateFloat], 1);
+	} else {
+		XSetWindowBorder(dpy, c->win,
+		                 scheme[SchemeSel][ColBorder].pixel);
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+		                PropModeReplace, (unsigned char *)0, 0);
+	}
+
+	if (c->isfloating) {
+		/* restore last known float dimensions */
+		if (c->sfw <= 10 || c->sfh <= 10) {
+			c->sfw = c->w;
+			c->sfh = c->h;
+		}
+		if (c->sfx <= 10 || c->sfx <= 10) {
+			c->sfx = c->x;
+			c->sfy = c->y;
+		}
+		resize(c, c->sfx, c->sfy, c->sfw, c->sfh, False);
+	} else {
+		/* save last known float dimensions */
+		c->sfx = c->x;
+		c->sfy = c->y;
+		c->sfw = c->w;
+		c->sfh = c->h;
+	}
+	arrange(selmon);
+}
+
+void
 maprequest(XEvent *e)
 {
 	static XWindowAttributes wa;
@@ -2857,6 +2900,7 @@ setup(void)
 	    XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
 	netatom[NetWMWindowTypeDialog] =
 	    XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
+	netatom[EWStateFloat] = XInternAtom(dpy, "_WM_STATE_FLOATING", False);
 	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
 	netatom[NetClientInfo] = XInternAtom(dpy, "_NET_CLIENT_INFO", False);
 	xatom[Manager] = XInternAtom(dpy, "MANAGER", False);
@@ -3097,30 +3141,7 @@ togglefloating(const Arg *arg)
 {
 	if (!selmon->sel)
 		return;
-	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
-		return;
-	selmon->sel->isfloating =
-	    !selmon->sel->isfloating || selmon->sel->isfixed;
-
-	if (selmon->sel->isfloating)
-		XSetWindowBorder(dpy, selmon->sel->win,
-		                 scheme[SchemeSel][ColFloatBorder].pixel);
-	else
-		XSetWindowBorder(dpy, selmon->sel->win,
-		                 scheme[SchemeSel][ColBorder].pixel);
-
-	if (selmon->sel->isfloating)
-		/* restore last known float dimensions */
-		resize(selmon->sel, selmon->sel->sfx, selmon->sel->sfy,
-		       selmon->sel->sfw, selmon->sel->sfh, False);
-	else {
-		/* save last known float dimensions */
-		selmon->sel->sfx = selmon->sel->x;
-		selmon->sel->sfy = selmon->sel->y;
-		selmon->sel->sfw = selmon->sel->w;
-		selmon->sel->sfh = selmon->sel->h;
-	}
-	arrange(selmon);
+	makefloat(selmon->sel);
 }
 
 void
@@ -3679,6 +3700,8 @@ updatewindowtype(Client *c)
 		setfullscreen(c, 1);
 	if (state == netatom[NetWMStateSticky])
 		setsticky(c, 1);
+	if (state == netatom[EWStateFloat])
+		makefloat(c);
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
 		c->iscentered = True;
 		c->isfloating = True;
