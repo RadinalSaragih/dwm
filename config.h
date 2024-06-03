@@ -99,19 +99,24 @@ static const Rule rules[] = {
 	{ "Firefox-esr",   NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
 	{ "Brave-browser", NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
 	{ "qutebrowser",   NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
-	{ "Godot",         NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
+	{ "Steam",         NULL,    NULL,  TAG(9),   False,   False,   False,   True, 	-1 },
+
 	{ "Inkscape",      NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
-	{ "Gimp",          NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
-	{ "lmms",          NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
-	{ "kdenlive",      NULL,    NULL,  TAG(8),   False,   False,   False,   True, 	-1 },
-	{ "Steam",         NULL,    NULL,  TAG(7),   False,   False,   False,   True, 	-1 },
+	{ "Gimp",          NULL,    NULL,  TAG(7),   False,   False,   False,   True, 	-1 },
+
+	{ "lmms",          NULL,    NULL,  TAG(6),   False,   False,   False,   True, 	-1 },
+	{ "kdenlive",      NULL,    NULL,  TAG(6),   False,   False,   False,   True, 	-1 },
+
+	{ "Godot",         NULL,    NULL,  TAG(5),   False,   False,   False,   True, 	-1 },
+
+	{ "QtCreator",     NULL,    NULL,  TAG(3),   False,   False,   False,   True, 	-1 },
 
 	{ "st-256color",   NULL,    NULL,  ANYTAG,   False,   False,   True,    False,	-1 },
 	{ "Zathura",       NULL,    NULL,  ANYTAG,   False,   False,   False,   True,   -1 },
-	{ NULL, 	   "sp-0",  NULL,  SPTAG(0), True,    True,    True,    False,  -1 },
-	{ NULL, 	   "sp-1",  NULL,  SPTAG(1), True,    True,    True,    False,  -1 },
-	{ NULL, 	   "sp-2",  NULL,  SPTAG(2), True,    True,    True,    False,  -1 },
-	{ NULL, 	   "sp-3",  NULL,  SPTAG(3), True,    True,    True,    False,	-1 },
+	{ NULL, 	   "sp-0",  "SP-0",  SPTAG(0), True,    True,    True,    False,  -1 },
+	{ NULL, 	   "sp-1",  "SP-1",  SPTAG(1), True,    True,    True,    False,  -1 },
+	{ NULL, 	   "sp-2",  "SP-2",  SPTAG(2), True,    True,    True,    False,  -1 },
+	{ NULL, 	   "sp-3",  "SP-3",  SPTAG(3), True,    True,    True,    False,	-1 },
 	{ NULL, 	   NULL,    "Event Tester", ANYTAG, False,  False,   False,   True, -1 },
 };
 
@@ -164,6 +169,7 @@ static const char mic_mute[]	= "pactl set-source-mute @DEFAULT_SOURCE@ toggle; k
 static const char screenshot[]	= "dm-screenshot";
 static const char browser[]	= "qutebrowser";
 static const char powermenu[]	= "dm-power";
+static const char winmenu[]	= "dm-winmenu";
 static const char xmouseless[]	= "xmouseless";
 static const char launch_tmux[]	= "st -e tmux_start";
 static const char launch_dm_menu[] = "dm-menu";
@@ -301,6 +307,8 @@ static const Key keys[] = {
 	{ MODKEY|Mod1Mask|ControlMask, 	XK_Escape,	quit,		{0} },	// quit WM
 	{ MODKEY|Mod1Mask, 	XK_r, 			quit,		{1} },	// reload WM
 	{ MODKEY|Mod1Mask,	XK_Escape,		spawn, 	 	SHCMD(powermenu) }, // powermenu
+
+	{ MODKEY|ShiftMask,	XK_space, 	 	spawn, 	 	SHCMD(winmenu) },
 
 	{ MODKEY|ShiftMask,	XK_o, 		 	spawn, 	 	SHCMD(browser) },
 	{ MODKEY,		XK_Print, 	 	spawn, 	 	SHCMD(screenshot) },
