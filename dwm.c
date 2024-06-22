@@ -34,6 +34,7 @@
 #include <poll.h>
 #include <signal.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,14 +44,14 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #ifdef XINERAMA
-#include <X11/extensions/Xinerama.h>
+	#include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
 #include <X11/Xlib-xcb.h>
 #include <xcb/res.h>
 #ifdef __OpenBSD__
-#include <kvm.h>
-#include <sys/sysctl.h>
+	#include <kvm.h>
+	#include <sys/sysctl.h>
 #endif /* __OpenBSD */
 
 #include "drw.h"
@@ -79,17 +80,6 @@
 #define TEXTW(X)        (drw_fontset_getwidth(drw, (X)) + lrpad)
 #define ColStickyBorder 3
 #define ColFloatBorder  4
-
-// boolean constant
-typedef unsigned int bool;
-
-#ifndef False
-#define False 0
-#endif /* ifndef False */
-
-#ifndef True
-#define True 1
-#endif /* ifndef True */
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 
@@ -265,7 +255,7 @@ enum resource_type {
 	FLOAT,
 	CHAR,
 	BOOLEAN,
-	COLORCODE,
+	RGBHEX,
 };
 
 typedef struct {
@@ -490,8 +480,8 @@ applyrules(Client *c)
 	XClassHint ch = {NULL, NULL};
 
 	/* rule matching */
-	c->iscentered = False;
-	c->isfloating = False;
+	c->iscentered = false;
+	c->isfloating = false;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class = ch.res_class ? ch.res_class : broken;
@@ -724,10 +714,10 @@ buttonpress(XEvent *e)
 			click = ClkStatusText;
 
 			int len, i;
-			i = ((block_inversed == True) ? LENGTH(blocks) : 0);
-			for (; ((block_inversed == True) ? i >= 0
+			i = ((block_inversed == true) ? LENGTH(blocks) : 0);
+			for (; ((block_inversed == true) ? i >= 0
 			                                 : i < LENGTH(blocks));
-			     ((block_inversed == True) ? i-- : i++)) {
+			     ((block_inversed == true) ? i-- : i++)) {
 				/* ignore command that output NULL or '\0' */
 				if (*blockoutput[i] == '\0')
 					continue;
@@ -769,9 +759,9 @@ checkotherwm(void)
 	xerrorxlib = XSetErrorHandler(xerrorstart);
 	/* this causes an error if some other window manager is running */
 	XSelectInput(dpy, DefaultRootWindow(dpy), SubstructureRedirectMask);
-	XSync(dpy, False);
+	XSync(dpy, false);
 	XSetErrorHandler(xerror);
-	XSync(dpy, False);
+	XSync(dpy, false);
 }
 
 void
@@ -798,7 +788,7 @@ cleanup(void)
 	free(scheme);
 	XDestroyWindow(dpy, wmcheckwin);
 	drw_free(drw);
-	XSync(dpy, False);
+	XSync(dpy, false);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 }
@@ -854,7 +844,7 @@ clientmessage(XEvent *e)
 			c->h = c->oldh = wa.height;
 			c->oldbw = wa.border_width;
 			c->bw = 0;
-			c->isfloating = True;
+			c->isfloating = true;
 			/* reuse tags field as mapped status */
 			c->tags = 1;
 			updatesizehints(c);
@@ -880,7 +870,7 @@ clientmessage(XEvent *e)
 			sendevent(c->win, netatom[Xembed], StructureNotifyMask,
 			          CurrentTime, XEMBED_MODALITY_ON, 0,
 			          systray->win, XEMBED_EMBEDDED_VERSION);
-			XSync(dpy, False);
+			XSync(dpy, false);
 			resizebarwin(selmon);
 			updatesystray();
 			setclientstate(c, NormalState);
@@ -933,8 +923,8 @@ configure(Client *c)
 	ce.height = c->h;
 	ce.border_width = c->bw;
 	ce.above = None;
-	ce.override_redirect = False;
-	XSendEvent(dpy, c->win, False, StructureNotifyMask, (XEvent *)&ce);
+	ce.override_redirect = false;
+	XSendEvent(dpy, c->win, false, StructureNotifyMask, (XEvent *)&ce);
 }
 
 void
@@ -1012,7 +1002,7 @@ configurerequest(XEvent *e)
 				XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w,
 				                  c->h);
 			else
-				c->needresize = True;
+				c->needresize = true;
 		} else
 			configure(c);
 	} else {
@@ -1025,7 +1015,7 @@ configurerequest(XEvent *e)
 		wc.stack_mode = ev->detail;
 		XConfigureWindow(dpy, ev->window, ev->value_mask, &wc);
 	}
-	XSync(dpy, False);
+	XSync(dpy, false);
 }
 
 Monitor *
@@ -1101,11 +1091,11 @@ deck(Monitor *m)
 		if (i < m->nmaster) {
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
 			resize(c, m->wx, m->wy + my, mw - (2 * c->bw),
-			       h - (2 * c->bw), False);
+			       h - (2 * c->bw), false);
 			my += HEIGHT(c);
 		} else
 			resize(c, m->wx + mw, m->wy, m->ww - mw - (2 * c->bw),
-			       m->wh - (2 * c->bw), False);
+			       m->wh - (2 * c->bw), false);
 }
 
 void
@@ -1373,7 +1363,7 @@ getatomprop(Client *c, Atom prop)
 	if (prop == xatom[XembedInfo])
 		req = xatom[XembedInfo];
 
-	if (XGetWindowProperty(dpy, c->win, prop, 0L, sizeof atom, False, req,
+	if (XGetWindowProperty(dpy, c->win, prop, 0L, sizeof atom, false, req,
 	                       &da, &di, &dl, &dl, &p) == Success &&
 	    p) {
 		atom = *(Atom *)p;
@@ -1403,7 +1393,7 @@ getstate(Window w)
 	unsigned long n, extra;
 	Atom real;
 
-	if (XGetWindowProperty(dpy, w, wmatom[WMState], 0L, 2L, False,
+	if (XGetWindowProperty(dpy, w, wmatom[WMState], 0L, 2L, false,
 	                       wmatom[WMState], &real, &format, &n, &extra,
 	                       (unsigned char **)&p) != Success)
 		return -1;
@@ -1486,9 +1476,9 @@ getstatus(int width)
 
 	char *cols[8] = {fg, bg};
 
-	i = ((block_inversed == True) ? 0 : LENGTH(blocks));
-	for (; ((block_inversed == True) ? i < LENGTH(blocks) : i >= 0);
-	     ((block_inversed == True) ? i++ : i--)) {
+	i = ((block_inversed == true) ? 0 : LENGTH(blocks));
+	for (; ((block_inversed == true) ? i < LENGTH(blocks) : i >= 0);
+	     ((block_inversed == true) ? i++ : i--)) {
 		/* ignore command that output NULL or '\0' */
 		if (*blockoutput[i] == '\0')
 			continue;
@@ -1573,7 +1563,7 @@ grabbuttons(Client *c, int focused)
 		                            numlockmask | LockMask};
 		XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
 		if (!focused)
-			XGrabButton(dpy, AnyButton, AnyModifier, c->win, False,
+			XGrabButton(dpy, AnyButton, AnyModifier, c->win, false,
 			            BUTTONMASK, GrabModeSync, GrabModeSync,
 			            None, None);
 		for (i = 0; i < LENGTH(buttons); i++)
@@ -1582,7 +1572,7 @@ grabbuttons(Client *c, int focused)
 					XGrabButton(dpy, buttons[i].button,
 					            buttons[i].mask |
 					                modifiers[j],
-					            c->win, False, BUTTONMASK,
+					            c->win, false, BUTTONMASK,
 					            GrabModeAsync, GrabModeSync,
 					            None, None);
 	}
@@ -1612,7 +1602,7 @@ grabkeys(void)
 						XGrabKey(
 						    dpy, k,
 						    keys[i].mod | modifiers[j],
-						    root, True, GrabModeAsync,
+						    root, true, GrabModeAsync,
 						    GrabModeAsync);
 		XFree(syms);
 	}
@@ -1667,7 +1657,7 @@ killclient(const Arg *arg)
 		XSetErrorHandler(xerrordummy);
 		XSetCloseDownMode(dpy, DestroyAll);
 		XKillClient(dpy, selmon->sel->win);
-		XSync(dpy, False);
+		XSync(dpy, false);
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
@@ -1731,7 +1721,7 @@ manage(Window w, XWindowAttributes *wa)
 		Monitor *m;
 		Atom atom;
 		if (XGetWindowProperty(dpy, c->win, netatom[NetClientInfo], 0L,
-		                       2L, False, XA_CARDINAL, &atom, &format,
+		                       2L, false, XA_CARDINAL, &atom, &format,
 		                       &n, &extra,
 		                       (unsigned char **)&data) == Success &&
 		    n == 2) {
@@ -1809,7 +1799,7 @@ setfloating(Client *c)
 	                PropModeReplace,
 	                (unsigned char *)&netatom[EWStateFloat], 1);
 
-	resize(c, c->sfx, c->sfy, c->sfw, c->sfh, False);
+	resize(c, c->sfx, c->sfy, c->sfw, c->sfh, false);
 
 	arrange(selmon);
 }
@@ -1866,7 +1856,7 @@ movemouse(const Arg *arg)
 	restack(selmon);
 	ocx = c->x;
 	ocy = c->y;
-	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync,
+	if (XGrabPointer(dpy, root, false, MOUSEMASK, GrabModeAsync,
 	                 GrabModeAsync, None, cursor[CurMove]->cursor,
 	                 CurrentTime) != GrabSuccess)
 		return;
@@ -2347,7 +2337,7 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	XConfigureWindow(dpy, c->win,
 	                 CWX | CWY | CWWidth | CWHeight | CWBorderWidth, &wc);
 	configure(c);
-	XSync(dpy, False);
+	XSync(dpy, false);
 }
 
 void
@@ -2369,7 +2359,7 @@ resizemouse(const Arg *arg)
 	restack(selmon);
 	ocx = c->x;
 	ocy = c->y;
-	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync,
+	if (XGrabPointer(dpy, root, false, MOUSEMASK, GrabModeAsync,
 	                 GrabModeAsync, None, cursor[CurResize]->cursor,
 	                 CurrentTime) != GrabSuccess)
 		return;
@@ -2455,7 +2445,7 @@ restack(Monitor *m)
 				wc.sibling = c->win;
 			}
 	}
-	XSync(dpy, False);
+	XSync(dpy, false);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev))
 		;
 	if (m == selmon && (m->tagset[m->seltags] & m->sel->tags) &&
@@ -2473,8 +2463,8 @@ run(void)
 	fds[0].fd = ConnectionNumber(dpy);
 	fds[0].events = POLLIN;
 
-	i = (block_inversed == True) ? LENGTH(blocks) - 1 : 0;
-	for (; (block_inversed == True) ? i >= 0 : i < LENGTH(blocks);
+	i = (block_inversed == true) ? LENGTH(blocks) - 1 : 0;
+	for (; (block_inversed == true) ? i >= 0 : i < LENGTH(blocks);
 	     (block_inversed) ? i-- : i++) {
 		pipe(pipes[i]);
 		fds[i + 1].fd = pipes[i][0];
@@ -2488,7 +2478,7 @@ run(void)
 
 	alarm(sleepinterval);
 	/* main event loop */
-	XSync(dpy, False);
+	XSync(dpy, false);
 	while (running) {
 
 		/* bar hidden, then skip poll */
@@ -2715,7 +2705,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3,
 {
 	int n;
 	Atom *protocols, mt;
-	int exists = False;
+	int exists = false;
 	XEvent ev;
 
 	if (proto == wmatom[WMTakeFocus] || proto == wmatom[WMDelete]) {
@@ -2725,7 +2715,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3,
 			XFree(protocols);
 		}
 	} else {
-		exists = True;
+		exists = true;
 		mt = proto;
 	}
 	if (exists) {
@@ -2738,7 +2728,7 @@ sendevent(Window w, Atom proto, int mask, long d0, long d1, long d2, long d3,
 		ev.xclient.data.l[2] = d2;
 		ev.xclient.data.l[3] = d3;
 		ev.xclient.data.l[4] = d4;
-		XSendEvent(dpy, w, False, mask, &ev);
+		XSendEvent(dpy, w, false, mask, &ev);
 	}
 	return exists;
 }
@@ -2763,17 +2753,17 @@ setfullscreen(Client *c, int fullscreen)
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 		                PropModeReplace,
 		                (unsigned char *)&netatom[NetWMFullscreen], 1);
-		c->isfullscreen = True;
+		c->isfullscreen = true;
 		c->oldstate = c->isfloating;
 		c->oldbw = c->bw;
 		c->bw = 0;
-		c->isfloating = True;
+		c->isfloating = true;
 		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 		XRaiseWindow(dpy, c->win);
 	} else if (!fullscreen && c->isfullscreen) {
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 		                PropModeReplace, (unsigned char *)0, 0);
-		c->isfullscreen = False;
+		c->isfullscreen = false;
 		c->isfloating = c->oldstate;
 		c->bw = c->oldbw;
 		c->x = c->oldx;
@@ -2873,39 +2863,39 @@ setup(void)
 	bh = drw->fonts->h + 2;
 	updategeom();
 	/* init atoms */
-	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
-	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", False);
-	wmatom[WMDelete] = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-	wmatom[WMState] = XInternAtom(dpy, "WM_STATE", False);
-	wmatom[WMTakeFocus] = XInternAtom(dpy, "WM_TAKE_FOCUS", False);
+	utf8string = XInternAtom(dpy, "UTF8_STRING", false);
+	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", false);
+	wmatom[WMDelete] = XInternAtom(dpy, "WM_DELETE_WINDOW", false);
+	wmatom[WMState] = XInternAtom(dpy, "WM_STATE", false);
+	wmatom[WMTakeFocus] = XInternAtom(dpy, "WM_TAKE_FOCUS", false);
 	netatom[NetActiveWindow] =
-	    XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
-	netatom[NetSupported] = XInternAtom(dpy, "_NET_SUPPORTED", False);
-	netatom[NetSystemTray] = XInternAtom(dpy, "_NET_SYSTEM_TRAY_S0", False);
+	    XInternAtom(dpy, "_NET_ACTIVE_WINDOW", false);
+	netatom[NetSupported] = XInternAtom(dpy, "_NET_SUPPORTED", false);
+	netatom[NetSystemTray] = XInternAtom(dpy, "_NET_SYSTEM_TRAY_S0", false);
 	netatom[NetSystemTrayOP] =
-	    XInternAtom(dpy, "_NET_SYSTEM_TRAY_OPCODE", False);
+	    XInternAtom(dpy, "_NET_SYSTEM_TRAY_OPCODE", false);
 	netatom[NetSystemTrayOrientation] =
-	    XInternAtom(dpy, "_NET_SYSTEM_TRAY_ORIENTATION", False);
+	    XInternAtom(dpy, "_NET_SYSTEM_TRAY_ORIENTATION", false);
 	netatom[NetSystemTrayOrientationHorz] =
-	    XInternAtom(dpy, "_NET_SYSTEM_TRAY_ORIENTATION_HORZ", False);
-	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
-	netatom[NetWMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
+	    XInternAtom(dpy, "_NET_SYSTEM_TRAY_ORIENTATION_HORZ", false);
+	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", false);
+	netatom[NetWMState] = XInternAtom(dpy, "_NET_WM_STATE", false);
 	netatom[NetWMStateSticky] =
-	    XInternAtom(dpy, "_NET_WM_STATE_STICKY", False);
+	    XInternAtom(dpy, "_NET_WM_STATE_STICKY", false);
 	netatom[NetWMCheck] =
-	    XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", False);
+	    XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", false);
 	netatom[NetWMFullscreen] =
-	    XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
+	    XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", false);
 	netatom[NetWMWindowType] =
-	    XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
+	    XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", false);
 	netatom[NetWMWindowTypeDialog] =
-	    XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
-	netatom[EWStateFloat] = XInternAtom(dpy, "_WM_STATE_FLOATING", False);
-	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
-	netatom[NetClientInfo] = XInternAtom(dpy, "_NET_CLIENT_INFO", False);
-	xatom[Manager] = XInternAtom(dpy, "MANAGER", False);
-	xatom[Xembed] = XInternAtom(dpy, "_XEMBED", False);
-	xatom[XembedInfo] = XInternAtom(dpy, "_XEMBED_INFO", False);
+	    XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", false);
+	netatom[EWStateFloat] = XInternAtom(dpy, "_WM_STATE_FLOATING", false);
+	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", false);
+	netatom[NetClientInfo] = XInternAtom(dpy, "_NET_CLIENT_INFO", false);
+	xatom[Manager] = XInternAtom(dpy, "MANAGER", false);
+	xatom[Xembed] = XInternAtom(dpy, "_XEMBED", false);
+	xatom[XembedInfo] = XInternAtom(dpy, "_XEMBED_INFO", false);
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
@@ -2988,7 +2978,7 @@ showhide(Client *c)
 		/* show clients top down */
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if (c->needresize) {
-			c->needresize = False;
+			c->needresize = false;
 			XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
 		} else {
 			XMoveWindow(dpy, c->win, c->x, c->y);
@@ -3178,7 +3168,7 @@ void
 togglescratch(const Arg *arg)
 {
 	Client *c;
-	unsigned int found = False;
+	unsigned int found = false;
 	unsigned int scratchtag = SPTAG(arg->ui);
 	Arg sparg = {.v = scratchpads[arg->ui].cmd};
 
@@ -3329,7 +3319,7 @@ unmanage(Client *c, int destroyed)
 		                 &wc); /* restore border */
 		XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
 		setclientstate(c, WithdrawnState);
-		XSync(dpy, False);
+		XSync(dpy, false);
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
@@ -3367,7 +3357,7 @@ updatebars(void)
 {
 	unsigned int w;
 	Monitor *m;
-	XSetWindowAttributes wa = {.override_redirect = True,
+	XSetWindowAttributes wa = {.override_redirect = true,
 	                           .background_pixmap = ParentRelative,
 	                           .event_mask =
 	                               ButtonPressMask | ExposureMask};
@@ -3423,7 +3413,7 @@ updateclientlist()
 int
 updategeom(void)
 {
-	int dirty = False;
+	int dirty = false;
 
 #ifdef XINERAMA
 	if (XineramaIsActive(dpy)) {
@@ -3458,7 +3448,7 @@ updategeom(void)
 			    unique[i].y_org != m->my ||
 			    unique[i].width != m->mw ||
 			    unique[i].height != m->mh) {
-				dirty = True;
+				dirty = true;
 				m->num = i;
 				m->mx = m->wx = unique[i].x_org;
 				m->my = m->wy = unique[i].y_org;
@@ -3471,7 +3461,7 @@ updategeom(void)
 			for (m = mons; m && m->next; m = m->next)
 				;
 			while ((c = m->clients)) {
-				dirty = True;
+				dirty = true;
 				m->clients = c->next;
 				detachstack(c);
 				c->mon = mons;
@@ -3489,7 +3479,7 @@ updategeom(void)
 		if (!mons)
 			mons = createmon();
 		if (mons->mw != sw || mons->mh != sh) {
-			dirty = True;
+			dirty = true;
 			mons->mw = mons->ww = sw;
 			mons->mh = mons->wh = sh;
 			updatebarpos(mons);
@@ -3583,7 +3573,7 @@ updatesystrayicongeom(Client *i, int w, int h)
 			i->w = w;
 		else
 			i->w = (int)((float)bh * ((float)w / (float)h));
-		applysizehints(i, &(i->x), &(i->y), &(i->w), &(i->h), False);
+		applysizehints(i, &(i->x), &(i->y), &(i->w), &(i->h), false);
 		/* force icons into the systray dimensions if they don't
 		 * want to
 		 */
@@ -3648,7 +3638,7 @@ updatesystray(void)
 		    XCreateSimpleWindow(dpy, root, x, m->by, w, bh, 0, 0,
 		                        scheme[SchemeSel][ColBg].pixel);
 		wa.event_mask = ButtonPressMask | ExposureMask;
-		wa.override_redirect = True;
+		wa.override_redirect = true;
 		wa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
 		XSelectInput(dpy, systray->win, SubstructureNotifyMask);
 		XChangeProperty(
@@ -3666,7 +3656,7 @@ updatesystray(void)
 			sendevent(root, xatom[Manager], StructureNotifyMask,
 			          CurrentTime, netatom[NetSystemTray],
 			          systray->win, 0, 0);
-			XSync(dpy, False);
+			XSync(dpy, false);
 		} else {
 			fprintf(stderr, "dwm: unable to obtain system tray.\n");
 			free(systray);
@@ -3703,7 +3693,7 @@ updatesystray(void)
 	/* redraw background */
 	XSetForeground(dpy, drw->gc, scheme[SchemeNorm][ColBg].pixel);
 	XFillRectangle(dpy, systray->win, drw->gc, 0, 0, w, bh);
-	XSync(dpy, False);
+	XSync(dpy, false);
 }
 
 void
@@ -3727,12 +3717,12 @@ updatewindowtype(Client *c)
 		setsticky(c, 1);
 
 	if (wtype == netatom[NetWMWindowTypeDialog]) {
-		c->iscentered = True;
-		c->isfloating = True;
+		c->iscentered = true;
+		c->isfloating = true;
 	}
 
 	if (state == netatom[EWStateFloat]) {
-		c->isfloating = True;
+		c->isfloating = true;
 
 		/*
 		 * no way to actually restore the windows sizes after
@@ -3765,11 +3755,11 @@ updatewmhints(Client *c)
 			XSetWMHints(dpy, c->win, wmh);
 		} else
 			c->isurgent =
-			    (wmh->flags & XUrgencyHint) ? True : False;
+			    (wmh->flags & XUrgencyHint) ? true : false;
 		if (wmh->flags & InputHint)
 			c->neverfocus = !wmh->input;
 		else
-			c->neverfocus = False;
+			c->neverfocus = false;
 		XFree(wmh);
 	}
 }
@@ -3882,7 +3872,7 @@ winpid(Window w)
 	pid_t ret;
 
 	if (XGetWindowProperty(dpy, w, XInternAtom(dpy, "_NET_WM_PID", 0), 0, 1,
-	                       False, AnyPropertyType, &type, &format, &len,
+	                       false, AnyPropertyType, &type, &format, &len,
 	                       &bytes, &prop) != Success ||
 	    !prop)
 		return 0;
@@ -4093,16 +4083,16 @@ color_code_valid(char *color_code)
 	char *c = color_code;
 
 	if (c == NULL || *(c + 0) != '#' || strlen(c) != 7)
-		return False;
+		return false;
 	++c;
 	for (; *c != '\0'; c++) {
 		*c = (char)tolower(*c);
 		if ((*c <= '9' && *c >= '0') || (*c <= 'f' && *c >= 'a'))
 			continue;
-		return False;
+		return false;
 	}
 
-	return True;
+	return true;
 }
 
 void
@@ -4132,7 +4122,7 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 	XrmGetResource(db, fullname, "*", &type, &ret);
 	if (!(ret.addr == NULL || strncmp("String", type, 64) != 0)) {
 		switch (rtype) {
-		case COLORCODE: {
+		case RGBHEX: {
 			if (color_code_valid(ret.addr))
 				strcpy(clrdst, ret.addr);
 		} break;
@@ -4140,7 +4130,7 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 			strcpy(sdst, ret.addr);
 			break;
 		case BOOLEAN:
-			*bdst = (strtoul(ret.addr, NULL, 10)) ? True : False;
+			*bdst = (strtoul(ret.addr, NULL, 10)) ? true : false;
 			break;
 		case INTEGER: {
 			unsigned long tmp;

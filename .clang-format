@@ -9,9 +9,12 @@ AllowShortLoopsOnASingleLine: 'true'
 AlwaysBreakAfterDefinitionReturnType: TopLevel
 AlwaysBreakAfterReturnType: None
 BreakBeforeBraces: Linux
+BreakStringLiterals: 'false'
 ColumnLimit: '80'
 DerivePointerAlignment: 'true'
 FixNamespaceComments: 'true'
+IncludeBlocks: Regroup
+IndentPPDirectives: BeforeHash
 IndentWidth: '8'
 NamespaceIndentation: All
 PointerAlignment: Left
