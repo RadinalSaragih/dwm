@@ -1,13 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-[ ! "$(pgrep -x cmus)" ] || \
-    [ ! "$(command -V cmus)" ] && exit 1
-
-TRACK_PROGRESS=""
-REPEAT=""
-STAT=""
-VOLUME=""
-ARTIST_TITLE=""
+notify-send "HEY"
 
 # max 24 char long
 artist_title()
@@ -20,18 +13,19 @@ artist_title()
 
     [ -z "$artist" ] || [ -z "$title" ] && exit 1
 
-    ARTIST_TITLE="$artist - $title"
+    artist_title="$artist - $title"
 
-    [ "${#ARTIST_TITLE}" -gt 35 ] && \
-        ARTIST_TITLE="$(cut -c 1-35 <<< "$ARTIST_TITLE").."
+    if [ "${#artist_title}" -gt 35 ]; then 
+        printf "%s" "$(cut -c 1-35 <<< "$artist_title").."
+    else
+        printf "%s" "$artist_title"
+    fi
 }
 
 player_stat()
 {
-    stat=$(cmus-remote -Q | \
-        awk '/status/ {gsub("status ", "");print}' | tr '[:lower:]' '[:upper:]')
+    printf "%s" "$(cmus-remote -Q | awk '/status/ {gsub("status ", "");print}' | tr '[:lower:]' '[:upper:]')"
 
-    STAT="$stat"
 }
 
 # 4 char long
@@ -41,23 +35,17 @@ track_volume()
         awk '/set vol_left/ {print $3}')"
 
     if [ $volume -lt 100 ]; then
-        VOLUME="0$volume%"
+        printf "%s" "0$volume%"
     else
-        VOLUME="$volume%"
+        printf "%s" "$volume%"
     fi
 }
 
 # 1 or 0 char long
 in_repeat()
 {
-    repeat=$(cmus-remote -Q | \
-        awk '/repeat / {gsub("set repeat ", "");print}' | tr '[:lower:]' '[:upper:]')
-
-    if [ "$repeat" == "TRUE" ]; then
-        REPEAT=" R"
-    else
-        REPEAT=""
-    fi
+    repeat=$(cmus-remote -Q | awk '/repeat / {gsub("set repeat ", "");print}' | tr '[:lower:]' '[:upper:]')
+    [ "$repeat" == "TRUE" ] && printf "%s" "R"
 }
 
 # 11 char long
@@ -80,19 +68,14 @@ track_progress()
     [ "$cur_sec" -lt 10 ] && cur_sec="0$cur_sec"
     [ "$cur_min" -lt 10 ] && cur_min="0$cur_min"
 
-    TRACK_PROGRESS="$cur_min:$cur_sec/$dur_min:$dur_sec"
+    printf "%s" "$cur_min:$cur_sec/$dur_min:$dur_sec"
 }
-
-artist_title
-player_stat
-# track_volume
-# in_repeat
-track_progress
 
 # NOTE: the status bar will start truncating after 35 characters
 
 # [ "$STAT" == "PLAYING" ] && \
 # 	printf "%s" "$ARTIST_TITLE $TRACK_PROGRESS" || printf "%s" "$STAT"
 
-[ "$STAT" == "PLAYING" ] && \
-	printf "%s" "$ARTIST_TITLE" || printf "%s" "$STAT"
+if  pgrep -x cmus  && command -V cmus ; then 
+    [ "$(player_stat)" == "PLAYING" ] && printf "%s" "$(artist_title)" || printf "%s" "$(player_stat)"
+fi
