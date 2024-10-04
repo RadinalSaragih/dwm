@@ -300,8 +300,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,	    XK_n,			    zoom,		    {0} },
 	{ MODKEY,		        XK_Tab, 		    view,		    {0} },
 
+    /*
 	{ MODKEY,		        XK_0, 			    view,		    {.ui = ~0 } },
 	{ MODKEY|ShiftMask,	    XK_0, 			    tag, 		    {.ui = ~0 } },
+    */
 
 	{ MODKEY,		        XK_comma, 		    focusmon,	    {.i = -1 } },
 	{ MODKEY,		        XK_period, 		    focusmon,	    {.i = +1 } },
