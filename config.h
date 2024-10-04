@@ -58,14 +58,30 @@ static char *colors[][5] = {
 	[SchemeStatus]  = { normfg,  statusbg },
 };
 
+/*
+- fg: the foreground color of the individual block, for the background it
+uses the bg of SchemeStatus.
+
+- command: it uses the output of the commands for the status text
+interval: in seconds, how much does it have to pass before updating the
+block.
+
+- interval: in seconds, how many seconds until the block it's updated
+
+- signal: have to be less than 30. This lets you update the block with
+`kill` by adding 35 to this value.
+For the block above it would be 34 + 3 = 37 -> `kill -37 $STATUSBAR`.
+These signals are linux dependant.
+*/
+
 /* status bar */
 static const Block blocks[] = {
-	/* f           command	                        interval	signal */
+	/* fg          command	                        interval	signal */
 	{ statusfg_1, "date '+%a, %d %b %y - %I:%M%p'",	30, 0 },
-	{ statusfg_2, "dwm_status_memory_usage",	    60,	1 },
-	{ statusfg_3, "dwm_status_volume_levels",	    60, 2 },
-	{ statusfg_4, "dwm_status_battery_stat",	    10, 3 },
-	{ statusfg_5, "dwm_status_cmus_status",		    60,	2 },
+	{ statusfg_2, "dwm_status_memory_usage",	    60,	0 },
+	{ statusfg_3, "dwm_status_volume_levels",	    60, 1 }, // 35
+	{ statusfg_4, "dwm_status_battery_stat",	    10, 0 }, 
+	{ statusfg_5, "dwm_status_cmus_status",		    10,	3 }, // 37
 };
 
 /* delimeter between blocks commands. NULL character ('\0') means no delimeter. */
@@ -157,19 +173,19 @@ static const Layout layouts[] = {
 /* commands */
 static const char *dmenucmd[]	        = { "dmenu_run", "-g", "3", "-l", "15", "-i", "-p", "RUN:", NULL };
 static const char *termcmd[]	        = { "st", NULL };
-static const char cmus_decvol[]         = "cmus-remote -v -1%; kill -37 $(pidof dwm)";
-static const char cmus_incvol[]         = "cmus-remote -v +1%; kill -37 $(pidof dwm)";
-static const char cmus_pause[]	        = "cmus-remote -u; kill -37 $(pidof dwm)";
-static const char cmus_stop[]	        = "cmus-remote -s; kill -37 $(pidof dwm)";
-static const char cmus_next[]	        = "cmus-remote -n; kill -37 $(pidof dwm)";
-static const char cmus_prev[]	        = "cmus-remote -r; kill -37 $(pidof dwm)";
-static const char cmus_repeat[]         = "cmus-remote -R; kill -37 $(pidof dwm)";
-static const char vol_dec[]	            = "pactl set-sink-volume @DEFAULT_SINK@ -1%; kill -37 $(pidof dwm)";
-static const char vol_inc[]	            = "pactl set-sink-volume @DEFAULT_SINK@ +1%; kill -37 $(pidof dwm)";
-static const char vol_mute[]	        = "pactl set-sink-mute @DEFAULT_SINK@ toggle; kill -37 $(pidof dwm)";
-static const char mic_decvol[]	        = "pactl set-source-volume @DEFAULT_SOURCE@ -1%; kill -37 $(pidof dwm)";
-static const char mic_incvol[]	        = "pactl set-source-volume @DEFAULT_SOURCE@ +1%; kill -37 $(pidof dwm)";
-static const char mic_mute[]	        = "pactl set-source-mute @DEFAULT_SOURCE@ toggle; kill -37 $(pidof dwm)";
+static const char cmus_decvol[]         = "cmus-remote -v -1%; kill -37 $STATUSBAR";
+static const char cmus_incvol[]         = "cmus-remote -v +1%; kill -37 $STATUSBAR";
+static const char cmus_pause[]	        = "cmus-remote -u; kill -37 $STATUSBAR";
+static const char cmus_stop[]	        = "cmus-remote -s; kill -37 $STATUSBAR";
+static const char cmus_next[]	        = "cmus-remote -n; kill -37 $STATUSBAR";
+static const char cmus_prev[]	        = "cmus-remote -r; kill -37 $STATUSBAR";
+static const char cmus_repeat[]         = "cmus-remote -R; kill -37 $STATUSBAR";
+static const char vol_dec[]	            = "pactl set-sink-volume @DEFAULT_SINK@ -1%; kill -35 $STATUSBAR";
+static const char vol_inc[]	            = "pactl set-sink-volume @DEFAULT_SINK@ +1%; kill -35 $STATUSBAR";
+static const char vol_mute[]	        = "pactl set-sink-mute @DEFAULT_SINK@ toggle; kill -35 $STATUSBAR";
+static const char mic_decvol[]	        = "pactl set-source-volume @DEFAULT_SOURCE@ -1%; kill -35 $STATUSBAR";
+static const char mic_incvol[]	        = "pactl set-source-volume @DEFAULT_SOURCE@ +1%; kill -35 $STATUSBAR";
+static const char mic_mute[]	        = "pactl set-source-mute @DEFAULT_SOURCE@ toggle; kill -35 $STATUSBAR";
 static const char screenshot[]	        = "dm-screenshot";
 static const char browser[]	            = "qutebrowser";
 static const char powermenu[]	        = "dm-power";
