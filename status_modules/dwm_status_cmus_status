@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-notify-send "HEY"
-
 # max 24 char long
 artist_title()
 {
@@ -11,7 +9,8 @@ artist_title()
     title=$(cmus-remote -Q | \
         awk '/tag title/ {gsub("tag title ", "");print}')
 
-    [ -z "$artist" ] || [ -z "$title" ] && exit 1
+    [ -z "$artist" ] && artist=" " 
+    [ -z "$title" ] && title=" "
 
     artist_title="$artist - $title"
 
@@ -76,6 +75,4 @@ track_progress()
 # [ "$STAT" == "PLAYING" ] && \
 # 	printf "%s" "$ARTIST_TITLE $TRACK_PROGRESS" || printf "%s" "$STAT"
 
-if  pgrep -x cmus  && command -V cmus ; then 
-    [ "$(player_stat)" == "PLAYING" ] && printf "%s" "$(artist_title)" || printf "%s" "$(player_stat)"
-fi
+[ "$(player_stat)" == "PLAYING" ] && printf "%s" "$(artist_title)" || printf "%s" "NP"
